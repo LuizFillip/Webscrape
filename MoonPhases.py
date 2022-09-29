@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 14 11:49:09 2021
-
-@author: LuizF
-"""
 
 import numpy as np 
 import datetime
@@ -11,35 +5,36 @@ import requests
 from bs4 import BeautifulSoup 
 import pandas as pd
 
-year = 2013
+year = 2014
 
+def request_data(year):
 #In this code we will we "Time and Date" website for to get
 #a table with the moon phases 
-url = f'https://www.timeanddate.com/moon/phases/?year={year}'
-
-r = requests.get(url)
-s = BeautifulSoup(r.text, "html.parser")
-data = s.find_all("table", class_ = "tb-sm zebra fw tb-hover")
-
-
-table_body = data[0].find_all('tr')
-
-result = []
- 
-for num in range(len(table_body)):
+    url = f'https://www.timeanddate.com/moon/phases/?year={year}'
     
-    rows = table_body[num].find_all()
-
-    list_luna = []
+    r = requests.get(url)
+    s = BeautifulSoup(r.text, "html.parser")
+    data = s.find_all("table", class_ = "tb-sm zebra fw tb-hover")
     
-    result.append(list_luna)
-    for elem in rows:
-        elem = elem.text
-        if elem == '\xa0':
-            list_luna.append(np.nan)
-        else:
-            list_luna.append(elem)
- 
+    
+    table_body = data[0].find_all('tr')
+    
+    result = []
+     
+    for num in range(len(table_body)):
+        
+        rows = table_body[num].find_all()
+    
+        list_luna = []
+        
+        result.append(list_luna)
+        for elem in rows:
+            elem = elem.text
+            if elem == '\xa0':
+                list_luna.append(np.nan)
+            else:
+                list_luna.append(elem)
+    return result[:-1]
 
 def convert_to_datetime(set_date, 
                         year = 2013):
@@ -82,29 +77,34 @@ def convert_to_datetime(set_date,
         
         return datetime.datetime(year, month, day, hour, minute)
 
-result = result[:-1]
-
-outside_of_loop = []
-
-for j in range(1, len(result)):
-    final_result = []
-    outside_of_loop.append(final_result)
-    lunation  = result[j][0]
-    final_result.append(int(lunation))
-    duration = result[j][-1]
+def build_data(year):
     
-    setting_datetime = result[j][1:-1]
+    result = request_data(year)
+
+    outside_of_loop = []
     
-    for i in range(0, len(setting_datetime), 2):
-        moon_phase_datetime = convert_to_datetime(setting_datetime[i: i + 2])
+    for j in range(1, len(result)):
+        final_result = []
+        outside_of_loop.append(final_result)
+        lunation  = result[j][0]
+        final_result.append(int(lunation))
+        duration = result[j][-1]
+        
+        setting_datetime = result[j][1:-1]
+        
+        for i in range(0, len(setting_datetime), 2):
+            moon_phase_datetime = convert_to_datetime(setting_datetime[i: i + 2])
+        
+            final_result.append(moon_phase_datetime)
+        
+        final_result.append(duration)
     
-        final_result.append(moon_phase_datetime)
+    df = pd.DataFrame(outside_of_loop, columns = result[0])
     
-    final_result.append(duration)
-
-df = pd.DataFrame(outside_of_loop, columns = result[0])
-
-df.index = df['Lunation']
-
-del df['Lunation']
-
+    df.index = df['Lunation']
+    
+    del df['Lunation']
+    
+    return df
+df = build_data(year)    
+print(df)
