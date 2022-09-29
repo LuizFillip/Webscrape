@@ -80,7 +80,7 @@ def convert_to_datetime(set_date,
 def build_data(year):
     
     result = request_data(year)
-
+    
     outside_of_loop = []
     
     for j in range(1, len(result)):
@@ -93,7 +93,8 @@ def build_data(year):
         setting_datetime = result[j][1:-1]
         
         for i in range(0, len(setting_datetime), 2):
-            moon_phase_datetime = convert_to_datetime(setting_datetime[i: i + 2])
+            moon_phase_datetime = convert_to_datetime(setting_datetime[i: i + 2], 
+                                                      year = year)
         
             final_result.append(moon_phase_datetime)
         
@@ -107,4 +108,4 @@ def build_data(year):
     
     return df
 df = build_data(year)    
-print(df)
+print(df["Full Moon"])
