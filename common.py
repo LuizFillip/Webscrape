@@ -1,8 +1,10 @@
 import os
 import requests 
 from bs4 import BeautifulSoup 
+import typing as T
 
-def download(url, href, infile_save = ""):
+
+def download(url: str, href: str, infile_save: str = ""):
     
     """Use request for download the data"""
     
