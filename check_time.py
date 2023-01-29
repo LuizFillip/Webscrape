@@ -1,35 +1,71 @@
-from EMBRACE_Data_Download import URL
-import requests 
-from bs4 import BeautifulSoup 
-import datetime 
+from embrace import URL
+from core import request
+import datetime as dt
+from embrace_utils import href_attrs
+import pandas as pd
 
-from image_utils import imager_fname
-year = 2014
-doy = datetime.date(year, 5, 24).timetuple().tm_yday  
+def get_deltatime(dat):
+
+    delta = (dat[-1] - dat[0])
+    
+    args = [int(i) for i in str(delta).split(":")]
+    
+    return (args[0] + args[1] / 60 + args[2] / 3600)
 
 
-
-def quick_look(date, doy = None, 
-               instrument = "imager", 
-               site = "Sao Joao do Cariri", 
-               condition = "O6"):
-    
-    url = URL(year, doy, 
-                    instrument = instrument, 
-                    site = site)
-    r = requests.get(url)
-    s = BeautifulSoup(r.text, "html.parser")
-    
-    parser = s.find_all('a', href = True)
-    
-    
-    
-    out_date = []
-    for link in parser:
+def get_length(date, 
+              inst = "imager", 
+              site = "Cariri", 
+              ext = "TIF"):
         
-        href = link['href']
+    out = []
+    for link in request(URL(date,
+                            inst = inst, 
+                            site = site)):
     
-        if condition in href:
-            out_date.append(imager_fname(href).datetime)
-            
-    return out_date
+        c = href_attrs()
+    
+        if ext in link:
+            try:
+                out.append(c.iono(link))
+            except:
+                continue
+    
+    return len(out)
+
+
+def quick_look(date, 
+               ):
+     
+    return 
+
+
+ends = {"ionosonde":  {"drift": ["DVL", "SKY", "DFT"], 
+                        "SAO": ["RSF", "SAO", "PNG"], 
+                        }
+        }
+
+year = 2015
+def check_year(year, 
+               inst, 
+               site, 
+               ext):
+    
+    dates = pd.date_range(f"{year}-1-1", 
+                          f"{year}-12-31", 
+                          freq = "1D")
+    
+    number = []
+    for date in dates:
+        number.append(get_length(date, 
+                      inst = inst, 
+                      site = site, 
+                      ext = ext))
+    return number
+    
+    
+#%%
+import matplotlib.pyplot as plt
+inst = "ionosonde"
+site = "Fortaleza"
+ext = "DVL"
