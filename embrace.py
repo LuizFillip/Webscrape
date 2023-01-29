@@ -3,6 +3,7 @@ from base import request, download
 import os
 import datetime as dt
 import pandas as pd
+import pandas as pd
 
 site_code = {
     
@@ -84,7 +85,7 @@ class href_attrs(object):
     
     def __init__(self, file):
         
-        self.drift = ["SKY", "DFT", "DVL"]
+        self.drift = [ "DVL"] #"SKY", "DFT",
         self.ionog = ["RSF", "SAO", "PNG"]
         
         if any(file.endswith(f) for f in 
@@ -117,14 +118,11 @@ class href_attrs(object):
                            minute, 
                            second)
     
-    
-
-
-date = dt.datetime(2013, 1, 1)
 
 def download_one_day(date, 
-                      site = "Sao Luis", 
-                      inst = "ionosonde"):
+                      site = "Sao luis", 
+                      inst = "ionosonde", 
+                      infile_save = ""):
     url = URL(date, 
               site = site, 
               inst = inst)
@@ -139,7 +137,39 @@ def download_one_day(date,
             
             print("downloading...", attrs.datetime)
             
-            download(url, link)
+            download(url, link, infile_save)
+
+def run_for_all_year(site = "Sao luis", 
+                     inst = "ionosonde",
+                     year = 2015):
+    
+    dates = pd.date_range(f"{year}-1-1", 
+                          f"{year}-12-31", 
+                          freq= "1D")
+    
+
+    root = f"D:\\drift\\FZA\\{year}\\"
+    
+    for date in dates:
+        
+        doy_str = date.strftime("%j")
+        path_to_create = os.path.join(root, doy_str)
+        
+        try:
+            os.mkdir(path_to_create)
+        except:
+            pass
+        
+        try:
+            download_one_day(date, 
+                             site = site, 
+                            inst = inst, 
+                            infile_save = path_to_create)
+        except:
+            continue
+
+run_for_all_year(year = 2015)
 
 
-
+    
+    
