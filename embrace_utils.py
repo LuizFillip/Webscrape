@@ -1,6 +1,10 @@
 import datetime as dt
 
-
+ends = {
+        "ionosonde":  ["DVL", "SKY", "DFT", "RSF", "SAO"], 
+        "imager": ["PNG", "TIF"]
+                                              
+        }
 
 site_codes = {
     
