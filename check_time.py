@@ -1,8 +1,8 @@
 from embrace import URL
 from core import request
-import datetime as dt
 from embrace_utils import href_attrs
 import pandas as pd
+import os
 
 def get_deltatime(dat):
 
@@ -19,13 +19,13 @@ def get_length(date,
               ext = "TIF"):
         
     out = []
-    for link in request(URL(date,
-                            inst = inst, 
+    for link in request(URL(date, inst = inst, 
                             site = site)):
     
         c = href_attrs()
     
         if ext in link:
+            print("getting...", link)
             try:
                 out.append(c.iono(link))
             except:
@@ -34,18 +34,10 @@ def get_length(date,
     return len(out)
 
 
-def quick_look(date, 
-               ):
-     
+def quick_look(date):
     return 
 
 
-ends = {"ionosonde":  {"drift": ["DVL", "SKY", "DFT"], 
-                        "SAO": ["RSF", "SAO", "PNG"], 
-                        }
-        }
-
-year = 2015
 def check_year(year, 
                inst, 
                site, 
@@ -55,17 +47,50 @@ def check_year(year,
                           f"{year}-12-31", 
                           freq = "1D")
     
-    number = []
-    for date in dates:
-        number.append(get_length(date, 
-                      inst = inst, 
-                      site = site, 
-                      ext = ext))
-    return number
+    counts = [get_length(date, 
+                         inst = inst, 
+                         site = site, 
+                         ext = ext)
+              for date in dates]
+   
+    return counts
+
+
+def count_in_folder(infile, ext = "DVL"):
     
+    _, _, files = next(os.walk(infile))
     
-#%%
-import matplotlib.pyplot as plt
-inst = "ionosonde"
-site = "Fortaleza"
-ext = "DVL"
+    files = [f for f in files if f.endswith(ext)]
+    
+    return len(files)
+
+
+def quick_look(inst = "ionosonde", 
+               site = "Fortaleza",
+                ext = "DVL", 
+                start = 2015, 
+                end = 2023, 
+                save = True):
+    
+    rng = list(range(start, end))
+    counts = [check_year(year, inst, site, ext)
+              for year in rng]
+    
+    df = pd.DataFrame(counts, 
+                      index = rng)
+    if save:
+        name_to_save = f"{site}_{start}_{end}.txt"
+        df.to_csv(name_to_save, index = True, sep = ",")
+    
+    return df
+
+
+def main():
+    inst = "ionosonde"
+    site = "Sao luis"
+    df = quick_look(inst, site,
+            ext = "DVL", 
+            start = 2013, 
+            end = 2023)
+    
+    print(df)
