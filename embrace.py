@@ -2,7 +2,6 @@ from embrace_utils import href_attrs, site_codes
 from core import request, download
 import os
 import pandas as pd
-from pathlib import Path
 
 
 def URL(date, 
@@ -48,16 +47,13 @@ def download_one_day(date,
     links = request(url)
         
     for link in links:
-    
-        attrs = href_attrs(link)
-    
-        if any(link.endswith(f) for f in ext):
-            print("downloading...", attrs.datetime)
+
+        if any(f in link for f in ext):
             download(url, link, save_in)
             
     return url
 
-def download_all_year(inst, site, year, root):
+def download_one_year(inst, site, year, root):
     
     d = build_dir(inst, site, year, root)
 
@@ -70,14 +66,14 @@ def download_all_year(inst, site, year, root):
     for date in dates:    
         doy_str = date.strftime("%j")
         save_in = d.doy_path(doy_str)
-        
+         
         try:
 
             download_one_day(
                 date, 
                 site = site, 
                 inst = inst, 
-                infile_save = save_in)
+                save_in = save_in)
         except:
             continue
 
@@ -136,8 +132,12 @@ class build_dir(object):
 def main():
 
     root = "D:\\drift\\"
-    root = str(Path.cwd())
+    #root = str(Path.cwd())
     inst = "ionosonde"
-    site = "Fortaleza"
-    year = 2015
-    download_all_year(inst, site, year, root)
+    site = "Sao luis"
+    #year = 2015
+    for year in range(2016, 
+                      2023, 1):
+        print("starting...", year)
+        download_one_year(inst, site, year, root)
+        
