@@ -2,7 +2,7 @@ from embrace_utils import href_attrs, site_codes
 from core import request, download
 import os
 import pandas as pd
-
+import datetime as dt
 
 def URL(date, 
         site = "Cariri", 
@@ -131,13 +131,19 @@ class build_dir(object):
    
 def main():
 
-    root = "D:\\drift\\"
+    #root = "D:\\drift\\"
     #root = str(Path.cwd())
     inst = "ionosonde"
-    site = "Sao luis"
-    #year = 2015
-    for year in range(2016, 
-                      2023, 1):
-        print("starting...", year)
-        download_one_year(inst, site, year, root)
+    site = "Cachoeira"
+    date = dt.date(2015, 3, 1)
+    url = URL(date, 
+              site = site, 
+              inst = inst)
+    
+    links = request(url)
+    
+    print(links)
+    
+
+#main()
         

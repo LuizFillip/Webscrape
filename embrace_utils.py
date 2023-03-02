@@ -1,7 +1,7 @@
 import datetime as dt
 
 ends = {
-        "ionosonde":  ["DVL", "SKY", "DFT", "RSF", "SAO"], 
+        "ionosonde": ["DVL", "SKY", "DFT", "RSF", "SAO"], 
         "imager": ["PNG", "TIF"]
                                               
         }
@@ -30,7 +30,7 @@ class href_attrs(object):
     """Convert digisonde, imager and TEC files 
     filename (EMBRACE format) to datetime"""
     
-        
+    
     @staticmethod
     def iono(file):
         
@@ -73,6 +73,4 @@ class href_attrs(object):
     
 def main():
     f = 'FZA0M_2015144235555.SKY'
-    c = href_attrs()
-    print(c.iono(f))
-#main()
+    #f1 = 'OH_CA_20230129_071343.tif',
