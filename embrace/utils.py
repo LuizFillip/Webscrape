@@ -14,13 +14,20 @@ site_codes = {
                        "Cachoeira": "CAJ2M", 
                        "Santa Maria": "SMK29", 
                        "Boa Vista": "BVJ03", 
-                       "Campo Grande": "CGK21"}, 
+                       "Campo Grande": "CGK21"
+                }, 
          
-         "imager": {"Cariri": "CA", 
-                    "Bom Jesus da Lapa" : "BJL", 
-                    "Cachoeira Paulista": "CP", 
-                    "Comandante Ferraz": "CF", 
-                    "Sao Martinho da Serra": "SMS"} 
+         "imager": {
+                 "cariri": "CA", 
+                "Bom Jesus da Lapa" : "BJL", 
+                "Cachoeira Paulista": "CP", 
+                "Comandante Ferraz": "CF", 
+                "Sao Martinho da Serra": "SMS"
+            }, 
+         
+         'magnetometer': {
+             'Sao Luis': 'SLZ'
+             }
          }
 
 

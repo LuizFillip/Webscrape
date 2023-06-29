@@ -1,4 +1,4 @@
-from embrace_utils import href_attrs, site_codes
+from embrace_utils import site_codes
 from core import request, download
 import os
 import pandas as pd
@@ -79,63 +79,14 @@ def download_one_year(inst, site, year, root):
 
 
 
-class build_dir(object):
-    
-    """
-    Create directories from input names:
-        inst: intrumentation type (e.g. imager)
-        site: site location for each inst.
-        year: observation year
-        root: path root
-    """
-    
-    def __init__(
-            self, inst, site, year, root,
-             ):
-  
-        self.root = str(root)
-        self.year = str(year)
-        self.name_dir = site_codes[inst][site][:3]
-        
-    @staticmethod
-    def create_dir(path):
-        try:
-            os.mkdir(path)
-        except OSError:
-            print(f"{path} wasn`t created")         
-        return path
-        
-    @property  
-    def site_path(self):
-        return self.create_dir(
-                    os.path.join(
-                    self.root, 
-                    self.name_dir))
-        
-    @property
-    def year_path(self): 
-        return self.create_dir(
-                    os.path.join(
-                    self.root, 
-                    self.name_dir, 
-                    self.year))
-    
-    def doy_path(self, doy): 
-        return self.create_dir(
-                    os.path.join(
-                    self.root, 
-                    self.name_dir, 
-                    self.year, 
-                    str(doy)))
+
     
    
 def main():
 
-    #root = "D:\\drift\\"
-    #root = str(Path.cwd())
-    inst = "ionosonde"
-    site = "Cachoeira"
-    date = dt.date(2015, 3, 1)
+    inst = "magnetometer"
+    site = "Sao luis"
+    date = dt.date(2013, 12, 29)
     url = URL(date, 
               site = site, 
               inst = inst)
@@ -145,5 +96,4 @@ def main():
     print(links)
     
 
-#main()
-        
+main()
