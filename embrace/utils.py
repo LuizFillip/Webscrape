@@ -1,34 +1,6 @@
 import datetime as dt
 
-ends = {
-        "ionosonde": ["DVL", "SKY", "DFT", "RSF", "SAO"], 
-        "imager": ["PNG", "TIF"]
-                                              
-        }
 
-site_codes = {
-    
-         "ionosonde": {"Fortaleza": "FZA0M", 
-                       "Sao luis": "SAA0K", 
-                       "Belem": "BLJ03", 
-                       "Cachoeira": "CAJ2M", 
-                       "Santa Maria": "SMK29", 
-                       "Boa Vista": "BVJ03", 
-                       "Campo Grande": "CGK21"
-                }, 
-         
-         "imager": {
-                 "cariri": "CA", 
-                "Bom Jesus da Lapa" : "BJL", 
-                "Cachoeira Paulista": "CP", 
-                "Comandante Ferraz": "CF", 
-                "Sao Martinho da Serra": "SMS"
-            }, 
-         
-         'magnetometer': {
-             'Sao Luis': 'SLZ'
-             }
-         }
 
 
 class href_attrs(object):
@@ -78,6 +50,3 @@ class href_attrs(object):
         return dt.datetime.strptime(date + time, 
                                      "%Y%m%d%H%M%S")
     
-def main():
-    f = 'FZA0M_2015144235555.SKY'
-    #f1 = 'OH_CA_20230129_071343.tif',

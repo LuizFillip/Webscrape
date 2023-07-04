@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jul 22 17:09:23 2022
-
-@author: Luiz
-"""
-
 import requests 
 from bs4 import BeautifulSoup 
 import datetime
@@ -45,13 +38,11 @@ class get_time_terminator(object):
          
         self.df = pd.DataFrame(all_times, 
                                index = tuples).T
-        self.df.columns = pd.MultiIndex.from_tuples(self.df.columns, 
-                                                    names=[self.year, self.month])   
+        self.df.columns = pd.MultiIndex.from_tuples(
+            self.df.columns, 
+            names=[self.year, self.month])   
         
-    @property
-    def table(self):
-        return self.df
-    
+
     def terminator(self, 
                    UT = True, 
                    angle = "Astronomical", 

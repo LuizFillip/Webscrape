@@ -1,4 +1,4 @@
-from utils import site_codes
+import embrace as ec
 import os 
 
 class directories(object):
@@ -17,7 +17,7 @@ class directories(object):
   
         self.root = str(root)
         self.year = str(year)
-        self.name_dir = site_codes[inst][site][:3]
+        self.name_dir = ec.site_codes[inst][site][:3]
         
     @staticmethod
     def create_dir(path):

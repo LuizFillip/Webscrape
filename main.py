@@ -1,26 +1,22 @@
 from embrace import download_one_day
 import pandas as pd
 import datetime as dt
+import os
 
-
-
-save_in = "D:\\drift\\CAJ\\2015\\"
-
-
-year = 2015
-site = "Cachoeira"
-inst = "ionosonde"
-dates = pd.date_range(f"{year}-1-1", 
-                      f"{year}-12-31", 
-                      freq = "1D")
-for date in dates:    
-    try:
-
-       download_one_day(date, 
-                       site = site, 
-                       inst = inst, 
-                       save_in = save_in, 
-                       ext = ["DVL", "DFT"])
-    except:
-        continue
+def download_embrace():
+    save_in = "D:\\iono\\2013\\"
     
+    
+    year = 2013
+    dates = pd.date_range(f"{year}-3-16", 
+                          f"{year}-3-20", 
+                          freq = "1D")
+    for date in dates:   
+        doy = date.strftime("%j")
+        download_one_day(date, 
+                         site = "Fortaleza",
+                         save_in = save_in, #os.path.join(save_in, doy)
+                         ext = ["DVL", "DFT", "SAO", "RSF", "XML"])
+        
+
+download_embrace()
