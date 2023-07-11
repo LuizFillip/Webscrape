@@ -3,7 +3,7 @@ import pandas as pd
 import embrace as ec
 
 
-def daily(date, 
+def daily(dn, 
         site = "Sao luis", 
         inst = "ionosonde", 
         save_in = "", 
@@ -36,3 +36,8 @@ def main():
             save_in = save_in, 
             ext = ["13m"]
             )
+
+url = "https://embracedata.inpe.br/"
+links = request(url)
+
+links
