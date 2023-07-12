@@ -7,7 +7,7 @@ def daily(dn,
         site = "Sao luis", 
         inst = "ionosonde", 
         save_in = "", 
-        ext = ["DVL"]
+        ext = ["DVL", 'SAO', 'RSF']
         ):
     
     url = ec.URL(dn, site = site, inst = inst)    
@@ -19,25 +19,19 @@ def daily(dn,
             download(url, link, save_in)
             
     return url
-
-
-import datetime as dt
     
-def main():
-    inst = "magnetometer"
-    site = "Sao luis"
-    dn = dt.date(2013, 12, 29)
-    save_in = 'G:/My Drive/Python/data-analysis/database/magnetometers/201303/'
-        
-    
-    daily(dn, 
-            site = site, 
-            inst = inst, 
-            save_in = save_in, 
-            ext = ["13m"]
-            )
-
-url = "https://embracedata.inpe.br/"
-links = request(url)
-
-links
+def run_years():
+    for year in range(2017, 2023):
+        dates = pd.date_range(f'{year}-01-01', 
+                              f'{year}-12-31', 
+                              freq = '1D')
+        save_in = f'D:\\drift\\SAA\\{year}\\'
+        for dn in dates:
+            try:
+                print(dn)
+                
+                daily(dn, 
+                        save_in = save_in
+                        )
+            except:
+                continue
