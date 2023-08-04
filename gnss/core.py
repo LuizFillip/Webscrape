@@ -1,16 +1,18 @@
 import os
-from gnss_utils import date_from_doy, rinex_url, orbit_url
+# from gnss import date_from_doy, rinex_url, orbit_url, make_dir, paths
+import gnss as g
 import zipfile
-from build import paths, folder
 from unlzw3 import unlzw
 import time
 from core import request, download
 
 
 
-def unzip_rinex(files:str, 
-                year:int, 
-                path_to_save:str) -> None:
+def unzip_rinex(
+        files:str, 
+        year:int, 
+        path_to_save:str
+        ) -> None:
     
     zip_path = os.path.join(path_to_save, files)
     zip_file = zipfile.ZipFile(zip_path, 'r') 
@@ -33,10 +35,10 @@ def unzip_rinex(files:str,
 def download_rinex(year, 
                    doy, 
                    root = "D:\\"):
-    url = rinex_url(year, doy)
+    url = g.rinex_url(year, doy)
     
-    path_to_create = paths(year, doy, root = root).rinex     
-    path_to_save = folder(path_to_create)
+    path_to_create = g.paths(year, doy, root = root).rinex     
+    path_to_save = g.make_dir(path_to_create)
             
     receivers_list = request(url)
         
@@ -65,17 +67,20 @@ def unzip_orbit(files):
 def download_orbit(
         year: int, 
         doy: int, 
-        root: str = "D:\\"
+        root: str = "D:\\",
+        constellations = ["igl", "igr"], 
+        network = 'igs2'
         ):
     
     
-    for const in ["igl", "igr"]:
-        fname, url = orbit_url(
+    for const in constellations:
+        fname, url = g.orbit_url(
             year, doy, 
             network = "igs2", 
-            const = const)
+            const = const
+            )
     
-        path_to_save = paths(year, doy, 
+        path_to_save = g.paths(year, doy, 
                              root = root).orbit(const = const)
         
         for href in request(url):
@@ -111,7 +116,7 @@ def download_one_year(year,
                                
         except:
             print("it was not possible download...", 
-                  date_from_doy(year, doy))
+                  g.date_from_doy(year, doy))
             continue
             
 
@@ -127,4 +132,26 @@ def main():
     
     print("--- %s minutes ---" % ((time.time() - start_time) / 3600))
     
-main()
+
+
+    # filename, url = orbit_url(2014, 105, network = "igs2", const = "igl")
+    
+    # # url = "https://files.igs.org/pub/glonass/products/1721/"
+    # # print(request(url))
+    
+    year = 2014
+    root = "D:\\"
+    for doy in range(1, 366):
+        # fname, url = orbit_url(2014, doy, network = "igs2", const = "igl")
+        
+        download_orbit(
+            year, 
+            doy, 
+            root = root,
+        constellations=['igl']
+        )
+
+
+
+
+

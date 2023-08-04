@@ -9,7 +9,7 @@ site_codes = {
     
          "ionosonde": {
              "Fortaleza": "FZA0M", 
-             "Sao luis": "SAA0K", 
+             "sao luis": "SAA0K", 
              "Belem": "BLJ03", 
              "Cachoeira": "CAJ2M", 
              "Santa Maria": "SMK29", 

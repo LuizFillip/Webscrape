@@ -58,7 +58,7 @@ def check_year(year,
 
 def count_in_folder(infile, ext = "DVL"):
     
-    _, _, files = next(os.walk(infile))
+    files = os.listdir(infile)
     
     files = [f for f in files if f.endswith(ext)]
     
