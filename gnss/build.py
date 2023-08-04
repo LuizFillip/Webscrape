@@ -28,11 +28,13 @@ class paths(object):
             self.current_path = os.path.join(
                 self.root, 
                 "database", 
-                "GNSS")
+                "GNSS"
+                )
         else:
             self.current_path = os.path.join(
                 self.root, 
-                "database") 
+                "database"
+                ) 
         
         self.year = str(year)
         

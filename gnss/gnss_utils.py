@@ -71,18 +71,18 @@ def gpsweek_from_doy_and_year(year: int, doy:int) -> tuple:
     return gnsscal.date2gpswd(date_from_doy(year, doy))
 
 
-def rinex_url(year:int, doy:int, network:str = "IBGE"):
+def rinex_url(year:int, doy:int, network:str = "ibge"):
     date = date_from_doy(year, doy)
     doy_str = date.strftime("%j")
     return f"{infos[network]}/{year}/{doy_str}/"
 
 
-def orbit_url(year:int, 
-              doy:int, 
-              network:str = "IGS", 
-              const:str = "igr"):
-    
-    
+def orbit_url(
+        year:int, 
+        doy:int, 
+        network:str = "IGS", 
+        const:str = "igr"
+        ):
     
     """Build urls and filenames from year, doy and GNSS system"""
     

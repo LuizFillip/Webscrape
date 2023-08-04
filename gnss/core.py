@@ -1,5 +1,4 @@
 import os
-# from gnss import date_from_doy, rinex_url, orbit_url, make_dir, paths
 import gnss as g
 import zipfile
 from unlzw3 import unlzw
@@ -30,22 +29,30 @@ def unzip_rinex(
             
     zip_file.close()
     os.remove(zip_path)
+    
             
 
-def download_rinex(year, 
-                   doy, 
-                   root = "D:\\"):
+def download_rinex(
+        year, 
+        doy, 
+        root = "D:\\",
+        filter_stations = True
+        ):
     url = g.rinex_url(year, doy)
     
-    path_to_create = g.paths(year, doy, root = root).rinex     
-    path_to_save = g.make_dir(path_to_create)
-            
-    receivers_list = request(url)
-        
+    path_to_save = g.paths(year, doy, root = root).rinex     
+    path_to_save = g.make_dir(path_to_save)
+    
+    if filter_stations:
+        receivers_list = g.filter_rinex(url)
+    else:
+        receivers_list = request(url)
+    
     for href in receivers_list:
         
         files = download(url, href, path_to_save)
         unzip_rinex(files, year, path_to_save)
+        
    
 def unzip_orbit(files): 
     fh = open(files, 'rb')
