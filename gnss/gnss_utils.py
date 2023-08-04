@@ -1,20 +1,70 @@
 import gnsscal
 import datetime as dt
 from core import request
+import os
+
 
 infos = {"ibge" : 'https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados', 
          "igs": 'https://igs.bkg.bund.de/root_ftp/IGS/products/', 
          "igs2": 'https://files.igs.org/pub/'}
 
-regions = {"sts1": ['alar', 'bair', 'brft', 'ceeu', 
-                       'ceft', 'cesb', 'crat', 'pbcg', 
-                       'pbjp', 'peaf', 'pepe', 'recf',
-                       'rnmo', 'rnna', 'seaj']}
+regions = {"stations_1": 
+               ['alar',
+                 'bair',
+                 'brft',
+                 'ceeu',
+                 'ceft',
+                 'cesb',
+                 'crat',
+                 'pbcg',
+                 'pbjp',
+                 'peaf',
+                 'pepe',
+                 'recf',
+                 'rnmo',
+                 'rnna',
+                 'seaj'], 
+           
+           'stations_2': 
+               ['apsa',
+                'cruz',
+                'impz',
+                'maba',
+                'mabb',
+                'mapa',
+                'paat',
+                'pait',
+                'past',
+                'pove',
+                'riob',
+                'rogm',
+                'salu']
+           
+           }
+
+    
+
+def make_dir(path: str):
+    """
+    Create a new directory by 
+    path must be there year and doy
+    """
+    try:
+        os.mkdir(path)
+    except OSError:
+        print(f"Creation of the directory {path} failed")
+    
+    return path
 
 
 def date_from_doy(year: int, doy:int) -> dt.date:
     """Return date from year and doy"""
     return dt.date(year, 1, 1) + dt.timedelta(doy - 1)
+
+def gpsweek_from_date(date: dt.date) -> tuple:
+    """Return GPS week and number from date"""
+    return gnsscal.date2gpswd(date)
+
 
 def gpsweek_from_doy_and_year(year: int, doy:int) -> tuple:
     """Return GPS week and number from date"""
@@ -65,9 +115,10 @@ def orbit_url(year:int,
     return filename, url
 
 
-def filter_rinex(url:str, 
-                 sel_stations: list = regions["sts1"]
-                 ):
+def filter_rinex(
+        url:str, 
+        sel_stations: list = regions["stations_2"]
+        ):
   out = []
   for href in request(url):
       
@@ -76,8 +127,3 @@ def filter_rinex(url:str,
           out.append(href)
           
   return out
-
-filename, url = orbit_url(2013, 1, network = "igs2", const = "igl")
-
-url = "https://files.igs.org/pub/glonass/products/1721/"
-print(request(url))
