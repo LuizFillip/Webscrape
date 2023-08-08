@@ -1,12 +1,14 @@
 import gnsscal
 import datetime as dt
-from core import request
+import Webscrape as wb 
 import os
 
 
-infos = {"ibge" : 'https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados', 
-         "igs": 'https://igs.bkg.bund.de/root_ftp/IGS/products/', 
-         "igs2": 'https://files.igs.org/pub/'}
+infos = {
+    "ibge" : 'https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados', 
+    "igs": 'https://igs.bkg.bund.de/root_ftp/IGS/products/', 
+    "igs2": 'https://files.igs.org/pub/'
+    }
 
 regions = {"stations_1": 
                ['alar',
@@ -120,10 +122,12 @@ def filter_rinex(
         sel_stations: list = regions["stations_2"]
         ):
   out = []
-  for href in request(url):
+  for href in wb.request(url):
       
       rules = [f in href for f in sel_stations]
       if any(rules):
           out.append(href)
           
   return out
+
+

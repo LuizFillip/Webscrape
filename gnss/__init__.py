@@ -1,3 +1,2 @@
 from .gnss_utils import *
-from .core import *
-from .build import paths
+from .core import download_rinex, download_orbit, folders_orbits

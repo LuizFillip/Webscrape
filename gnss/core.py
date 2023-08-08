@@ -1,10 +1,9 @@
 import os
-import gnss as g
+import Webscrape as wb
 import zipfile
 from unlzw3 import unlzw
 import time
-from core import request, download
-
+from GNSS import paths
 
 
 def unzip_rinex(
@@ -36,23 +35,27 @@ def download_rinex(
         year, 
         doy, 
         root = "D:\\",
-        filter_stations = True
+        stations = None
         ):
-    url = g.rinex_url(year, doy)
+    url = wb.rinex_url(year, doy)
     
-    path_to_save = g.paths(year, doy, root = root).rinex     
-    path_to_save = g.make_dir(path_to_save)
+    path_to_save = paths(year, doy, root = root).rinex     
+    path_to_save = wb.make_dir(path_to_save)
     
-    if filter_stations:
-        receivers_list = g.filter_rinex(url)
+    if stations is not None:
+        receivers_list = wb.filter_rinex(
+            url, sel_stations = stations
+            )
     else:
-        receivers_list = request(url)
+        receivers_list = wb.request(url)
     
     for href in receivers_list:
         
-        files = download(url, href, path_to_save)
-        unzip_rinex(files, year, path_to_save)
+        if '.zip' in href:
         
+            files = wb.download(url, href, path_to_save)
+            unzip_rinex(files, year, path_to_save)
+            
    
 def unzip_orbit(files): 
     fh = open(files, 'rb')
@@ -69,30 +72,43 @@ def unzip_orbit(files):
     file.close()
     fh.close()
     os.remove(files)
+    
+    
+def folders_orbits(year, root = 'D:\\'):
+    for const in ["igl", "igr"]:
+        wb.make_dir(paths(year, root = root).orbit_base)
+        
+        path_to_save = paths(
+            year, 0, 
+            root = root).orbit(const = const)
+        
+        wb.make_dir(path_to_save)
    
     
 def download_orbit(
         year: int, 
         doy: int, 
         root: str = "D:\\",
-        constellations = ["igl", "igr"], 
-        network = 'igs2'
+        constellations = ["igl", "igr"]
         ):
     
     
-    for const in constellations:
-        fname, url = g.orbit_url(
+    
+    net = ['igs2', 'igs']
+    for i, const in enumerate(constellations):
+        fname, url = wb.orbit_url(
             year, doy, 
-            network = "igs2", 
+            network = net[i], 
             const = const
             )
     
-        path_to_save = g.paths(year, doy, 
-                             root = root).orbit(const = const)
+        path_to_save = paths(
+            year, doy, 
+            root = root).orbit(const = const)
         
-        for href in request(url):
+        for href in wb.request(url):
             if fname in href:
-                files = download(url, href, path_to_save)
+                files = wb.download(url, href, path_to_save)
                 unzip_orbit(files)
                 
             
@@ -123,42 +139,19 @@ def download_one_year(year,
                                
         except:
             print("it was not possible download...", 
-                  g.date_from_doy(year, doy))
+                  wb.date_from_doy(year, doy))
             continue
             
-
-def main():
+# root = 'D:\\'
+# doy = 0
+# year = 2016
+# for const in  ["igl", "igr"]:
+#     path_to_save = paths(
+#         year, doy, 
+#         root = root).orbit(const = const)
     
-  
-    
-    year = 2013
-    start_time = time.time()
-    
-    download_one_year(year, rinex = False)
+   
+#     wb.make_dir(path_to_save)
     
     
-    print("--- %s minutes ---" % ((time.time() - start_time) / 3600))
     
-
-
-    # filename, url = orbit_url(2014, 105, network = "igs2", const = "igl")
-    
-    # # url = "https://files.igs.org/pub/glonass/products/1721/"
-    # # print(request(url))
-    
-    year = 2014
-    root = "D:\\"
-    for doy in range(1, 366):
-        # fname, url = orbit_url(2014, doy, network = "igs2", const = "igl")
-        
-        download_orbit(
-            year, 
-            doy, 
-            root = root,
-        constellations=['igl']
-        )
-
-
-
-
-

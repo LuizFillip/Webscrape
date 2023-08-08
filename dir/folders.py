@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 29 09:50:12 2023
-
-@author: Luiz
-"""
-
 import os
 
 def make_dir(date, root = ""):

@@ -1,11 +1,15 @@
 import os
 import requests 
 from bs4 import BeautifulSoup 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-
-def download(url: str, href: str, 
-             infile_save: str = "", 
-             verify = False) -> str:
+def download(
+        url: str, 
+        href: str, 
+        save_in: str = "", 
+        verify = False
+        ) -> str:
     
     """Function for download from link"""
     
@@ -14,7 +18,7 @@ def download(url: str, href: str,
         verify = verify
         )
     
-    path_to_save = os.path.join(infile_save, href)
+    path_to_save = os.path.join(save_in, href)
     
     print("download...", href)
     
@@ -42,3 +46,6 @@ def request(url, verify = False) -> list:
 
 
 
+# url = 'http://ftp.cptec.inpe.br/'
+
+# request(url)
