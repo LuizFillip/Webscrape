@@ -48,6 +48,8 @@ def download_rinex(
             )
     else:
         receivers_list = wb.request(url)
+        
+    out = []
     
     for href in receivers_list:
         
@@ -56,7 +58,11 @@ def download_rinex(
             files = wb.download(url, href, path_to_save)
             unzip_rinex(files, year, path_to_save)
             
-   
+            out.append(files)
+    return out
+
+
+
 def unzip_orbit(files): 
     fh = open(files, 'rb')
     compressed_data = fh.read()

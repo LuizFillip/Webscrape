@@ -130,4 +130,13 @@ def filter_rinex(
           
   return out
 
+import GNSS as gs
+
+
+def minimum_doy(year, root = 'D:\\'):
+    path = gs.paths(year, doy = 0, root = root).rinex
+    list_doy = [int(f) for f in os.listdir(path) if f != '365']
+    return max(list_doy)
+
+
 
