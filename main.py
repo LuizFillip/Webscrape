@@ -1,49 +1,70 @@
-import pandas as pd
-import datetime as dt
-import os
 import Webscrape as wb
+import GEO as g
+from GNSS import paths, save_last_day
 
-# download_embrace()
+import os
 
-def download_gnss(year = 2014, root = "D:\\"):
+
+def download_gnss(stations, year, root = "D:\\"):
     
-    year_folder = g.paths(year, 0, root = root).rinex
+    wb.folders_orbits(year, root = root)
+    
+    doy_min = wb.minimum_doy(year, root = root)
+        
+    for doy in range(doy_min, 365, 1):
+        print(doy, year)
 
-    os.mkdir(year_folder)
-    for doy in range(365, 366, 1):
-        print(year, doy)
         wb.download_rinex(
                 year, 
                 doy, 
-                root = "D:\\",
-                filter_stations = False
+                root = root,
+                stations = stations
                 )
 
-    return 
+        wb.download_orbit(
+            year, 
+            doy, 
+            root = root
+            )
+
+    return None
 
 
-import GEO as g
 
+def get_last_day_receivers(
+        year = 2017, 
+        root = "D:\\"
+        ):
+    year_folder = paths(year, 0, root = root).rinex
+    wb.make_dir(year_folder)
+    
+    print('starting...', year)
+    wb.download_rinex(
+            year, 
+            365, 
+            root = root,
+            stations = None
+            )
+    
+    
+    save_last_day(
+            year,
+            doy = 365,
+            root = root
+            )
+    
+    return g.stations_near_of_equator(year)
 
 year = 2016
-doy = 1
-root = "D:\\"
 
+path = f'database/GEO/coords/{year}.json'
 
-stations = g.stations_near_of_equator()
-
-# wb.download_rinex(
-#         year, 
-#         doy, 
-#         root = root,
-#         stations = stations
-#         )
-
-wb.folders_orbits(year, root = 'D:\\')
-
-wb.download_orbit(
-    year, 
-    doy, 
-    root = root
-    )
-
+if os.path.exists(path):
+    stations = g.stations_near_of_equator(year)
+else:
+    stations = get_last_day_receivers(
+            year = year, 
+            root = "D:\\"
+            )
+    
+download_gnss(stations, year = year, root = "D:\\")
