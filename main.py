@@ -1,7 +1,7 @@
 import Webscrape as wb
 import GEO as g
 from GNSS import paths, save_last_day
-
+from base import make_dir
 import os
 
 
@@ -31,12 +31,12 @@ def download_gnss(stations, year, root = "D:\\"):
 
 
 
-def get_last_day_receivers(
+def fetch_receivers(
         year = 2017, 
         root = "D:\\"
         ):
     year_folder = paths(year, 0, root = root).rinex
-    wb.make_dir(year_folder)
+    make_dir(year_folder)
     
     print('starting...', year)
     wb.download_rinex(
@@ -54,17 +54,24 @@ def get_last_day_receivers(
             )
     
     return g.stations_near_of_equator(year)
-
-year = 2016
+    
+year = 2020
 
 path = f'database/GEO/coords/{year}.json'
+root = 'D://'
+
 
 if os.path.exists(path):
     stations = g.stations_near_of_equator(year)
 else:
-    stations = get_last_day_receivers(
+    stations = fetch_receivers(
             year = year, 
-            root = "D:\\"
+            root = root
             )
     
-download_gnss(stations, year = year, root = "D:\\")
+    
+download_gnss(
+    stations, 
+    year = year, 
+    root = root
+    )
