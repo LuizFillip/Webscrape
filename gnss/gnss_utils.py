@@ -1,7 +1,6 @@
-import gnsscal
-import datetime as dt
 import Webscrape as wb 
 import os
+import GNSS as gs
 
 
 infos = {
@@ -46,35 +45,10 @@ regions = {"stations_1":
 
     
 
-def make_dir(path: str):
-    """
-    Create a new directory by 
-    path must be there year and doy
-    """
-    try:
-        os.mkdir(path)
-    except OSError:
-        print(f"Creation of the directory {path} failed")
-    
-    return path
-
-
-def date_from_doy(year: int, doy:int) -> dt.date:
-    """Return date from year and doy"""
-    return dt.date(year, 1, 1) + dt.timedelta(doy - 1)
-
-def gpsweek_from_date(date: dt.date) -> tuple:
-    """Return GPS week and number from date"""
-    return gnsscal.date2gpswd(date)
-
-
-def gpsweek_from_doy_and_year(year: int, doy:int) -> tuple:
-    """Return GPS week and number from date"""
-    return gnsscal.date2gpswd(date_from_doy(year, doy))
 
 
 def rinex_url(year:int, doy:int, network:str = "ibge"):
-    date = date_from_doy(year, doy)
+    date = gs.date_from_doy(year, doy)
     doy_str = date.strftime("%j")
     return f"{infos[network]}/{year}/{doy_str}/"
 
@@ -88,7 +62,7 @@ def orbit_url(
     
     """Build urls and filenames from year, doy and GNSS system"""
     
-    week, number = gpsweek_from_doy_and_year(year, doy)
+    week, number = gs.gpsweek_from_doy_and_year(year, doy)
     
     url = infos[network]
 
@@ -112,6 +86,10 @@ def orbit_url(
         elif const == "igl":
             url += f"glonass/products/{week}/"
             filename = f"{const}{week}{number}.sp3.Z"
+            
+        elif const == 'igv':
+            url += f"glonass/products/{week}/"
+            filename = ''
         
         
     return filename, url
@@ -130,13 +108,16 @@ def filter_rinex(
           
   return out
 
-import GNSS as gs
 
 
 def minimum_doy(year, root = 'D:\\'):
     path = gs.paths(year, doy = 0, root = root).rinex
     list_doy = [int(f) for f in os.listdir(path) if f != '365']
-    return max(list_doy)
+    if len(list_doy) == 0:
+        return 1
+    else:
+        return max(list_doy)
 
+url = 'https://files.igs.org/pub/glonass/products/1972/'
 
 
