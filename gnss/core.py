@@ -90,7 +90,7 @@ def folders_orbits(year, root = 'D:\\'):
             year, 0, 
             root = root).orbit(const = const)
         
-        wb.make_dir(path_to_save)
+        make_dir(path_to_save)
    
     
 def download_orbit(
@@ -138,10 +138,9 @@ def download_one_year(year,
             
 
     # wb.make_dir(path_to_save)
-    
-    
+        
 def main():
-    year = 2018
+    year = 2019
     # for const in ['igr', 'igl']:
     const = 'igl'
     times = wb.missing_times(year, const)
@@ -153,3 +152,5 @@ def main():
             constellations = [const],
             root = "D:\\"
             )
+        
+main()

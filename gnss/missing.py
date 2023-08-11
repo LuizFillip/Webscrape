@@ -61,11 +61,11 @@ def missing_times(year, const, root = 'D:\\'):
 
 
 def main():
-    year = 2017
+    year = 2020
     const = 'igl'
     root = 'D:\\'
     time = missing_times(year, const)
     
     print(time)
     # 
-# main()
+main()

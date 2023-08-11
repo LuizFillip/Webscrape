@@ -27,4 +27,4 @@ def download_gnss(year, root = "D:\\"):
     return None
 
 
-download_gnss(year = 2020)
+download_gnss(year = 2021)
