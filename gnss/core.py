@@ -97,47 +97,28 @@ def download_orbit(
         year: int, 
         doy: int, 
         root: str = "D:\\",
-        constellations = ["igl", "igr"], 
+        const = "mgex", 
         net = 'igs'
         ):
     
+    fname, url = wb.orbit_url(
+        year, doy, 
+        network = net, 
+        const = const
+        )
 
-    for i, const in enumerate(constellations):
-        fname, url = wb.orbit_url(
-            year, doy, 
-            network = net, 
-            const = const
-            )
+    path_to_save = paths(
+        year, doy, 
+        root = root).orbit(const = const)
     
-        path_to_save = paths(
-            year, doy, 
-            root = root).orbit(const = const)
-        
-        for href in wb.request(url):
-            if fname in href:
-                files = wb.download(url, href, path_to_save)
-                unzip_orbit(files)
+    for href in wb.request(url):
+        if fname in href:
+            files = wb.download(
+                url, href, path_to_save)
+            unzip_orbit(files)
                 
             
-def download_one_year(year, 
-                      start: int = 1, 
-                      end: int = 366, 
-                      root: str = "D:\\", 
-                      rinex = True):
-    
-    
-    """Download rinex and orbit files for whole year"""
-    
-    for doy in range(start, end, 1):
-       
-        download_orbit(
-            year, 
-            doy, 
-            root = root
-            )
-            
 
-    # wb.make_dir(path_to_save)
         
 def main():
     year = 2019
@@ -153,4 +134,13 @@ def main():
             root = "D:\\"
             )
         
-main()
+# main()
+
+
+# year = 2021
+  
+# min_doy = wb.minimum_doy(paths(year)).orbit()
+
+# for doy in range(min_doy, 366, 1):
+#     download_orbit(year, doy)
+

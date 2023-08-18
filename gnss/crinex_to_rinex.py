@@ -4,11 +4,6 @@ from tqdm import tqdm
 
 executable_path = "database/GNSS/rinex/crx2rnx/CRX2RNX.exe"
 
-# executable_path = r"D:\database\GNSS\rinex\CRX2RNX.exe"
-input_file = "D:\\database\\GNSS\\rinex\\2022\\001\\amcr0011.22d"
-
-                
-# 
 
 year_folder = 'D:\\database\\GNSS\\rinex\\'
 
@@ -22,12 +17,17 @@ def run_all_ways(year_folder):
             for filename in tqdm(os.listdir(doy_path), 
                                  desc = doy):
                 if filename.endswith('d'):
-                    input_file = os.path.join(doy_path, filename)
-                    subprocess.run([executable_path, 
-                                    input_file, '-f'])
                     
-                    os.remove(input_file)
-                    
+                    input_file = os.path.join(
+                        doy_path, filename)
+                    try:
+                        subprocess.run([executable_path, 
+                                        input_file, '-f'])
+                        
+                        os.remove(input_file)
+                    except:
+                        continue
+                        
 
 def test_file():
      
@@ -39,5 +39,7 @@ def test_file():
             
             os.remove(input_file)
             
-            
-# run_all_ways(year_folder)
+# base = 'D:\\database\\GNSS\\rinex\\'
+
+run_all_ways(year_folder)
+

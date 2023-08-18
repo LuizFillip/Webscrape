@@ -9,42 +9,6 @@ infos = {
     "igs2": 'https://files.igs.org/pub/'
     }
 
-regions = {"stations_1": 
-               ['alar',
-                 'bair',
-                 'brft',
-                 'ceeu',
-                 'ceft',
-                 'cesb',
-                 'crat',
-                 'pbcg',
-                 'pbjp',
-                 'peaf',
-                 'pepe',
-                 'recf',
-                 'rnmo',
-                 'rnna',
-                 'seaj'], 
-           
-           'stations_2': 
-               ['apsa',
-                'cruz',
-                'impz',
-                'maba',
-                'mabb',
-                'mapa',
-                'paat',
-                'pait',
-                'past',
-                'pove',
-                'riob',
-                'rogm',
-                'salu']
-           
-           }
-
-    
-
 
 
 def rinex_url(year:int, doy:int, network:str = "ibge"):
@@ -60,9 +24,13 @@ def orbit_url(
         const:str = "igr"
         ):
     
-    """Build urls and filenames from year, doy and GNSS system"""
+    """
+    Build urls and filenames from year, doy and GNSS        
+    system
+    """
     
-    week, number = gs.gpsweek_from_doy_and_year(year, doy)
+    week, number = gs.gpsweek_from_doy_and_year(
+        year, doy)
     
     url = infos[network]
 
@@ -76,6 +44,10 @@ def orbit_url(
             url += f"glo_orbits/{week}/"
             filename = f"{const}{week}{number}.sp3.Z"
             
+        elif const == 'mgex':
+            url += f"{const}/{week}/"
+            filename = f'com{week}{number}.eph.Z'
+         
     elif network == "igs2":
         
         if const == "igr":
@@ -89,16 +61,17 @@ def orbit_url(
             
         elif const == 'igv':
             url += f"glonass/products/{week}/"
-            filename = ''
+            filename = 'com{week}{number}.eph.Z'
         
         
     return filename, url
 
 
 def filter_rinex(
-        url:str, 
-        sel_stations: list = regions["stations_2"]
+        url: str, 
+        sel_stations: list[str]
         ):
+    
   out = []
   for href in wb.request(url):
       
@@ -110,14 +83,52 @@ def filter_rinex(
 
 
 
-def minimum_doy(year, root = 'D:\\'):
-    path = gs.paths(year, doy = 0, root = root).rinex
-    list_doy = [int(f) for f in os.listdir(path) if f != '365']
-    if len(list_doy) == 0:
-        return 1
-    else:
-        return max(list_doy)
 
-url = 'https://files.igs.org/pub/glonass/products/1972/'
+def date_from_fname(fname):
+    week = int(fname[3:7])
+    number = int(fname[7:8])
+
+    return gs.doy_from_gpsweek(week, number)
 
 
+
+class minimum_doy:
+    
+    def __init__(self, path):
+        
+        self.path = path
+        
+    def orbit(self, const = 'mgex'):
+        
+        path = self.path.orbit(const)
+        
+        return max([date_from_fname(f)[1] for f 
+             in os.listdir(path)])
+
+    @property
+    def rinex(self):
+        return self.cond_max(
+            self.list_doy(self.path.rinex)
+            )
+    
+    @property   
+    def tec(self):
+        return self.cond_max(
+            self.list_doy(self.path.tec)
+            )
+    
+    @staticmethod
+    def list_doy(path):
+        return [int(f) for f in os.listdir(path) if f != '365']
+    
+    @staticmethod
+    def cond_max(list_doy):
+        if len(list_doy) == 0:
+            return 1
+        else:
+            return max(list_doy)
+        
+# year = 2016
+# doy = minimum_doy(gs.paths(year)).tec
+
+# print(doy)

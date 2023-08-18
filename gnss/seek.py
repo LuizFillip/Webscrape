@@ -1,44 +1,58 @@
 import Webscrape as wb
 import GEO as g
-from GNSS import paths, save_last_day
+import GNSS as gs
 from base import make_dir
 import os
+import json
 
-def fetch_receivers(
-        year = 2017, 
-        root = "D:\\"
+
+def save_last_day(
+        year = 2016,
+        doy = 365
         ):
-    year_folder = paths(year, 0, root = root).rinex
+    
+    print('[save_last_day] processing the last day')
+    
+    make_dir(gs.paths(year).json)
+
+    data = gs.save_atributes(gs.paths(year, doy))
+    
+    print('[save_last_day] converting into geodesic')
+    
+    save_in = f'database/GEO/coords/{year}.json'
+    dic = gs.convert_positions_to_coords(data)
+    with open(save_in, "w") as f:
+        json.dump(dic, f)
+     
+
+def fetch_receivers(path):
+    year_folder = path.rinex
     make_dir(year_folder)
     
-    print('starting...', year)
+    print('starting...', path.year)
     wb.download_rinex(
-            year, 
+            path.year, 
             365, 
-            root = root,
+            root = path.root,
             stations = None
             )
     
-    
     save_last_day(
-            year,
+            path.year,
             doy = 365,
-            root = root
+            root = path.root
             )
     
-    return g.stations_near_of_equator(year)
+    return g.stations_near_of_equator(path.year)
 
 
-def get_stations(year, root = 'D://'):
+def get_stations(path):
     
-    path = f'database/GEO/coords/{year}.json'
+    path_coord = f'database/GEO/coords/{path.year}.json'
     
-    if os.path.exists(path):
-        stations = g.stations_near_of_equator(year)
+    if os.path.exists(path_coord):
+        stations = g.stations_near_of_equator(path.year)
     else:
-        stations = fetch_receivers(
-                year = year, 
-                root = root
-                )
+        stations = fetch_receivers(path)
         
     return stations
