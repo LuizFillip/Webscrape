@@ -28,6 +28,7 @@ def unzip_rinex(
     zip_file.close()
     os.remove(zip_path)
     
+    
             
 
 def download_rinex(
@@ -60,6 +61,8 @@ def download_rinex(
                 unzip_rinex(files, year, path_to_save)
             except:
                 continue
+            
+    wb.crx2rnx(year, doy)
            
     return out
 

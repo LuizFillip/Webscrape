@@ -1,6 +1,8 @@
 import subprocess
 import os
 from tqdm import tqdm 
+import GNSS as gs
+
 
 executable_path = "database/GNSS/rinex/crx2rnx/CRX2RNX.exe"
 
@@ -29,9 +31,13 @@ def run_all_ways(year_folder):
                         continue
                         
 
-def test_file():
+def crx2rnx(
+        year = 2022,
+        doy = 260
+        ):
      
-    doy_path = 'D:\\database\\GNSS\\rinex\\2021\\001\\'
+    doy_path = gs.paths(year, doy).rinex
+    
     for filename in tqdm(os.listdir(doy_path)):
         if filename.endswith('d'):
             input_file = os.path.join(doy_path, filename)
@@ -41,5 +47,10 @@ def test_file():
             
 # base = 'D:\\database\\GNSS\\rinex\\'
 
-run_all_ways(year_folder)
+# run_all_ways(year_folder)
+
+
+
+
+
 
