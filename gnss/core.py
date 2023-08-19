@@ -1,39 +1,9 @@
-import os
 import Webscrape as wb
-import zipfile
-from unlzw3 import unlzw
 from GNSS import paths
 from base import make_dir
-import gzip
-import shutil
 
 
-        
-def unzip_rinex(
-        files:str, 
-        year:int, 
-        path_to_save:str
-        ) -> None:
-    
-    zip_path = os.path.join(path_to_save, files)
-    zip_file = zipfile.ZipFile(zip_path, 'r') 
-    ext_year = str(year)[-2:] 
-    
-    extensions = [f"{ext_year}o", f"{ext_year}d"]
-    
-    zip_file = zipfile.ZipFile(zip_path, 'r') 
-    
-    for file in zip_file.namelist():
-        
-        if any(file.endswith(ext) for ext in extensions):
-            
-            zip_file.extract(file, path_to_save)
-            
-    zip_file.close()
-    os.remove(zip_path)
-    
-    
-            
+
 
 def download_rinex(
         year, 
@@ -61,7 +31,7 @@ def download_rinex(
             files = wb.download(url, href, path_to_save)
             out.append(files)
             try:
-                unzip_rinex(files, year, path_to_save)
+                wb.unzip_rinex(files, year, path_to_save)
             except:
                 continue
             
@@ -71,21 +41,7 @@ def download_rinex(
 
 
 
-def unzip_orbit(files): 
-    fh = open(files, 'rb')
-    compressed_data = fh.read()
-    uncompressed_data = unlzw(compressed_data)
-    
-    str_mybytes = str(uncompressed_data)
-    
-    again_mybytes = eval(str_mybytes)
-    decoded = again_mybytes.decode('utf8')
-    
-    file = open(files.replace(".Z", ""), 'w')
-    file.write(decoded)
-    file.close()
-    fh.close()
-    os.remove(files)
+
     
     
 def folders_orbits(year, root = 'D:\\'):
@@ -120,7 +76,7 @@ def download_orbit(
             print('[download_orbit]', year, doy, href)
             files = wb.download(
                 url, href, path_to_save)
-            unzip_orbit(files)
+            wb.unzip_orbit(files)
                 
             
 
