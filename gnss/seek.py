@@ -26,6 +26,9 @@ def save_last_day(
      
 
 def fetch_receivers(path):
+    
+    print(f'[fetch_receivers] downloading 365 in {path.year}')
+    
     year_folder = path.rinex
     make_dir(year_folder)
     
@@ -48,6 +51,8 @@ def fetch_receivers(path):
 
 def get_stations(path):
     
+    print('[get_stations] loading nearby receivers ')
+    
     path_coord = f'database/GEO/coords/{path.year}.json'
     
     if os.path.exists(path_coord):
@@ -56,3 +61,22 @@ def get_stations(path):
         stations = fetch_receivers(path)
         
     return stations
+
+
+def delete_far_of_equator(year = 2021):
+    
+    print('[delete_files_in_last] deleting far away receivers')
+    
+    path = gs.paths(year, 365)
+    
+    stations = get_stations(path)
+    
+    out_folder = [f[:4] for f in os.listdir(path.rinex)]
+    
+    
+    for i, sts in enumerate(out_folder):
+        if sts not in stations:
+            os.remove(path.fn_rinex(sts))
+           
+
+# delete_far_of_equator(year = 2022)

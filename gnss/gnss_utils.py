@@ -20,7 +20,7 @@ def rinex_url(year:int, doy:int, network:str = "ibge"):
 def orbit_url(
         year:int, 
         doy:int, 
-        network:str = "IGS", 
+        network:str = "igs", 
         const:str = "igr"
         ):
     
@@ -44,9 +44,10 @@ def orbit_url(
             url += f"glo_orbits/{week}/"
             filename = f"{const}{week}{number}.sp3.Z"
             
-        elif const == 'mgex':
-            url += f"{const}/{week}/"
-            filename = f'com{week}{number}.eph.Z'
+        elif const == 'com':
+            url += f"com/{week}/"
+            filename = f'{const}{week}{number}.eph.Z'
+       
          
     elif network == "igs2":
         
@@ -81,6 +82,17 @@ def filter_rinex(
           
   return out
 
+def mgex_fname(dn):
+    doy = dn.strftime('%j')
+    year = dn.year
+    
+    week, number = gs.gpsweek_from_doy_and_year(
+        year, dn.day_of_year)
+    
+    url = infos['igs'] + f'{week}/'
+    
+    return url, f'IGS0OPSFIN_{year}{doy}0000_01D_15M_ORB.SP3.gz'
+
 
 
 
@@ -98,7 +110,7 @@ class minimum_doy:
         
         self.path = path
         
-    def orbit(self, const = 'mgex'):
+    def orbit(self, const = 'com'):
         
         path = self.path.orbit(const)
         
@@ -117,6 +129,12 @@ class minimum_doy:
             self.list_doy(self.path.tec)
             )
     
+    @property   
+    def roti(self):
+        list_doy = [int(f.replace('.txt', '')) 
+                    for f in os.listdir(self.path.roti)]
+        return self.cond_max(list_doy)
+    
     @staticmethod
     def list_doy(path):
         return [int(f) for f in os.listdir(path) if f != '365']
@@ -128,7 +146,6 @@ class minimum_doy:
         else:
             return max(list_doy)
         
-# year = 2016
-# doy = minimum_doy(gs.paths(year)).tec
 
-# print(doy)
+
+

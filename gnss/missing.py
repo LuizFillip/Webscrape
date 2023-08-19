@@ -39,33 +39,48 @@ def orbit_year_list(
     dates = [date.date() for date in dates]
     
     out = []
+    
+    if const == 'com':
+        ext = 'eph'
+    else:
+        ext = 'sp3'
+        
+        
     for date in dates:
     
         week, number = gs.gpsweek_from_date(date)
         
-        out.append(f'{const}{week}{number}.sp3')
+        out.append(f'{const}{week}{number}.{ext}')
         
     return sorted(out)
 
 
-
-
-def missing_times(year, const, root = 'D:\\'):
+def missing_times(year, const):
 
     dummy = orbit_year_list(year, const = const)
-    orbits = os.listdir(gs.paths(year, root = root).orbit(const))
+    orbits = os.listdir(gs.paths(year).orbit(const))
     
     orbit_list = find_missing_values(dummy, orbits)
         
     return date_list_from_orbits(orbit_list)
 
 
-def main():
-    year = 2020
-    const = 'igl'
-    root = 'D:\\'
-    time = missing_times(year, const)
+
+def find_doy_missing(year):
+    path = gs.paths(year).rinex
+
+    out = []
     
-    print(time)
-    # 
-# main()
+    for ln in os.listdir(path):
+        
+        if len(os.listdir(path + ln)) == 0:
+            out.append(int(ln))
+                  
+    return out 
+
+# import Webscrape as wb 
+
+
+year = 2022
+const = 'com'
+# dn = missing_times(year, const)

@@ -4,7 +4,11 @@ import zipfile
 from unlzw3 import unlzw
 from GNSS import paths
 from base import make_dir
+import gzip
+import shutil
 
+
+        
 def unzip_rinex(
         files:str, 
         year:int, 
@@ -34,12 +38,11 @@ def unzip_rinex(
 def download_rinex(
         year, 
         doy, 
-        root = "D:\\",
         stations = None
         ):
     url = wb.rinex_url(year, doy)
     
-    path_to_save = paths(year, doy, root = root).rinex     
+    path_to_save = paths(year, doy).rinex     
     path_to_save = make_dir(path_to_save)
     
     if stations is not None:
@@ -99,8 +102,7 @@ def folders_orbits(year, root = 'D:\\'):
 def download_orbit(
         year: int, 
         doy: int, 
-        root: str = "D:\\",
-        const = "mgex", 
+        const = "com", 
         net = 'igs'
         ):
     
@@ -111,39 +113,19 @@ def download_orbit(
         )
 
     path_to_save = paths(
-        year, doy, 
-        root = root).orbit(const = const)
+        year, doy).orbit(const = const)
     
     for href in wb.request(url):
         if fname in href:
+            print('[download_orbit]', year, doy, href)
             files = wb.download(
                 url, href, path_to_save)
             unzip_orbit(files)
                 
             
 
-        
-def main():
-    year = 2019
-    # for const in ['igr', 'igl']:
-    const = 'igl'
-    times = wb.missing_times(year, const)
     
-    for dn in times:
-        download_orbit(
-            year, 
-            dn.day_of_year, 
-            constellations = [const],
-            root = "D:\\"
-            )
-        
-# main()
 
 
-# year = 2021
-  
-# min_doy = wb.minimum_doy(paths(year)).orbit()
 
-# for doy in range(min_doy, 366, 1):
-#     download_orbit(year, doy)
 
