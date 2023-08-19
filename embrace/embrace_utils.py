@@ -30,7 +30,7 @@ site_codes = {
              }
          }
 
-def URL(date, 
+def embrace_url(date, 
         site = "Cariri", 
         inst = "imager"):
     
@@ -41,7 +41,7 @@ def URL(date,
     url = "https://embracedata.inpe.br/"
     
     code = site_codes[inst.lower()][site.lower()]
-    # site_codes['magnetometer']['sao luis']
+
     year = date.year
     str_doy = date.strftime("%j")
     str_mon = date.strftime("%m")

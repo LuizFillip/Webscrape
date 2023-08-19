@@ -1,1 +1,1 @@
-from .url import URL
+from .embrace_utils import embrace_url
