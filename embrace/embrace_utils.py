@@ -9,13 +9,13 @@ site_codes = {
     
          "ionosonde": {
              "Fortaleza": "FZA0M", 
-             "sao luis": "SAA0K", 
-             "Belem": "BLJ03", 
+             "sao_luis": "SAA0K", 
+             "belem": "BLJ03", 
              "Cachoeira": "CAJ2M", 
              "Santa Maria": "SMK29", 
              "Boa Vista": "BVJ03", 
              "Campo Grande": "CGK21"
-             }, 
+                        }, 
          
          "imager": {
                  "cariri": "CA", 
@@ -23,16 +23,18 @@ site_codes = {
                 "Cachoeira Paulista": "CP", 
                 "Comandante Ferraz": "CF", 
                 "Sao Martinho da Serra": "SMS"
-            }, 
+                    }, 
          
          'magnetometer': {
              'sao luis': 'SLZ'
-             }
+                         }
          }
 
-def embrace_url(date, 
+def embrace_url(
+        date, 
         site = "Cariri", 
-        inst = "imager"):
+        inst = "imager"
+        ):
     
     """
     Build embrace url from date, site 
@@ -40,7 +42,9 @@ def embrace_url(date,
     """
     url = "https://embracedata.inpe.br/"
     
-    code = site_codes[inst.lower()][site.lower()]
+    site = site.replace(' ', '_').lower()
+    
+    code = site_codes[inst.lower()][site]
 
     year = date.year
     str_doy = date.strftime("%j")
@@ -55,8 +59,6 @@ def embrace_url(date,
     elif inst == "ionosonde":
         url += f"{str_doy}/"
         
-    # elif inst == "magnetometer":
-    #     url +=  f"{code}/" 
     
     return url
 
