@@ -45,8 +45,14 @@ def orbit_url(
             filename = f"{const}{week}{number}.sp3.Z"
             
         elif const == 'com':
-            url += f"com/{week}/"
+            url += f"mgex/{week}/"
             filename = f'{const}{week}{number}.eph.Z'
+            
+        elif const == 'cod':
+            
+            url += f"orbits/{week}/"
+            filename = f'cod{week}{number}.eph_r.Z'
+            
        
          
     elif network == "igs2":

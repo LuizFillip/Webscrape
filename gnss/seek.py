@@ -33,17 +33,17 @@ def fetch_receivers(path):
     make_dir(year_folder)
     
     print('starting...', path.year)
+    
+    year = int(path.year)
     wb.download_rinex(
-            path.year, 
+            year, 
             365, 
-            root = path.root,
             stations = None
             )
     
     save_last_day(
-            path.year,
+            year,
             doy = 365,
-            root = path.root
             )
     
     return g.stations_near_of_equator(path.year)
@@ -63,11 +63,10 @@ def get_stations(path):
     return stations
 
 
-def delete_far_of_equator(year = 2021):
+def delete_far_of_equator(path):
     
     print('[delete_files_in_last] deleting far away receivers')
-    
-    path = gs.paths(year, 365)
+
     
     stations = get_stations(path)
     
@@ -80,3 +79,9 @@ def delete_far_of_equator(year = 2021):
            
 
 # delete_far_of_equator(year = 2022)
+
+# path = gs.paths(2018, 365)
+
+# fetch_receivers(path)
+
+# delete_far_of_equator(path)
