@@ -27,7 +27,7 @@ def download_rinex(
     for href in receivers_list:
         
         if '.zip' in href:
-        
+            print('[download_rinex]', year, doy, href)
             files = wb.download(url, href, path_to_save)
             out.append(files)
             try:
@@ -44,13 +44,13 @@ def download_rinex(
 
     
     
-def folders_orbits(year, root = 'D:\\'):
-    for const in ["igl", "igr"]:
-        make_dir(paths(year, root = root).orbit_base)
+def folders_orbits(year):
+    
+    make_dir(paths(year).orbit_base)
+    
+    for const in ["igl", "igr", 'mgex', 'com']:
         
-        path_to_save = paths(
-            year, 0, 
-            root = root).orbit(const = const)
+        path_to_save = paths(year).orbit(const = const)
         
         make_dir(path_to_save)
    
@@ -61,6 +61,8 @@ def download_orbit(
         const = "com", 
         net = 'igs'
         ):
+    
+    folders_orbits(year)
     
     fname, url = wb.orbit_url(
         year, doy, 
@@ -77,11 +79,38 @@ def download_orbit(
             files = wb.download(
                 url, href, path_to_save)
             wb.unzip_orbit(files)
+            
+    return path_to_save
                 
             
 
     
 
 
+def download_missing_mgex(
+        year = 2022, 
+        const = 'com'
+        ):
 
+    for dn in wb.missing_times(year, const):
+    
+        url, fname = wb.mgex_fname(dn)
+        
+        doy = dn.day_of_year
+        
+        path_to_save = paths(
+            year, doy
+            ).orbit(const = const)
+        
+        for href in wb.request(url):
+            
+            if fname in href:
+               
+                print('[download_orbit]', dn.date(), href)
+                
+                files = wb.download(
+                    url, href, path_to_save)
+                                
+                wb.unzip_gz(files)
 
+    return None
