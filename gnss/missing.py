@@ -20,23 +20,23 @@ def mgex2gnss_week(fname):
     return week, number
 
 def date_list_from_orbits(
-        orbit_list
-        ):
+        orbit_list:list[str]):
     
     out = []
     
     for fname in orbit_list:
         
         try:
-            gnss_week = int(fname[3:7])
-            gnss_number = int(fname[7])
+            week = int(fname[3:7])
+            number = int(fname[7])
         except:
-            gnss_week, gnss_number = mgex2gnss_week(fname)
+            week, number = mgex2gnss_week(fname)
         
-        out.append( gs.date_from_gpsweek(
-                    gnss_week, 
-                    gnss_number
-            ))
+        out.append(gs.date_from_gpsweek(
+                    week, 
+                    number
+                    )
+            )
         
     return sorted(out)
 
@@ -111,7 +111,12 @@ def dn2mgex(dn):
 def dn2cod(dn):
     week, number = gs.gpsweek_from_date(
         dn)
-    return  f'cod{week}{number}.eph_r'
+    return  f'cod{week}{number}.eph'
+
+def dn2sp3(dn, const = 'igv'):
+    week, number = gs.gpsweek_from_date(
+        dn)
+    return  f'{const}{week}{number}.sp3'
 
 def dn2com(dn):
     week, number = gs.gpsweek_from_date(
@@ -135,16 +140,27 @@ def copy2com(src_folder, dst_folder, year = 2022):
     for dn in times_m:
         if dn not in com:
             
-            try:    
-                src = os.path.join(src_cod, dn2mgex(dn))
-            except:
-                src = os.path.join(src_cod, dn2cod(dn))
+            # try:    
+            #     src = os.path.join(
+            #         src_cod, 
+            #         dn2sp3(dn, const = src_folder)
+            #         )
+            # except:
+            
+            src = os.path.join(src_cod, dn2cod(dn))
                 
                 
             dst = os.path.join(src_com, dn2com(dn))
             
-            
+            print('[copy_files]', dn)
             shutil.copy(src, dst)
 
 
 
+# copy2com('cod', 'com', year = 2022)
+
+# year = 2022
+# const = 'com'
+# for dn in missing_times(year, const):
+#     print(gs.gpsweek_from_date(
+#         dn))

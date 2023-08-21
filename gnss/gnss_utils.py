@@ -51,8 +51,16 @@ def orbit_url(
         elif const == 'cod':
             
             url += f"orbits/{week}/"
-            filename = f'cod{week}{number}.eph_r.Z'
+            filename = f'cod{week}{number}.eph_m.Z'
+           #'cod22024.eph_m.Z'
             
+        elif const == 'igv':
+            url += f"orbits/{week}/"
+            filename = f'igv{week}{number}_00.sp3.Z'
+            
+        elif const == 'igs':
+            url += f"orbits/{week}/"
+            filename = f'igs{week}{number}.sp3.Z'
        
          
     elif network == "igs2":
@@ -91,9 +99,9 @@ def filter_rinex(
 def mgex_fname(dn):
     doy = dn.strftime('%j')
     year = dn.year
-    
+    doy = dn.timetuple().tm_yday
     week, number = gs.gpsweek_from_doy_and_year(
-        year, dn.day_of_year)
+        year, doy)
     
     url = infos['igs'] + f'{week}/'
     

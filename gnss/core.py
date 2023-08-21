@@ -48,7 +48,8 @@ def folders_orbits(year):
     
     make_dir(paths(year).orbit_base)
     
-    for const in ["igl", "igr", 'mgex', 'com']:
+    for const in ["igl", "igr", 'igv',
+                  'igs', 'mgex', 'com']:
         
         path_to_save = paths(year).orbit(const = const)
         
@@ -91,12 +92,14 @@ def download_missing_mgex(
         year = 2022, 
         const = 'com'
         ):
+    
+    folders_orbits(year)
 
     for dn in wb.missing_times(year, const):
     
         url, fname = wb.mgex_fname(dn)
         
-        doy = dn.day_of_year
+        doy = dn.timetuple().tm_yday
         
         path_to_save = paths(
             year, doy
@@ -106,7 +109,7 @@ def download_missing_mgex(
             
             if fname in href:
                
-                print('[download_orbit]', dn.date(), href)
+                print('[download_orbit]', dn, href)
                 
                 files = wb.download(
                     url, href, path_to_save)
@@ -114,3 +117,10 @@ def download_missing_mgex(
                 wb.unzip_gz(files)
 
     return None
+
+
+# download_missing_mgex(
+#         year = 2022, 
+#         const = 'igv'
+#         )
+# 
