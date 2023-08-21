@@ -16,9 +16,13 @@ for y in [2013, 2014, 2015]:
     
     out.extend( count_in_each_day(p))
 
-plt.plot(out)
+# plt.plot(out)
 
 
 for i, num in enumerate(out):
     if num < 40:
         print(num, i / 365)
+        
+        
+def count_recivers_in_server():
+    return 

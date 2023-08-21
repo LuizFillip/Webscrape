@@ -2,7 +2,23 @@ import os
 import requests 
 from bs4 import BeautifulSoup 
 import urllib3
+import socket
+from urllib3.connection import HTTPConnection
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+
+HTTPConnection.default_socket_options = (
+    HTTPConnection.default_socket_options + [
+        (socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1),
+        (socket.SOL_TCP, socket.TCP_KEEPIDLE, 45),
+        (socket.SOL_TCP, socket.TCP_KEEPINTVL, 10),
+        (socket.SOL_TCP, socket.TCP_KEEPCNT, 6)
+    ]
+)
+
+
 
 def download(
         url: str, 
@@ -19,9 +35,7 @@ def download(
         )
     
     path_to_save = os.path.join(save_in, href)
-    
-    print("download...", href)
-    
+        
     with open(path_to_save, 'wb') as f:
         for chunk in remote_file.iter_content(
                 chunk_size = 1024
@@ -44,8 +58,3 @@ def request(url, verify = False) -> list:
     return [link['href'] for link in parser]
 
 
-
-
-# url = 'http://ftp.cptec.inpe.br/'
-
-# request(url)
