@@ -51,7 +51,7 @@ def orbit_url(
         elif const == 'cod':
             
             url += f"orbits/{week}/"
-            filename = f'cod{week}{number}.eph_m.Z'
+            filename = f'cod{week}{number}.eph.Z'
            #'cod22024.eph_m.Z'
             
         elif const == 'igv':

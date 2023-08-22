@@ -157,10 +157,4 @@ def copy2com(src_folder, dst_folder, year = 2022):
 
 
 
-# copy2com('cod', 'com', year = 2022)
 
-# year = 2022
-# const = 'com'
-# for dn in missing_times(year, const):
-#     print(gs.gpsweek_from_date(
-#         dn))
