@@ -119,3 +119,20 @@ def download_missing_mgex(
     return None
 
 
+def download_missing_other_const(
+        in_const = 'com',
+        out_const = 'cod',
+        year = 2020
+        ):
+    
+    
+    for dn in wb.missing_times(year, in_const):
+        doy = dn.timetuple().tm_yday
+        wb.download_orbit(
+                year, 
+                doy, 
+                const = out_const, 
+                net = 'igs'
+                )
+
+    wb.copy2com(out_const, in_const, year = 2020)

@@ -4,7 +4,7 @@ import os
 import zipfile
 from unlzw3 import unlzw
 
-def unzip_orbit(files): 
+def unzip_orbit(files, path_to_save): 
     fh = open(files, 'rb')
     
     
@@ -17,24 +17,24 @@ def unzip_orbit(files):
     decoded = eval(str_mybytes).decode('utf8')
     
     file = open(files.replace(".Z", ""), 'w')
-    file.write(decoded)
+    file.write(decoded, path_to_save)
+    # file.extract(file, path_to_save)
     file.close()
     fh.close()
-    os.remove(files)
+    # os.remove(files)
     
     
 def unzip_rinex(
-        files:str, 
-        year:int, 
+        files:str,   
         path_to_save:str
         ) -> None:
     
     zip_path = os.path.join(path_to_save, files)
     zip_file = zipfile.ZipFile(zip_path, 'r') 
-    ext_year = str(year)[-2:] 
+    # ext_year = str(year)[-2:] 
     
-    extensions = [f"{ext_year}o", f"{ext_year}d"]
-    
+    # extensions = [f"{ext_year}o", f"{ext_year}d"]
+    extensions = ['o', 'd']
     zip_file = zipfile.ZipFile(zip_path, 'r') 
     
     for file in zip_file.namelist():

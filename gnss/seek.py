@@ -75,13 +75,23 @@ def delete_far_of_equator(path):
     
     for i, sts in enumerate(out_folder):
         if sts not in stations:
-            os.remove(path.fn_rinex(sts))
+            try:
+                os.remove(path.fn_rinex(sts))
+            except:
+                os.remove(path.fn_rinex(sts, zip_f  = True))
+                
            
 
 # delete_far_of_equator(year = 2022)
 
-# path = gs.paths(2018, 365)
+# path = gs.paths(2015, 365)
 
 # fetch_receivers(path)
 
 # delete_far_of_equator(path)
+
+
+
+
+
+
