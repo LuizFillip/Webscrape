@@ -51,7 +51,7 @@ def fetch_receivers(path):
 
 def get_stations(path):
     
-    print('[get_stations] loading nearby receivers ')
+    print('[get_stations] loading nearby receivers')
     
     path_coord = f'database/GEO/coords/{path.year}.json'
     
@@ -78,13 +78,12 @@ def delete_far_of_equator(path):
             try:
                 os.remove(path.fn_rinex(sts))
             except:
-                os.remove(path.fn_rinex(sts, zip_f  = True))
+                os.remove(path.fn_rinex(sts, zip_f = True))
                 
            
 
 # delete_far_of_equator(year = 2022)
 
-# path = gs.paths(2015, 365)
 
 # fetch_receivers(path)
 
@@ -94,4 +93,4 @@ def delete_far_of_equator(path):
 
 
 
-
+# path = 

@@ -11,7 +11,10 @@ infos = {
 
 
 
-def rinex_url(year:int, doy:int, network:str = "ibge"):
+def rinex_url(
+        year:int, 
+        doy:int, 
+        network:str = "ibge"):
     date = gs.date_from_doy(year, doy)
     doy_str = date.strftime("%j")
     return f"{infos[network]}/{year}/{doy_str}/"

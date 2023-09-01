@@ -4,6 +4,7 @@ import os
 import zipfile
 from unlzw3 import unlzw
 
+
 def unzip_orbit(files, path_to_save): 
     fh = open(files, 'rb')
     
@@ -30,16 +31,12 @@ def unzip_rinex(
         ) -> None:
     
     zip_path = os.path.join(path_to_save, files)
-    zip_file = zipfile.ZipFile(zip_path, 'r') 
-    # ext_year = str(year)[-2:] 
     
-    # extensions = [f"{ext_year}o", f"{ext_year}d"]
-    extensions = ['o', 'd']
     zip_file = zipfile.ZipFile(zip_path, 'r') 
-    
+       
     for file in zip_file.namelist():
         
-        if any(file.endswith(ext) for ext in extensions):
+        if any(file.endswith(ext) for ext in ['o', 'd']):
             
             zip_file.extract(file, path_to_save)
             
@@ -53,5 +50,18 @@ def unzip_gz(infile):
             shutil.copyfileobj(f_in, f_out)
     
     os.remove(infile)
+    
+    
+    # wb.crx2rnx(path)
+
+import GNSS as gs 
+
+def unzip_single_folder():
+
+    path = gs.paths(2013, 365).rinex
+    
+    for file in os.listdir(path):
+        
+        unzip_rinex(file, path)
     
     

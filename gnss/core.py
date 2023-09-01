@@ -35,7 +35,6 @@ def download_rinex(
             except:
                 continue
             
-    wb.crx2rnx(year, doy)
            
     return out
 

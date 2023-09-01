@@ -5,12 +5,28 @@ from base import make_dir
 from tqdm import tqdm 
 
 def year_from_fname(f):
-    ext = f.split('.')
+    
+    if '_' in f:
+        ext = f.split('_')
+        ext = ext[1].split('.')
+        year_str = '20' + ext[1][:2]
+    else:
+        ext = f.split('.')
+        year_str = '20' + ext[-2][:2]
+        
+        
     doy = ext[0][-4:-1]
-    year_str = '20' + ext[-2][:2]
+    
     return doy, year_str
 
-
+def unzip_convert(path_in, path_out):
+    try:
+        path_out = unzip(path_in)
+    
+        wb.crx2rnx(path_out)
+    except:
+        pass
+    
 # def run():
 def create_folders(
         infile, 
@@ -56,29 +72,30 @@ save_in = 'D:\\database\\GNSS\\rinex\\peru_2\\'
 
 infile = 'D:\\database\\GNSS\\rinex\peru\\'
 
-for folder in os.listdir(infile):
+# for folder in os.listdir(infile):
+folder = os.listdir(infile)[0]
+files = os.listdir(infile + folder)
+# for filename in tqdm(files, desc = folder):
+filename = files[0]
 
 
-    for filename in tqdm(os.listdir(infile + folder), 
-                         desc = folder):
+
+doy, year = year_from_fname(filename)
+
+path_in = os.path.join(
+    infile, 
+    folder, 
+    filename
+    )
+   
+# path_to_save = create_folders(
+#         save_in,
+#         year, 
+#         doy
+#             )
     
-    
-        doy, year = year_from_fname(filename)
-        path_in = os.path.join(
-            infile, folder, filename)
-       
-        path_to_save = create_folders(
-                save_in,
-                year, 
-                doy
-                )
-        
-        try:
-            path_out = unzip(path_in)
-        
-            wb.crx2rnx(path_out)
-        except:
-            continue
     
     #util.move(path_out.replace('d', 'o'), 
                 
+
+doy, year
