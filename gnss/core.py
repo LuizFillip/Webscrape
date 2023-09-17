@@ -38,23 +38,6 @@ def download_rinex(
            
     return out
 
-
-
-
-    
-    
-def folders_orbits(year):
-    
-    make_dir(paths(year).orbit_base)
-    
-    for const in ["igl", "igr", 'igv', 'cod',
-                  'igs', 'mgex', 'com']:
-        
-        path_to_save = paths(year).orbit(const = const)
-        
-        make_dir(path_to_save)
-   
-    
 def download_orbit(
         year: int, 
         doy: int, 
@@ -62,7 +45,7 @@ def download_orbit(
         net = 'igs'
         ):
     
-    folders_orbits(year)
+    wb.folders_orbits(year)
     
     fname, url = wb.orbit_url(
         year, doy, 
@@ -84,7 +67,29 @@ def download_orbit(
                 
             
 
+
+def download_single(year = 2018, doy = 260):
+    stations = wb.get_stations(gs.paths(year))
+    wb.download_rinex(
+            year, 
+            doy,
+            stations = stations
+            )
     
+def download_orbits(
+        year = 2022, 
+        const = 'com'
+        ):
+    
+    for doy in wb.missing_times(year, const):
+        
+        wb.download_orbit(
+                year, 
+                doy, 
+                const = 'com', 
+                net = 'igs'
+                )
+          
 
 
 def download_missing_mgex(

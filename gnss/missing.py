@@ -88,7 +88,7 @@ def missing_tec(year):
     
     for ln in os.listdir(path):
         
-        if len(os.listdir(path + ln)) == 0:
+        if len(os.listdir(path + ln)) <= 11:
             out.append(int(ln))
                   
     return out 

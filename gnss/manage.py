@@ -72,30 +72,30 @@ save_in = 'D:\\database\\GNSS\\rinex\\peru_2\\'
 
 infile = 'D:\\database\\GNSS\\rinex\peru\\'
 
-# for folder in os.listdir(infile):
-folder = os.listdir(infile)[0]
-files = os.listdir(infile + folder)
-# for filename in tqdm(files, desc = folder):
-filename = files[0]
-
-
-
-doy, year = year_from_fname(filename)
-
-path_in = os.path.join(
-    infile, 
-    folder, 
-    filename
-    )
-   
-# path_to_save = create_folders(
-#         save_in,
-#         year, 
-#         doy
-#             )
+def run_all():
     
     
-    #util.move(path_out.replace('d', 'o'), 
-                
-
-doy, year
+    # for folder in os.listdir(infile):
+    folder = os.listdir(infile)[0]
+    files = os.listdir(infile + folder)
+    # for filename in tqdm(files, desc = folder):
+    filename = files[0]
+    
+    
+    
+    doy, year = year_from_fname(filename)
+    
+    path_in = os.path.join(
+        infile, 
+        folder, 
+        filename
+        )
+       
+    # path_to_save = create_folders(
+    #         save_in,
+    #         year, 
+    #         doy
+    #             )
+        
+        
+    

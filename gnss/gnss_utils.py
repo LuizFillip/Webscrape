@@ -1,7 +1,19 @@
 import Webscrape as wb 
 import os
 import GNSS as gs
+from base import make_dir 
 
+def folders_orbits(year):
+    
+    make_dir(gs.paths(year).orbit_base)
+    
+    for const in ["igl", "igr", 'igv', 'cod',
+                  'igs', 'mgex', 'com']:
+        
+        path_to_save = gs.paths(year).orbit(const = const)
+        
+        make_dir(path_to_save)
+   
 
 infos = {
     "ibge" : 'https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados', 

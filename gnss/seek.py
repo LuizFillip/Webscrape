@@ -81,16 +81,8 @@ def delete_far_of_equator(path):
                 os.remove(path.fn_rinex(sts, zip_f = True))
                 
            
-
-# delete_far_of_equator(year = 2022)
-
-
-# fetch_receivers(path)
+# path = gs.paths(2013, 365)
 
 # delete_far_of_equator(path)
 
 
-
-
-
-# path = 
