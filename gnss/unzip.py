@@ -4,6 +4,21 @@ import os
 import zipfile
 from unlzw3 import unlzw
 
+def unzip(path_in):
+    fh = open(path_in, 'rb').read()
+    
+    uncompressed_data = unlzw(fh)
+
+    decoded = eval(str(uncompressed_data)).decode('utf8')
+    
+    path_out = path_in.replace(".Z", "")
+    
+    file = open(path_out, 'w')
+    file.write(decoded)
+    file.close()
+    
+    return path_out
+
 
 def unzip_orbit(files, path_to_save): 
     fh = open(files, 'rb')

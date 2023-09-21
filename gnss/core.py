@@ -1,5 +1,5 @@
 import Webscrape as wb
-from GNSS import paths
+import GNSS as gs
 from base import make_dir
 
 
@@ -12,7 +12,7 @@ def download_rinex(
         ):
     url = wb.rinex_url(year, doy)
     
-    path_to_save = paths(year, doy).rinex     
+    path_to_save = gs.paths(year, doy).rinex     
     path_to_save = make_dir(path_to_save)
     
     if stations is not None:
@@ -53,7 +53,7 @@ def download_orbit(
         const = const
         )
 
-    path_to_save = paths(
+    path_to_save = gs.paths(
         year, doy).orbit(const = const)
     
     for href in wb.request(url):
@@ -97,7 +97,7 @@ def download_missing_mgex(
         const = 'com'
         ):
     
-    folders_orbits(year)
+    wb.folders_orbits(year)
 
     for dn in wb.missing_times(year, 'com'):
     
@@ -105,7 +105,7 @@ def download_missing_mgex(
         
         doy = dn.timetuple().tm_yday
         
-        path_to_save = paths(
+        path_to_save = gs.paths(
             year, doy
             ).orbit(const = 'cod')
         
