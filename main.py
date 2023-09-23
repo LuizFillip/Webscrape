@@ -3,6 +3,10 @@ import GNSS as gs
 import pandas as pd
 from base import make_dir
 import os
+import datetime as dt
+import digisonde as dg
+
+
 
 def download_gnss(year):
     
@@ -29,48 +33,37 @@ def download_gnss(year):
     return None
 
 
-def download_single(year = 2018, doy = 260):
-    stations = wb.get_stations(gs.paths(year))
-    wb.download_rinex(
-            year, 
-            doy,
-            stations = stations
-            )
-    
-def download_orbits(
-        year = 2022, 
-        const = 'com'
-        ):
-    
-    for doy in wb.missing_times(year, const):
-        
-        wb.download_orbit(
-                year, 
-                doy, 
-                const = 'com', 
-                net = 'igs'
-                )
-        
         
 
-
-import datetime as dt
-
-def download_sao():
+def download_sao(year):
     
-    save_in = 'D:\\iono\\saa\\'
+    save_in = f'D:\\iono\\saa\\{year}\\'
+    
+    make_dir(save_in)
+    
     dw = wb.EMBRACE(save_in = save_in)
+
+    # miss_dates = dg.get_missing_dates(year)
     
-    dates = pd.date_range(
-        dt.datetime(2013, 1, 1, 20), 
-        dt.datetime(2013, 6, 1, 20), 
-        freq = '1D'
-        )
+    miss_dates = dg.missing_dates_2(year)
+        
     
-    for dn in dates:
+    delta = dt.timedelta(hours = 19)
+    
+    for dn in miss_dates:
+        
+        dn  = pd.to_datetime(dn) + delta
+        
         dw.download_drift(
                 dn, 
-                ext = ['.SAO']
+                ext = ['.SAO', '.RSF']
                 )
-        
-download_sao()
+# year = 2013
+
+# download_sao(year)
+
+# miss_dates = dg.get_missing_dates(year)
+# 
+
+# for dn in miss_dates:
+#     print()

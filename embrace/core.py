@@ -2,7 +2,7 @@ import datetime as dt
 import Webscrape as wb
 import base as b 
 import os 
-
+import pandas as pd
 
 def iono_dt(file):        
     args = file[:-4].split("_")
@@ -53,7 +53,10 @@ class EMBRACE(object):
             
             if any(f in link for f in ext):
                 
-                if iono_dt(link) >= dn:
+                delta = dt.timedelta(hours = 4)
+                
+                if (iono_dt(link) >= dn and 
+                    (iono_dt(link) <= dn + delta)):
                    
                     print('[download_iono]', link)
                     wb.download(
