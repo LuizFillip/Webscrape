@@ -6,6 +6,7 @@ import os
 import datetime as dt
 import digisonde as dg
 
+PATH_IONO = 'database/iono/'
 
 
 def download_gnss(year):
@@ -58,12 +59,38 @@ def download_sao(year):
                 dn, 
                 ext = ['.SAO', '.RSF']
                 )
-# year = 2013
 
-# download_sao(year)
 
-# miss_dates = dg.get_missing_dates(year)
-# 
+def periods(dn):
 
-# for dn in miss_dates:
-#     print()
+    return pd.date_range(
+        dn, freq = '1H', 
+        periods = 6)
+
+
+start = dt.datetime(2017, 3, 28, 0, 0)
+
+def download_from_periods(start):
+    
+    
+    
+    save_in = os.path.join(
+        PATH_IONO,
+        start.strftime('%Y%m%d')
+        )
+    
+    make_dir(save_in)
+    
+    dw = wb.EMBRACE(
+        save_in = save_in
+        )
+    
+    for dn in periods(start):
+        
+        dw.download_drift(
+                dn, 
+                ext = ['.RSF']
+                )
+        
+        
+download_from_periods(start)
