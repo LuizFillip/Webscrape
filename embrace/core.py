@@ -100,7 +100,7 @@ from base import make_dir
 def periods(dn):
 
     return pd.date_range(
-        dn, freq = '1H', 
+        dn, freq = '30min', 
         periods = 6)
 
 
@@ -133,7 +133,7 @@ def download_from_periods(
         for link in wb.request(url):
         
             if (any(f in link for f in ext) and 
-            (iono_dt(link) == dn)):
+               (iono_dt(link) == dn)):
                                              
              print('[download_iono]', link)
              wb.download(
