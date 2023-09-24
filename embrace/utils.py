@@ -26,20 +26,24 @@ class href_attrs(object):
         day = date.day
         month = date.month
     
-        return dt.datetime(year, 
-                           month, 
-                           day,
-                           hour, 
-                           minute, 
-                           second)
+        return dt.datetime(
+            year, 
+            month, 
+            day,
+            hour, 
+            minute, 
+            second
+            )
     
     @staticmethod
     def img(file):
         args = file[:-4].split("_")
         date = args[2]
         time = args[3]
-        return dt.datetime.strptime(date + time, 
-                                    "%Y%m%d%H%M%S")
+        return dt.datetime.strptime(
+            date + time, 
+            "%Y%m%d%H%M%S"
+            )
     
     @staticmethod
     def tec(file):
@@ -47,6 +51,8 @@ class href_attrs(object):
         
         date = args[1]
         time = args[2]
-        return dt.datetime.strptime(date + time, 
-                                     "%Y%m%d%H%M%S")
+        return dt.datetime.strptime(
+            date + time, 
+            "%Y%m%d%H%M%S"
+            )
     

@@ -101,7 +101,7 @@ def periods(dn):
 
     return pd.date_range(
         dn, freq = '30min', 
-        periods = 6)
+        periods = 12)
 
 
 

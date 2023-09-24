@@ -8,7 +8,7 @@ ends = {
 site_codes = {
     
          "ionosonde": {
-             "Fortaleza": "FZA0M", 
+             "fortaleza": "FZA0M", 
              "sao_luis": "SAA0K", 
              "belem": "BLJ03", 
              "cachoeira": "CAJ2M", 
