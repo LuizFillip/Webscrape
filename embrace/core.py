@@ -94,3 +94,51 @@ class EMBRACE(object):
                     path_save
                     )
 
+PATH_IONO = 'database/iono/'
+from base import make_dir
+
+def periods(dn):
+
+    return pd.date_range(
+        dn, freq = '1H', 
+        periods = 6)
+
+
+
+
+def download_from_periods(
+        start, 
+        site = 'sao_luis', 
+        ext = ['RSF']
+        ):
+    
+    
+    
+    save_in = os.path.join(
+        PATH_IONO,
+        start.strftime('%Y%m%d')
+        )
+    
+    make_dir(save_in)
+        
+    
+    for dn in periods(start):
+        
+        url = wb.embrace_url(
+            dn, 
+            site = site, 
+            inst = 'ionosonde'
+            ) 
+        
+        for link in wb.request(url):
+        
+            if (any(f in link for f in ext) and 
+            (iono_dt(link) == dn)):
+                                             
+             print('[download_iono]', link)
+             wb.download(
+                 url, 
+                 link, 
+                 save_in
+                 )
+        
