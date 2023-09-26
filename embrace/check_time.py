@@ -65,24 +65,6 @@ def count_in_folder(infile, ext = "DVL"):
     return len(files)
 
 
-def quick_look(inst = "ionosonde", 
-               site = "Fortaleza",
-                ext = "DVL", 
-                start = 2015, 
-                end = 2023, 
-                save = True):
-    
-    rng = list(range(start, end))
-    counts = [check_year(year, inst, site, ext)
-              for year in rng]
-    
-    df = pd.DataFrame(counts, 
-                      index = rng)
-    if save:
-        name_to_save = f"{site}_{start}_{end}.txt"
-        df.to_csv(name_to_save, index = True, sep = ",")
-    
-    return df
 
 
 def main():

@@ -4,6 +4,11 @@ import base as b
 import os 
 import pandas as pd
 
+from base import make_dir
+
+PATH_IONO = 'database/iono/'
+
+
 def iono_dt(file):        
     args = file[:-4].split("_")
 
@@ -94,8 +99,7 @@ class EMBRACE(object):
                     path_save
                     )
 
-PATH_IONO = 'database/iono/'
-from base import make_dir
+
 
 def periods(dn):
 
