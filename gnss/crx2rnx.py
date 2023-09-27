@@ -46,7 +46,8 @@ def run_local(
             
 def crx2rnx(
         input_file, 
-        executable = executable
+        executable = executable,
+        delete = False
         ):
 
         try:
@@ -54,11 +55,9 @@ def crx2rnx(
         except:
             pass
         
-        os.remove(input_file)
+        if delete:
+            os.remove(input_file)
             
-# base = 'D:\\database\\GNSS\\rinex\\'
-
-# run_all_ways(year_folder)
 
 
 

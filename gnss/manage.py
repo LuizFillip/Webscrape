@@ -2,9 +2,11 @@ import os
 from base import make_dir
 import shutil
 from tqdm import tqdm 
+import Webscrape as wb  
+
 
 PATH_IN = 'D:\\database\\GNSS\\rinex\\'
-FOLDER_IN = 'peru'
+FOLDER_IN = 'peru/rqs/'
 
 
 def year_from_fname(f):
@@ -24,28 +26,9 @@ def year_from_fname(f):
 
 
     
-def create_folders(
-        f, 
-        FOLDER_OUT = 'peru_2'
-        ):
-    
-    doy, year = year_from_fname(f)
-    
-    year_path = os.path.join(
-        PATH_IN, 
-        FOLDER_OUT, 
-        year)
-    
-    make_dir(year_path)
-    
-    save_in = os.path.join(year_path, doy)
-    
-    make_dir(save_in)
-    
-    return save_in 
 
 
-def copy_rinex_away():
+def unzip_convert():
     
     first_path = os.path.join(
         PATH_IN, 
@@ -60,10 +43,8 @@ def copy_rinex_away():
             folder
             )
         
-        for file in tqdm(
-                os.listdir(second_path), 
-                desc = folder
-                ):
+        for file in tqdm(os.listdir(second_path), 
+                         folder):
             
             doy, year = year_from_fname(file)
             
@@ -72,13 +53,13 @@ def copy_rinex_away():
                 file
                 )
             
-            if file.endswith('o'):
-                save_in = create_folders(file)
+            try:
                 
-                shutil.copy(
-                    third_path, 
-                    save_in
-                    )
+                crinex_file = wb.unzip(third_path)
         
+                wb.crx2rnx(crinex_file, delete = True)
+         
+            except:
+                continue
         
-copy_rinex_away()
+unzip_convert()
