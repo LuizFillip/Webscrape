@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm 
 import GNSS as gs
 
-executable = "database/GNSS/rinex/crx2rnx/CRX2RNX.exe"
+executable = "D:\\database\\GNSS\\CRX2RNX.exe"
 
 
 year_folder = 'D:\\database\\GNSS\\rinex\\'
@@ -49,7 +49,8 @@ def crx2rnx(
         executable = executable,
         delete = False
         ):
-
+        
+        
         try:
             subprocess.run([executable, input_file, '-f'])
         except:

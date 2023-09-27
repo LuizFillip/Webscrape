@@ -61,8 +61,8 @@ def download_sao(year):
 
 
 
-start = dt.datetime(2017, 3, 28, 0, 0)
+start = dt.datetime(2019, 3, 28, 0, 0)
 
 
         
-wb.download_from_periods(start)
+wb.download_from_periods(start, site = 'fortaleza')

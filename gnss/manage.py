@@ -1,9 +1,9 @@
 import os
-from base import make_dir
+import base as b
 import shutil
 from tqdm import tqdm 
 import Webscrape as wb  
-
+import GNSS as gs
 
 PATH_IN = 'D:\\database\\GNSS\\rinex\\'
 FOLDER_IN = 'peru/rqs/'
@@ -53,13 +53,12 @@ def unzip_convert():
                 file
                 )
             
-            try:
-                
-                crinex_file = wb.unzip(third_path)
-        
-                wb.crx2rnx(crinex_file, delete = True)
-         
-            except:
-                continue
-        
-unzip_convert()
+            path = gs.paths(year, doy)
+            
+            # b.make_dir(path.rinex)
+            
+            if file.endswith('d'):
+                # print(third_path)    
+                wb.crx2rnx(third_path)
+             
+# unzip_convert()
