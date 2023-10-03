@@ -101,11 +101,21 @@ class EMBRACE(object):
 
 
 
-def periods(dn):
+def periods(dn, end = False):
+    
+    if end:
+        end = dn + dt.timedelta(hours = 11)
 
-    return pd.date_range(
-        dn, freq = '30min', 
-        periods = 12)
+        return pd.date_range(
+            dn, end, 
+            freq = '10min')
+    
+    else:
+        return pd.date_range(
+            dn,
+            freq = '30min', 
+            periods = 12
+            )
 
 
 
@@ -113,20 +123,24 @@ def periods(dn):
 def download_from_periods(
         start, 
         site = 'sao_luis', 
-        ext = ['RSF']
+        ext = ['RSF', 'SAO'], 
+        end = True
         ):
     
-    
+    end = site[0].upper()
+    FOLDER_NAME = start.strftime(
+        '%Y%m%d' + end
+        )
     
     save_in = os.path.join(
         PATH_IONO,
-        start.strftime('%Y%m%d')
+        FOLDER_NAME
         )
     
     make_dir(save_in)
         
     
-    for dn in periods(start):
+    for dn in periods(start, end = end):
         
         url = wb.embrace_url(
             dn, 
