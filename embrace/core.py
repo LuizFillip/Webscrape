@@ -104,7 +104,7 @@ class EMBRACE(object):
 def periods(dn, end = False):
     
     if end:
-        end = dn + dt.timedelta(hours = 11)
+        end = dn + dt.timedelta(hours = 13)
 
         return pd.date_range(
             dn, end, 

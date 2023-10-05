@@ -48,17 +48,29 @@ def unzip_convert():
             
             doy, year = year_from_fname(file)
             
-            third_path = os.path.join(
+            src = os.path.join(
                 second_path, 
                 file
                 )
             
             path = gs.paths(year, doy)
             
-            # b.make_dir(path.rinex)
+            b.make_dir(path.rinex)
             
-            if file.endswith('d'):
-                # print(third_path)    
-                wb.crx2rnx(third_path)
+            b.make_dir(path.rinex)
+            
+            dst = path.rinex
+            
+            if file.endswith('o'):
+                shutil.move(src, dst)
+            else:
+                os.remove(src)
+            
+            # try:
+            #     
+            # except:
+            #     continue 
+                
+                # wb.crx2rnx(third_path)
              
 # unzip_convert()
