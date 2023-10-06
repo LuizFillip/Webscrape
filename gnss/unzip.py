@@ -3,6 +3,7 @@ import shutil
 import os
 import zipfile
 from unlzw3 import unlzw
+import GNSS as gs 
 
 def unzip(path_in):
     fh = open(path_in, 'rb').read()
@@ -61,22 +62,21 @@ def unzip_rinex(
 def unzip_gz(infile):
     
     with gzip.open(infile, 'rb') as f_in:
-        with open(infile.replace('.gz', ''), 'wb') as f_out:
+        with open(
+                infile.replace('.gz', ''), 
+                'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
     
     os.remove(infile)
     
     
-    # wb.crx2rnx(path)
-
-import GNSS as gs 
 
 def unzip_single_folder():
 
-    path = gs.paths(2013, 365).rinex
+    path = gs.paths(2021, 1).rinex
     
     for file in os.listdir(path):
         
         unzip_rinex(file, path)
     
-    
+# unzip_single_folder()

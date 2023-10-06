@@ -10,25 +10,23 @@ import digisonde as dg
 
 def download_gnss(year):
     
-    stations = wb.get_stations(gs.paths(year))
+    # stations = wb.get_stations(gs.paths(year))
     
-    wb.folders_orbits(year)
-    
-    doy_max = wb.minimum_doy(year)
+    # wb.folders_orbits(year)
+            
+    for doy in range(1, 366, 1):
         
-    for doy in range(35, 40, 1):
-        print(doy_max, year)
-
+        path = gs.paths(year, doy)
+        
         wb.download_rinex(
-                year, 
-                doy,
-                stations = stations
+                path,
+                wb.miss_stations(path)
                 )
 
-        wb.download_orbit(
-            year, 
-            doy
-            )
+        # wb.download_orbit(
+        #     year, 
+        #     doy
+        #     )
 
     return None
 
@@ -61,7 +59,7 @@ def download_sao(year):
 
 
 
-start = dt.datetime(2015, 4, 9, 20, 0)
+# year = 2022
 
-for site in ['fortaleza', 'boa_vista', 'sao_luis']:
-    wb.download_from_periods(start, site)
+
+# download_gnss(year)

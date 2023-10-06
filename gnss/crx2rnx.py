@@ -47,7 +47,7 @@ def run_local(
 def crx2rnx(
         input_file, 
         executable = executable,
-        delete = False
+        delete = True
         ):
         
         

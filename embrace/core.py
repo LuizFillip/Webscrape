@@ -8,6 +8,11 @@ from base import make_dir
 
 PATH_IONO = 'database/iono/'
 
+def download_multiple_iono(start):
+    
+    for site in ['fortaleza', 'boa_vista', 'sao_luis']:
+        wb.download_from_periods(start, site)
+    
 
 def iono_dt(file):        
     args = file[:-4].split("_")

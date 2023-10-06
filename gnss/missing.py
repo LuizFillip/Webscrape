@@ -4,6 +4,7 @@ import pandas as pd
 import shutil
 
 
+
 def find_missing_values(a, b):
     return list(set(a) ^ set(b))
 
@@ -79,7 +80,14 @@ def missing_times(year, const):
         
     return date_list_from_orbits(orbit_list)
 
-
+def missing_roti(year):
+    doys = list(range(1, 366, 1))
+    
+    path = gs.paths(year).roti
+    
+    files = [int(f[:-4]) for f in os.listdir(path)]
+    
+    return find_missing_values(files, doys)
 
 def missing_tec(year):
     path = gs.paths(year).tec
@@ -93,14 +101,7 @@ def missing_tec(year):
                   
     return out 
 
-def missing_roti(year):
-    doys = list(range(1, 366, 1))
-    
-    path = gs.paths(year).roti
-    
-    files = [int(f[:-4]) for f in os.listdir(path)]
-    
-    return find_missing_values(files, doys)
+
 
 
 def dn2mgex(dn):
@@ -154,7 +155,6 @@ def copy2com(src_folder, dst_folder, year = 2022):
             
             print('[copy_files]', dn)
             shutil.copy(src, dst)
-
 
 
 
