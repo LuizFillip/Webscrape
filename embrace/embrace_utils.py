@@ -63,26 +63,6 @@ def embrace_url(
     return url
 
 
-import datetime as dt
 
-def iono_dt(file):        
-    args = file[:-4].split("_")
 
-    year = int(args[1][:4])
-    doy = int(args[1][4:7])
-    hour = int(args[1][7:9])
-    minute = int(args[1][9:11])
-    second = int(args[1][11:])
-    date = (dt.date(year, 1, 1) + 
-            dt.timedelta(doy - 1))
-
-    day = date.day
-    month = date.month
-
-    return dt.datetime(year, 
-                       month, 
-                       day,
-                       hour, 
-                       minute, 
-                       second)
 

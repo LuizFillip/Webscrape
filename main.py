@@ -1,14 +1,10 @@
 import Webscrape as wb
 import GNSS as gs
-import pandas as pd
-from base import make_dir
-import os
-import datetime as dt
-import digisonde as dg
 
 
 
-def download_gnss(year):
+
+def download_gnss(year, rinex = True):
     
     # stations = wb.get_stations(gs.paths(year))
     
@@ -18,48 +14,23 @@ def download_gnss(year):
         
         path = gs.paths(year, doy)
         
-        wb.download_rinex(
-                path,
-                wb.miss_stations(path)
+        if rinex:
+            wb.download_rinex(
+                    path,
+                    wb.miss_stations(path)
+                    )
+        else:
+            wb.download_orbit(
+                year, 
+                doy
                 )
-
-        # wb.download_orbit(
-        #     year, 
-        #     doy
-        #     )
 
     return None
 
 
         
 
-def download_sao(year):
-    
-    save_in = f'D:\\iono\\saa\\{year}\\'
-    
-    make_dir(save_in)
-    
-    dw = wb.EMBRACE(save_in = save_in)
-
-    # miss_dates = dg.get_missing_dates(year)
-    
-    miss_dates = dg.missing_dates_2(year)
-        
-    
-    delta = dt.timedelta(hours = 19)
-    
-    for dn in miss_dates:
-        
-        dn  = pd.to_datetime(dn) + delta
-        
-        dw.download_drift(
-                dn, 
-                ext = ['.SAO', '.RSF']
-                )
 
 
-
-# year = 2022
-
-
-# download_gnss(year)
+year = 2019
+download_gnss(year)

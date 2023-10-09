@@ -18,20 +18,18 @@ def download_rinex(
     
     if stations is not None:
         receivers_list = wb.filter_rinex(
-            url, sel_stations = stations
+            url, 
+            sel_stations = stations
             )
     else:
         
         receivers_list = wb.request(url)
-        
-    out = []
-    
+            
     for href in receivers_list:
         
         if '.zip' in href:
             print('[download_rinex]', year, doy, href)
             files = wb.download(url, href, path_to_save)
-            out.append(files)
             
             wb.unzip_rinex(files, path_to_save)
             

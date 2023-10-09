@@ -14,26 +14,6 @@ def download_multiple_iono(start):
         wb.download_from_periods(start, site)
     
 
-def iono_dt(file):        
-    args = file[:-4].split("_")
-
-    year = int(args[1][:4])
-    doy = int(args[1][4:7])
-    hour = int(args[1][7:9])
-    minute = int(args[1][9:11])
-    second = int(args[1][11:])
-    date = (dt.date(year, 1, 1) + 
-            dt.timedelta(doy - 1))
-
-    day = date.day
-    month = date.month
-
-    return dt.datetime(year, 
-                       month, 
-                       day,
-                       hour, 
-                       minute, 
-                       second)
 
     
 class EMBRACE(object):
@@ -65,8 +45,8 @@ class EMBRACE(object):
                 
                 delta = dt.timedelta(hours = 4)
                 
-                if (iono_dt(link) >= dn and 
-                    (iono_dt(link) <= dn + delta)):
+                if (wb.iono_dt(link) >= dn and 
+                    ((wb.iono_dt(link) <= dn + delta)):
                    
                     print('[download_iono]', link)
                     wb.download(
@@ -105,63 +85,4 @@ class EMBRACE(object):
                     )
 
 
-
-def periods(dn, end = False):
-    
-    if end:
-        end = dn + dt.timedelta(hours = 13)
-
-        return pd.date_range(
-            dn, end, 
-            freq = '10min')
-    
-    else:
-        return pd.date_range(
-            dn,
-            freq = '30min', 
-            periods = 12
-            )
-
-
-
-
-def download_from_periods(
-        start, 
-        site = 'sao_luis', 
-        ext = ['RSF', 'SAO'], 
-        end = True
-        ):
-    
-    end = site[0].upper()
-    FOLDER_NAME = start.strftime(
-        '%Y%m%d' + end
-        )
-    
-    save_in = os.path.join(
-        PATH_IONO,
-        FOLDER_NAME
-        )
-    
-    make_dir(save_in)
-        
-    
-    for dn in periods(start, end = end):
-        
-        url = wb.embrace_url(
-            dn, 
-            site = site, 
-            inst = 'ionosonde'
-            ) 
-        
-        for link in wb.request(url):
-        
-            if (any(f in link for f in ext) and 
-               (iono_dt(link) == dn)):
-                                             
-             print('[download_iono]', link)
-             wb.download(
-                 url, 
-                 link, 
-                 save_in
-                 )
         
