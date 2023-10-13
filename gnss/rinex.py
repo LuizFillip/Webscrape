@@ -7,14 +7,22 @@ from tqdm import tqdm
 
 def download_rinex(
         path,
-        stations = None
+        stations = None,
+        network = 'chile'
         ):
     
     year, doy = int(path.year), int(path.doy)
-    url = wb.rinex_url( year, doy)
     
-    path_to_save = path.rinex     
-    path_to_save = make_dir(path_to_save)
+    url = wb.rinex_url(year, doy, network)
+    
+
+    if network == 'chile':
+        path_to_save = 'D:\\database\\GNSS\\rinex\\chile\\'
+        make_dir(path_to_save)
+    else:
+        path_to_save = path.rinex
+        make_dir(path_to_save)
+        
     
     if stations is not None:
         receivers_list = wb.filter_rinex(
@@ -24,56 +32,23 @@ def download_rinex(
     else:
         
         receivers_list = wb.request(url)
-            
+    
+    zipped = ['.zip', '.Z']
+    
     for href in receivers_list:
         
-        if '.zip' in href:
+        if any([z in href for z in zipped]):
             print('[download_rinex]', year, doy, href)
-            files = wb.download(url, href, path_to_save)
+            wb.download(
+                url, 
+                href, 
+                path_to_save
+                )
+        
             
-            wb.unzip_rinex(files, path_to_save)
             
-            
-    for sts in os.listdir(path_to_save):
-        infile = os.path.join(
-            path_to_save,
-            sts
-            )
-        if sts.endswith('d'):
-            wb.crx2rnx(infile)
-            
+   
            
-def download_orbit(
-        year: int, 
-        doy: int, 
-        const = "com", 
-        net = 'igs'
-        ):
-    
-    wb.folders_orbits(year)
-    
-    fname, url = wb.orbit_url(
-        year, doy, 
-        network = net, 
-        const = const
-        )
-
-    path_to_save = gs.paths(
-        year, doy).orbit(const = const)
-    
-    for href in wb.request(url):
-        if fname in href:
-            print('[download_orbit]', year, doy, href)
-            files = wb.download(
-                url, href, path_to_save)
-            wb.unzip_orbit(files)
-            
-    return path_to_save
-                
-            
-
-
-
 
 
 
@@ -93,4 +68,19 @@ def extract_and_convert():
             os.remove(infile)
             
 
-url = 'http://gps.csn.uchile.cl/data/2013/001/'
+def uncompress_convert(infile):
+    
+    for sts in os.listdir(infile):
+        
+        infile = os.path.join(
+            infile,
+            sts
+            )
+        
+        if sts.endswith('Z'):
+            wb.unzip_Z(infile)
+        
+        
+        if sts.endswith('d'):
+            wb.crx2rnx(infile)
+            

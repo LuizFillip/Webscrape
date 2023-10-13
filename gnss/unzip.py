@@ -5,7 +5,7 @@ import zipfile
 from unlzw3 import unlzw
 import GNSS as gs 
 
-def unzip(path_in):
+def unzip_Z(path_in):
     fh = open(path_in, 'rb').read()
     
     uncompressed_data = unlzw(fh)
@@ -17,13 +17,12 @@ def unzip(path_in):
     file = open(path_out, 'w')
     file.write(decoded)
     file.close()
-    
-    return path_out
+    os.remove(path_in)
+    # return path_out
 
 
 def unzip_orbit(files, path_to_save): 
     fh = open(files, 'rb')
-    
     
     compressed_data = fh.read()
     
@@ -35,13 +34,13 @@ def unzip_orbit(files, path_to_save):
     
     file = open(files.replace(".Z", ""), 'w')
     file.write(decoded, path_to_save)
-    # file.extract(file, path_to_save)
+    file.extract(file, path_to_save)
     file.close()
     fh.close()
-    # os.remove(files)
+    os.remove(files)
     
     
-def unzip_rinex(
+def unzip_ZIP(
         files:str,   
         path_to_save:str
         ) -> None:
@@ -71,12 +70,4 @@ def unzip_gz(infile):
     
     
 
-def unzip_single_folder():
 
-    path = gs.paths(2021, 1).rinex
-    
-    for file in os.listdir(path):
-        
-        unzip_rinex(file, path)
-    
-# unzip_single_folder()

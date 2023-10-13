@@ -1,23 +1,26 @@
 import Webscrape as wb
 import GNSS as gs
-
+import base as b
 
 
 
 def download_gnss(year, rinex = True):
     
-    # stations = wb.get_stations(gs.paths(year))
     
-    # wb.folders_orbits(year)
+    sdoy = b.last_folder_modified(
+        gs.paths(year, 0).rinex
+        )
+
             
-    for doy in range(1, 366, 1):
+    for doy in range(134, 366, 1):
         
         path = gs.paths(year, doy)
         
         if rinex:
             wb.download_rinex(
                     path,
-                    wb.miss_stations(path)
+                    wb.miss_stations(path),
+                    network = 'ibge'
                     )
         else:
             wb.download_orbit(
@@ -28,9 +31,26 @@ def download_gnss(year, rinex = True):
     return None
 
 
-        
+def chile(year = 2021):
+
+    stations = ['utar', 'ptre', 'iacr', 
+                'pccl', 'cmrc', 'suri', 
+                'chyt', 'mnmi', 'psga', 
+                'fbaq', 'atjn', 'cgtc', 
+                'hmbs', 'picc', 'uape']
+    
+
+    for doy in range(1, 366, 1):
+        path = gs.paths(year, doy)
+    
+        wb.download_rinex(
+                path, 
+                stations, 
+                network = 'chile' 
+                )
 
 
+download_gnss(2019, rinex = True)
 
-year = 2019
-download_gnss(year)
+
+# chile(year = 2020)

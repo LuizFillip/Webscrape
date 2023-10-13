@@ -18,7 +18,10 @@ def folders_orbits(year):
 infos = {
     "ibge" : 'https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados', 
     "igs": 'https://igs.bkg.bund.de/root_ftp/IGS/products/', 
-    "igs2": 'https://files.igs.org/pub/'
+    "igs2": 'https://files.igs.org/pub/', 
+    'chile': 'http://gps.csn.uchile.cl/data/', 
+    'lisn': 'http://lisn.igp.gob.pe/jdata/database/gps/rinex/',
+    'gage': 'https://gage-data.earthscope.org/archive/gnss/rinex/obs/2013/001'
     }
 
 
@@ -26,7 +29,8 @@ infos = {
 def rinex_url(
         year:int, 
         doy:int, 
-        network:str = "ibge"):
+        network:str = "ibge"
+        ):
     date = gs.date_from_doy(year, doy)
     doy_str = date.strftime("%j")
     return f"{infos[network]}/{year}/{doy_str}/"
@@ -67,7 +71,6 @@ def orbit_url(
             
             url += f"orbits/{week}/"
             filename = f'cod{week}{number}.eph.Z'
-           #'cod22024.eph_m.Z'
             
         elif const == 'igv':
             url += f"orbits/{week}/"
@@ -133,7 +136,7 @@ def date_from_fname(fname):
 
 
 
-class minimum_doy:
+class minimum_doy(object):
     
     def __init__(self, path):
         
@@ -160,13 +163,16 @@ class minimum_doy:
     
     @property   
     def roti(self):
-        list_doy = [int(f.replace('.txt', '')) 
-                    for f in os.listdir(self.path.roti)]
+        list_doy = [
+            int(f.replace('.txt', '')) 
+            for f in os.listdir(self.path.roti)
+            ]
         return self.cond_max(list_doy)
     
     @staticmethod
     def list_doy(path):
-        return [int(f) for f in os.listdir(path) if f != '365']
+        return [int(f) for f in 
+                os.listdir(path) if f != '365']
     
     @staticmethod
     def cond_max(list_doy):

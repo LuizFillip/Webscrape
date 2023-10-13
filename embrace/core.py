@@ -45,8 +45,8 @@ class EMBRACE(object):
                 
                 delta = dt.timedelta(hours = 4)
                 
-                if (wb.iono_dt(link) >= dn and 
-                    ((wb.iono_dt(link) <= dn + delta)):
+                if ((wb.iono_dt(link) >= dn)and 
+                    (wb.iono_dt(link) <= dn + delta)):
                    
                     print('[download_iono]', link)
                     wb.download(

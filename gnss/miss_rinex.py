@@ -63,13 +63,17 @@ missing  = [
  'lpmo',
  'ampt',
  'ljic',
- 'brft']
+ 'brft', 
+ 'utar', 'ptre', 'iacr', 
+             'pccl', 'cmrc', 'suri', 
+             'chyt', 'mnmi', 'psga', 
+             'fbaq', 'atjn', 'cgtc', 
+             'hmbs', 'picc', 'uape']
 
-import Webscrape as wb
 import GNSS as gs
 import os
+import shutil
 
-# path = gs.paths(2021, 2)
 
 def miss_stations(path):
         
@@ -85,8 +89,24 @@ def miss_stations(path):
             
     return stations
         
+PATH_OUT = 'D:\\database\\GNSS\\tec\\2021\\t001\\'
+
+path = gs.paths(2021, 1)
+
+def move_away(path):
+
+    in_tec = os.listdir(path.tec)
+    in_tec = [rx[:4] for rx in in_tec]
+    
+    for sts in in_tec:
         
-# wb.download_rinex(
-#         path, 
-#         stations 
-#         )
+        if sts not in missing:
+            
+            dst = os.path.join(
+                PATH_OUT,
+                f'{sts}.txt'
+                )
+            
+            src = path.fn_tec(sts)
+            
+            shutil.move(src, dst)
