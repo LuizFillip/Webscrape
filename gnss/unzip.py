@@ -3,7 +3,6 @@ import shutil
 import os
 import zipfile
 from unlzw3 import unlzw
-import GNSS as gs 
 
 def unzip_Z(path_in):
     fh = open(path_in, 'rb').read()
@@ -18,7 +17,7 @@ def unzip_Z(path_in):
     file.write(decoded)
     file.close()
     os.remove(path_in)
-    # return path_out
+    return path_out
 
 
 def unzip_orbit(files, path_to_save): 
@@ -40,34 +39,30 @@ def unzip_orbit(files, path_to_save):
     os.remove(files)
     
     
-def unzip_ZIP(
-        files:str,   
-        path_to_save:str
-        ) -> None:
+def unzip_ZIP(zip_path) -> None:
     
-    zip_path = os.path.join(path_to_save, files)
+    zip_ref = zipfile.ZipFile(zip_path, "r") 
     
-    zip_file = zipfile.ZipFile(zip_path, 'r') 
-       
-    for file in zip_file.namelist():
+    for name in zip_ref.namelist():
         
-        if any(file.endswith(ext) for ext in ['o', 'd']):
+        if any(name.endswith(ext) for ext in ['o', 'd']):
             
-            zip_file.extract(file, path_to_save)
+            pat_out = os.path.split(zip_path)[0]
+            zip_ref.extract(name, pat_out)
+            path_out = zip_path.replace("zip", name[-3:])
             
-    zip_file.close()
+    zip_ref.close()
     os.remove(zip_path)
+    
+    return path_out
 
 def unzip_gz(infile):
     
     with gzip.open(infile, 'rb') as f_in:
         with open(
-                infile.replace('.gz', ''), 
-                'wb') as f_out:
+                infile.replace('.gz', ''), 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
     
     os.remove(infile)
     
     
-
-
