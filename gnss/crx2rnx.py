@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm 
 import GNSS as gs
 
-executable = "D:\\database\\GNSS\\CRX2RNX.exe"
+executable = "G:\\Meu Drive\\Python\\data-analysis\\database\\GNSS\\CRX2RNX.exe"
 
 
 year_folder = 'D:\\database\\GNSS\\rinex\\'
@@ -46,22 +46,20 @@ def run_local(
             
 def crx2rnx(
         input_file, 
-        executable = executable,
-        delete = True
+        executable = executable
         ):
         
-        
+        # subprocess.run([executable, input_file, '-f'])
         try:
             subprocess.run([executable, input_file, '-f'])
         except:
             pass
         
-        if delete:
-            os.remove(input_file)
+        os.remove(input_file)
             
 
 
 
-
+# 
 
 

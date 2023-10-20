@@ -84,3 +84,6 @@ def uncompress_convert(infile):
         if sts.endswith('d'):
             wb.crx2rnx(infile)
             
+# url = 'ftp://data-out.unavco.org/pub/rinex'
+
+# wb.request(url)
