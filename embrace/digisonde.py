@@ -6,7 +6,7 @@ import Webscrape as wb
 import os 
 
 
-PATH_IONO = 'D:\\iono\\saa\\'
+PATH_IONO = 'database/iono/'
 
 def download_sao(year):
     
@@ -58,17 +58,15 @@ def iono_dt(file):
         second
         )
 
-
-
-
 def periods(dn, end = False):
     
     if end:
-        end = dn + dt.timedelta(hours = 13)
+        end = dn + dt.timedelta(hours = 10)
 
         return pd.date_range(
             dn, end, 
-            freq = '10min')
+            freq = '10min'
+            )
     
     else:
         return pd.date_range(
@@ -83,7 +81,7 @@ def periods(dn, end = False):
 def download_from_periods(
         start, 
         site = 'sao_luis', 
-        ext = ['RSF', 'SAO'], 
+        ext = ['RSF'], 
         end = True
         ):
     
@@ -109,7 +107,7 @@ def download_from_periods(
             ) 
         
         for link in wb.request(url):
-        
+
             if (any(f in link for f in ext) and 
                (iono_dt(link) == dn)):
                                              
@@ -119,3 +117,14 @@ def download_from_periods(
                  link, 
                  save_in
                  )
+          
+             
+dn = dt.datetime(2013, 6, 10, 20)
+
+
+download_from_periods(
+        dn, 
+        site = 'sao_luis', 
+        ext = ['RSF'], 
+        end = True
+        )

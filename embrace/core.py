@@ -1,10 +1,5 @@
 import datetime as dt
 import Webscrape as wb
-import base as b 
-import os 
-import pandas as pd
-
-from base import make_dir
 
 PATH_IONO = 'database/iono/'
 
@@ -55,34 +50,6 @@ class EMBRACE(object):
                         self.save_in
                         )
                 
-    def download_imager(
-            self, 
-            site, 
-            dn,
-            layer = 'O6'
-            ):
-        
-        url = wb.embrace_url(
-            dn, 
-            site = site, 
-            inst = 'imager'
-            )
-        
-        save_in = 'D:\\imager\\'
-        
-        fn = url.split('/')[-2]
-        path_save = os.path.join(save_in, fn)
-        b.make_dir(path_save)
-        
-        for link in wb.request(url):
-           
-            if layer in link:
-                print('[download_images]', link)
-                wb.download(
-                    url, 
-                    link, 
-                    path_save
-                    )
-
+    
 
         

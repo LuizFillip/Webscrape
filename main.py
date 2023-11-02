@@ -50,7 +50,7 @@ def chile(year = 2021):
                 )
 
 
-download_gnss(2019, rinex = True)
+# download_gnss(2019, rinex = True)
 
 
 # chile(year = 2020)
