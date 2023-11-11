@@ -12,21 +12,21 @@ def download_gnss(year, rinex = True):
         )
 
             
-    for doy in range(134, 366, 1):
+    for doy in range(1, 366, 1):
         
         path = gs.paths(year, doy)
         
-        if rinex:
-            wb.download_rinex(
-                    path,
-                    wb.miss_stations(path),
-                    network = 'ibge'
-                    )
-        else:
-            wb.download_orbit(
-                year, 
-                doy
+        # if rinex:
+        wb.download_rinex(
+                path,
+                wb.miss_stations(path),
+                network = 'ibge'
                 )
+    # else:
+        wb.download_orbit(
+            year, 
+            doy
+            )
 
     return None
 
@@ -50,7 +50,24 @@ def chile(year = 2021):
                 )
 
 
-# download_gnss(2019, rinex = True)
+# download_gnss(2023, rinex = True)
 
+import os
+path = gs.paths(2023, 313)
 
-# chile(year = 2020)
+# if rinex:
+# wb.download_rinex(
+#         path,
+#         stations = None,
+#         network = 'ibge'
+# #         )
+# for sts in os.listdir(path.rinex):
+#     infile = os.path.join(
+#         path.rinex,
+#         sts
+#         )
+#     print(sts)
+#     if sts.endswith('d'):
+#         wb.crx2rnx(infile)
+#     else:
+#         os.remove(infile)

@@ -114,14 +114,14 @@ def download_from_periods(
              print('[download_iono]', link)
              wb.download(
                  url, 
-                 link, 
+                 link,   
                  save_in
                  )
           
              
-dn = dt.datetime(2013, 6, 10, 20)
+dn = dt.datetime(2013, 1, 14, 15)
 
-
+end = dt.datetime(2013, 1, 15, 7)
 download_from_periods(
         dn, 
         site = 'sao_luis', 
