@@ -85,4 +85,9 @@ def delete_far_of_equator(path):
 
 # delete_far_of_equator(path)
 
+import datetime as dt
 
+dn = dt.datetime(2013, 11, 9)
+doy = dn.timetuple().tm_yday
+
+print(doy)

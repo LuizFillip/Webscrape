@@ -79,6 +79,9 @@ def uncompress_convert(infile):
         
         if sts.endswith('Z'):
             wb.unzip_Z(infile)
+            
+        elif sts.endswith('zip'):
+            wb.unzip_zip(infile)
         
         
         if sts.endswith('d'):
