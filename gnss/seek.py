@@ -25,7 +25,7 @@ def save_last_day(
         json.dump(dic, f)
      
 
-def fetch_receivers(path):
+def fetch_receivers(path, doy = 365):
     
     print(f'[fetch_receivers] downloading 365 in {path.year}')
     
@@ -37,13 +37,13 @@ def fetch_receivers(path):
     year = int(path.year)
     wb.download_rinex(
             year, 
-            365, 
+            doy, 
             stations = None
             )
     
     save_last_day(
             year,
-            doy = 365,
+            doy = doy,
             )
     
     return g.stations_near_of_equator(path.year)
@@ -81,13 +81,17 @@ def delete_far_of_equator(path):
                 os.remove(path.fn_rinex(sts, zip_f = True))
                 
            
-# path = gs.paths(2013, 365)
+# 
 
 # delete_far_of_equator(path)
 
-import datetime as dt
+# import datetime as dt
 
-dn = dt.datetime(2013, 11, 9)
-doy = dn.timetuple().tm_yday
+# dn = dt.datetime(2013, 11, 9)
+# doy = dn.timetuple().tm_yday
 
-print(doy)
+# path = gs.paths(2023, doy)
+
+# s =  g.stations_near_of_equator(path.year)
+
+# print(s)
