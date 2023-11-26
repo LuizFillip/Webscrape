@@ -1,24 +1,13 @@
 import Webscrape as wb 
 import os
 import GNSS as gs
-from base import make_dir 
 
-def folders_orbits(year):
-    
-    make_dir(gs.paths(year).orbit_base)
-    
-    for const in ["igl", "igr", 'igv', 'cod',
-                  'igs', 'mgex', 'com']:
-        
-        path_to_save = gs.paths(year).orbit(const = const)
-        
-        make_dir(path_to_save)
+
    
 
 infos = {
     "ibge" : 'https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados', 
-    "igs": 'https://igs.bkg.bund.de/root_ftp/IGS/products/', 
-    "igs2": 'https://files.igs.org/pub/', 
+   
     'chile': 'http://gps.csn.uchile.cl/data/', 
     'lisn': 'http://lisn.igp.gob.pe/jdata/database/gps/rinex/',
     'gage': 'https://gage-data.earthscope.org/archive/gnss/rinex/obs/2013/001'
@@ -36,68 +25,6 @@ def rinex_url(
     return f"{infos[network]}/{year}/{doy_str}/"
 
 
-def orbit_url(
-        year:int, 
-        doy:int, 
-        network:str = "igs", 
-        const:str = "igr"
-        ):
-    
-    """
-    Build urls and filenames from year, doy and GNSS        
-    system
-    """
-    
-    week, number = gs.gpsweek_from_doy_and_year(
-        year, doy)
-    
-    url = infos[network]
-
-    if network == "igs":
-
-        if const == "igr":
-            url += f"orbits/{week}/"
-            filename = f"{const}{week}{number}.sp3.Z"
-
-        elif const == "igl":
-            url += f"glo_orbits/{week}/"
-            filename = f"{const}{week}{number}.sp3.Z"
-            
-        elif const == 'com':
-            url += f"mgex/{week}/"
-            filename = f'{const}{week}{number}.eph.Z'
-            
-        elif const == 'cod':
-            
-            url += f"orbits/{week}/"
-            filename = f'cod{week}{number}.eph.Z'
-            
-        elif const == 'igv':
-            url += f"orbits/{week}/"
-            filename = f'igv{week}{number}_00.sp3.Z'
-            
-        elif const == 'igs':
-            url += f"orbits/{week}/"
-            filename = f'igs{week}{number}.sp3.Z'
-       
-         
-    elif network == "igs2":
-        
-        if const == "igr":
-            url += f"orbits/{week}/"
-            filename = f"{const}{week}{number}.sp3.Z"
-
-        
-        elif const == "igl":
-            url += f"glonass/products/{week}/"
-            filename = f"{const}{week}{number}.sp3.Z"
-            
-        elif const == 'igv':
-            url += f"glonass/products/{week}/"
-            filename = 'com{week}{number}.eph.Z'
-        
-        
-    return filename, url
 
 
 def filter_rinex(
