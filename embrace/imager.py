@@ -1,43 +1,51 @@
 import datetime as dt 
 import os
-import FabryPerot as fp 
-import numpy as np 
 import Webscrape as wb 
 import base as b 
+from tqdm import tqdm 
 
 
 
-ds = fp.get_similar()
-
-dates = np.unique(ds.index.date)
-
-
-layer = 'O6'
-
-save_in = 'D:\\img\\'
-
-for dn in dates:
-        
+def make_folder(url, root = 'database\\'):
+    fn = url.split('/')[-2]
+    
+    path_to_save = os.path.join(
+        root, fn)
+    b.make_dir(path_to_save)
+    return path_to_save
+    
+    
+def download_images(dn, site = 'cariri', layer = 'O6'):
+    
     url = wb.embrace_url(
         dn, 
-        site = 'cariri', 
+        site = site, 
         inst = 'imager'
         )
     
-
-    fn = url.split('/')[-2]
-    folder = dn.strftime('%Y%m%d')
-    path_save = os.path.join(save_in, fn)
-    b.make_dir(path_save)
+    path_to_save = make_folder(url)
     
-    for link in wb.request(url):
+    print(site, layer, dn.strftime('%Y/%m/%d'))
+    
+    for link in tqdm(
+            wb.request(url),
+            'download_images'
+            ):
        
         if layer in link:
-            print('[download_images]', link)
-            wb.download(
-                url, 
-                link, 
-                path_save
-                        )
+            
+            if 'DARK' in link:
+                pass
+            else:
+                
+                wb.download(
+                    url, 
+                    link, 
+                    path_to_save
+                    )
 
-# print(path_save) 
+
+dn = dt.datetime(2016, 2, 11, 20)
+
+
+download_images(dn, site = 'cariri', layer = 'O6')
