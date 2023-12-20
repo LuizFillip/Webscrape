@@ -126,5 +126,5 @@ download_from_periods(
         dn, 
         site = 'sao_luis', 
         ext = ['RSF'], 
-        end = True
+        end = end 
         )
