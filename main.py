@@ -2,7 +2,7 @@ import Webscrape as wb
 import GNSS as gs
 import base as b
 
-
+stations= ['amco', 'amcr', 'amha', 'ampt', 'amte', 'amua', 'aplj', 'apma', 'aps1', 'bele', 'bepa', 'impz', 'maba', 'mabb', 'mtji', 'naus', 'paar', 'pait', 'pasm', 'pove', 'riob', 'rogm', 'roji', 'salu', 'cruz', 'rogu', 'rovi', 'ceeu', 'ceft', 'rnna', 'pbjp']
 
 def download_gnss(year, rinex = True):
     
@@ -12,14 +12,14 @@ def download_gnss(year, rinex = True):
         )
 
             
-    for doy in range(1, 366, 1):
+    for doy in range(1, 315, 1):
         
         path = gs.paths(year, doy)
         
         # if rinex:
         wb.download_rinex(
                 path,
-                wb.miss_stations(path),
+                stations,
                 network = 'ibge'
                 )
     # else:
@@ -52,15 +52,7 @@ def chile(year = 2021):
 
 # download_gnss(2023, rinex = True)
 
-import os
-path = gs.paths(2023, 313)
 
-# if rinex:
-# wb.download_rinex(
-#         path,
-#         stations = None,
-#         network = 'ibge'
-# #         )
 # for sts in os.listdir(path.rinex):
 #     infile = os.path.join(
 #         path.rinex,

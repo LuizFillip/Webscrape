@@ -4,6 +4,7 @@ import datetime as dt
 import digisonde as dg
 import Webscrape as wb 
 import os 
+from tqdm import tqdm 
 
 
 PATH_IONO = 'database/iono/'
@@ -82,14 +83,17 @@ def download_from_periods(
         start, 
         site = 'sao_luis', 
         ext = ['RSF'], 
-        end = True
+        hours = 12
         ):
     
-    end = site[0].upper()
+    end = start + dt.timedelta(hours = hours)
+    
+    
     FOLDER_NAME = start.strftime(
-        '%Y%m%d' + end
+        '%Y%m%d' +  site[0].upper()
         )
     
+    make_dir(PATH_IONO)
     save_in = os.path.join(
         PATH_IONO,
         FOLDER_NAME
@@ -98,7 +102,7 @@ def download_from_periods(
     make_dir(save_in)
         
     
-    for dn in periods(start, end = end):
+    for dn in tqdm(periods(start, end = end)):
         
         url = wb.embrace_url(
             dn, 
@@ -110,21 +114,25 @@ def download_from_periods(
 
             if (any(f in link for f in ext) and 
                (iono_dt(link) == dn)):
-                                             
-             print('[download_iono]', link)
-             wb.download(
-                 url, 
-                 link,   
-                 save_in
-                 )
+                try:
+                 
+                     wb.download(
+                         url, 
+                         link,   
+                         save_in
+                         )
+                except:
+                    pass
           
-             
-dn = dt.datetime(2013, 1, 14, 15)
 
-end = dt.datetime(2013, 1, 15, 7)
-download_from_periods(
-        dn, 
-        site = 'sao_luis', 
-        ext = ['RSF'], 
-        end = end 
-        )
+def run():
+    dn = dt.datetime(2013, 12, 24, 20)
+
+    
+    download_from_periods(
+            dn, 
+            site = 'sao_luis', 
+            ext = ['RSF', 'SAO']
+            )
+    
+# run()

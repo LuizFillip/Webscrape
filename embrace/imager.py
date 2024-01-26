@@ -5,8 +5,16 @@ import base as b
 from tqdm import tqdm 
 
 
-
-def make_folder(url, root = 'database\\'):
+def delete():
+    
+    path = 'database/images/CA_2013_0610/'
+    
+    for f in os.listdir(path):
+        if 'png' in f:
+            os.remove(os.path.join(path, f))
+            
+            
+def make_folder(url, root = 'database\\images\\'):
     fn = url.split('/')[-2]
     
     path_to_save = os.path.join(
@@ -15,7 +23,8 @@ def make_folder(url, root = 'database\\'):
     return path_to_save
     
     
-def download_images(dn, site = 'cariri', layer = 'O6'):
+def download_images(dn, site = 'cariri', 
+                    layer = 'O6'):
     
     url = wb.embrace_url(
         dn, 
@@ -25,11 +34,13 @@ def download_images(dn, site = 'cariri', layer = 'O6'):
     
     path_to_save = make_folder(url)
     
-    print(site, layer, dn.strftime('%Y/%m/%d'))
+    desc = f'{site}-{layer}'
+    
+    print(dn.strftime('%Y/%m/%d'))
     
     for link in tqdm(
             wb.request(url),
-            'download_images'
+            desc
             ):
        
         if layer in link:
@@ -44,8 +55,9 @@ def download_images(dn, site = 'cariri', layer = 'O6'):
                     path_to_save
                     )
 
+def main():
+    dn = dt.datetime(2013, 6, 10, 20)
 
-dn = dt.datetime(2016, 2, 11, 20)
-
-
-download_images(dn, site = 'cariri', layer = 'O6')
+    
+    download_images(dn, site = 'cariri', layer = 'O6')
+    
