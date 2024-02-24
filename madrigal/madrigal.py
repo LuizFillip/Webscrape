@@ -1,32 +1,14 @@
 import requests 
 from bs4 import BeautifulSoup 
 import os
-
-user_infos = dict(fullname = "Luiz Fillip Rodrigues Vital", 
-                  affiliation = "UFCG", 
-                  email = "luizfillip6@gmail.com", 
-                  kinst = "5545", 
-                  year = "2013", 
-                  kindat = "7100", 
-                  format = "ascii")
-
-class URL(object):
-    
-    def __init__(self, user_infos):
-        
-        self.base = "http://cedar.openmadrigal.org/ftp/"
-        
-        user_infos["fullname"] = user_infos["fullname"].replace(" ", "+")
-
-        user = ('/'.join('{}/{}'.format(key, value) 
-                         for key, value in user_infos.items()))
-        
-        self.url = self.base + user 
+import datetime as dt 
 
 
-url = URL(user_infos).url
+# dates = ['2021_10_07', '2022_03_03', '2022_03_08',
+#          '2022_03_09', '2022_03_10', '2022_09_25', 
+#          '2022_09_26', '2022_09_27', '2022_09_28', '2022_09_29']
 
-save_in = ""
+
 
 def download_test(url, save_in):
 
@@ -39,18 +21,116 @@ def download_test(url, save_in):
         href = link['href']
         name = link.text.strip()
         
-        base = "http://cedar.openmadrigal.org/"
+
+    
+                        
+def download(href, path_to_save):
+    base = "http://cedar.openmadrigal.org/"
+    remote_file = requests.get(base + href)
+    
+    with open(path_to_save, 'wb') as f:
+        for chunk in remote_file.iter_content(chunk_size = 1024): 
+            if chunk: 
+                f.write(chunk) 
+
+class filenames(object):
+    
+    def __init__(self, filename):
         
-        if "minime" in name:
+        self.filename = filename
+        
+    @staticmethod 
+    def to_date(date, fmt):
+        return dt.datetime.strptime(date, fmt)
+    
+    @property
+    def minime(self):
+
+        try:
+        
+            s = self.filename.split('_')
+            obs_list = s[-1].split('.')
             
-            remote_file = requests.get(base + href)
-            print("downloading...", name)
+        except:
+            p = os.path.split(self.filename)[-1]
+            s = p.split('_')
+            obs_list = s[-1].split('.')
             
-            with open(os.path.join(save_in, name + ".gz"), 'wb') as f:
-                for chunk in remote_file.iter_content(chunk_size = 1024): 
-                    if chunk: 
-                        f.write(chunk) 
-                        
-a = "http://cedar.openmadrigal.org/ftp/fullname/Luiz+Fillip+Rodrigues+Vital/email/luizfillip6@gmail.com/affiliation/UFCG/kinst/5546/year/2013/kindat/7100/format/ascii/"                     
-download_test(a, save_in)
-                        
+        return self.to_date(obs_list[0], "%Y%m%d")
+    
+    @property
+    def bfp(self):
+        
+        s = self.filename.split('.')[0][3:-1]
+       
+        return self.to_date(s, '%y%m%d')
+    
+def build_url(
+        year = 2013, 
+        kindat = 7100, 
+        kinst = 5545, 
+        fmt = "ascii"
+        ):
+    
+    base = "http://cedar.openmadrigal.org/ftp/"
+    
+    user_infos = dict(
+        fullname = "Luiz Fillip Rodrigues Vital", 
+        email = "luizfillip6@gmail.com",
+        affiliation = "UFCG", 
+        kinst = str(kinst), 
+        year = str(year), 
+        kindat = str(kindat), 
+        format = fmt
+        )
+
+    
+    user_infos["fullname"] = user_infos["fullname"].replace(" ", "+")
+
+    join_infos = ('/'.join('{}/{}'.format(key, value) 
+            for key, value in user_infos.items()))
+    
+    return f'{base}{join_infos}/'
+
+def filter_by_month(name, month):
+    try:
+        date = filenames(name).bfp 
+        
+        if date.month == month:
+            return True
+        else:
+            return False
+        
+    except:
+        pass
+
+
+
+def MadrigalDownload(url, save_in):
+    
+    r = requests.get(url)
+    s = BeautifulSoup(r.text, "html.parser")
+    
+    parser = s.find_all('a', href = True)
+    
+    for link in parser:
+        href = link['href']
+        name = link.text.strip()
+        
+        for month in [3, 9]:
+            
+            if filter_by_month(name, month):
+                path_to_save = os.path.join(
+                    save_in, 
+                    str(month), 
+                    name
+                    )
+                print('downloding...', name)
+                download(href, path_to_save)
+            
+    
+
+save_in = "FabryPerot/data/FPI/"
+url = build_url(kinst = 5362, year = 2022)
+
+MadrigalDownload(url, save_in)
