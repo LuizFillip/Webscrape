@@ -83,7 +83,7 @@ def download_from_periods(
         start, 
         site = 'sao_luis', 
         ext = ['RSF'], 
-        hours = 12
+        hours = 14
         ):
     
     end = start + dt.timedelta(hours = hours)
@@ -126,7 +126,7 @@ def download_from_periods(
           
 
 def run():
-    dn = dt.datetime(2013, 12, 24, 20)
+    dn = dt.datetime(2022, 7, 24, 19)
 
     
     download_from_periods(
@@ -135,4 +135,4 @@ def run():
             ext = ['RSF', 'SAO']
             )
     
-# run()
+run()

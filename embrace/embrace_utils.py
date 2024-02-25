@@ -18,11 +18,11 @@ site_codes = {
                         }, 
          
          "imager": {
-                 "cariri": "CA", 
-                "Bom Jesus da Lapa" : "BJL", 
+                "cariri": "CA", 
+                "lapa" : "BJL", 
                 "cachoeira": "CP", 
-                "Comandante Ferraz": "CF", 
-                "Sao Martinho da Serra": "SMS"
+                "ferraz": "CF", 
+                "martinho": "SMS"
                     }, 
          
          'magnetometer': {

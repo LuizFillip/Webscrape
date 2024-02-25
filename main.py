@@ -4,15 +4,11 @@ import base as b
 
 stations= ['amco', 'amcr', 'amha', 'ampt', 'amte', 'amua', 'aplj', 'apma', 'aps1', 'bele', 'bepa', 'impz', 'maba', 'mabb', 'mtji', 'naus', 'paar', 'pait', 'pasm', 'pove', 'riob', 'rogm', 'roji', 'salu', 'cruz', 'rogu', 'rovi', 'ceeu', 'ceft', 'rnna', 'pbjp']
 
-def download_gnss(year, rinex = True):
-    
-    
-    sdoy = b.last_folder_modified(
-        gs.paths(year, 0).rinex
-        )
+stations = ['AREG', 'areg', 'ANTF', 'IQQ', 'QUI']
 
-            
-    for doy in range(1, 315, 1):
+def download_gnss(year, stations, network = 'igs'):
+    
+    for doy in range(1, 365, 1):
         
         path = gs.paths(year, doy)
         
@@ -20,13 +16,13 @@ def download_gnss(year, rinex = True):
         wb.download_rinex(
                 path,
                 stations,
-                network = 'ibge'
+                network
                 )
-    # else:
-        wb.download_orbit(
-            year, 
-            doy
-            )
+        # else:
+            # wb.download_orbit(
+            #     year, 
+            #     doy
+            #     )
 
     return None
 
@@ -49,17 +45,7 @@ def chile(year = 2021):
                 network = 'chile' 
                 )
 
+year = 2019
+download_gnss(year, stations, network = 'igs')
 
-# download_gnss(2023, rinex = True)
 
-
-# for sts in os.listdir(path.rinex):
-#     infile = os.path.join(
-#         path.rinex,
-#         sts
-#         )
-#     print(sts)
-#     if sts.endswith('d'):
-#         wb.crx2rnx(infile)
-#     else:
-#         os.remove(infile)

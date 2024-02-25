@@ -23,8 +23,11 @@ def make_folder(url, root = 'database\\images\\'):
     return path_to_save
     
     
-def download_images(dn, site = 'cariri', 
-                    layer = 'O6'):
+def download_images(
+        dn, 
+        site = 'cariri', 
+        layer = 'O6'
+        ):
     
     url = wb.embrace_url(
         dn, 
@@ -33,15 +36,10 @@ def download_images(dn, site = 'cariri',
         )
     
     path_to_save = make_folder(url)
-    
-    desc = f'{site}-{layer}'
-    
-    print(dn.strftime('%Y/%m/%d'))
-    
-    for link in tqdm(
-            wb.request(url),
-            desc
-            ):
+    date = dn.strftime('%Y/%m/%d')
+    desc = f'{date}-{site}-{layer}'
+        
+    for link in tqdm(wb.request(url), desc):
        
         if layer in link:
             
@@ -56,8 +54,8 @@ def download_images(dn, site = 'cariri',
                     )
 
 def main():
-    dn = dt.datetime(2013, 6, 10, 20)
-
+    dn = dt.datetime(2022, 7, 24, 20)
     
-    download_images(dn, site = 'cariri', layer = 'O6')
+    download_images(dn, site = 'lapa', layer = 'O6')
     
+# main()
