@@ -1,25 +1,18 @@
 import Webscrape as wb 
-import os
 import GNSS as gs
 
 
-   
-
 infos = {
     "ibge" : 'https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados', 
-   
+    'igs': 'https://igs.bkg.bund.de/root_ftp/IGS/obs/',
     'chile': 'http://gps.csn.uchile.cl/data/', 
     'lisn': 'http://lisn.igp.gob.pe/jdata/database/gps/rinex/',
     'gage': 'https://gage-data.earthscope.org/archive/gnss/rinex/obs/2013/001'
     }
 
+'https://igs.bkg.bund.de/root_ftp/IGS/obs/2019/086/'
 
-
-def rinex_url(
-        year:int, 
-        doy:int, 
-        network:str = "ibge"
-        ):
+def rinex_url(year, doy, network:str = "ibge"):
     date = gs.date_from_doy(year, doy)
     doy_str = date.strftime("%j")
     return f"{infos[network]}/{year}/{doy_str}/"
@@ -55,59 +48,9 @@ def mgex_fname(dn):
 
 
 
-def date_from_fname(fname):
-    week = int(fname[3:7])
-    number = int(fname[7:8])
-
-    return gs.doy_from_gpsweek(week, number)
 
 
 
-class minimum_doy(object):
-    
-    def __init__(self, path):
-        
-        self.path = path
-        
-    def orbit(self, const = 'com'):
-        
-        path = self.path.orbit(const)
-        
-        return max([date_from_fname(f)[1] for f 
-             in os.listdir(path)])
-
-    @property
-    def rinex(self):
-        return self.cond_max(
-            self.list_doy(self.path.rinex)
-            )
-    
-    @property   
-    def tec(self):
-        return self.cond_max(
-            self.list_doy(self.path.tec)
-            )
-    
-    @property   
-    def roti(self):
-        list_doy = [
-            int(f.replace('.txt', '')) 
-            for f in os.listdir(self.path.roti)
-            ]
-        return self.cond_max(list_doy)
-    
-    @staticmethod
-    def list_doy(path):
-        return [int(f) for f in 
-                os.listdir(path) if f != '365']
-    
-    @staticmethod
-    def cond_max(list_doy):
-        if len(list_doy) == 0:
-            return 1
-        else:
-            return max(list_doy)
-        
 
 
 
