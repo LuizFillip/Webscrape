@@ -7,7 +7,8 @@ infos = {
     'igs': 'https://igs.bkg.bund.de/root_ftp/IGS/obs/',
     'chile': 'http://gps.csn.uchile.cl/data/', 
     'lisn': 'http://lisn.igp.gob.pe/jdata/database/gps/rinex/',
-    'gage': 'https://gage-data.earthscope.org/archive/gnss/rinex/obs/2013/001'
+    'gage': 'https://gage-data.earthscope.org/archive/gnss/rinex/obs/',
+    'garner': 'http://garner.ucsd.edu/pub/rinex/'
     }
 
 'https://igs.bkg.bund.de/root_ftp/IGS/obs/2019/086/'
@@ -52,5 +53,4 @@ def mgex_fname(dn):
 
 
 
-
-
+# infos['garner']
