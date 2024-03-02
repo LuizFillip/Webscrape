@@ -2,7 +2,7 @@ import Webscrape as wb
 import GNSS as gs
 
 
-infos = {
+networks = {
     "ibge" : 'https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados', 
     'igs': 'https://igs.bkg.bund.de/root_ftp/IGS/obs/',
     'chile': 'http://gps.csn.uchile.cl/data/', 
@@ -13,10 +13,10 @@ infos = {
 
 'https://igs.bkg.bund.de/root_ftp/IGS/obs/2019/086/'
 
-def rinex_url(year, doy, network:str = "ibge"):
+def rinex_url(year, doy, network = "ibge"):
     date = gs.date_from_doy(year, doy)
     doy_str = date.strftime("%j")
-    return f"{infos[network]}/{year}/{doy_str}/"
+    return f"{networks[network]}/{year}/{doy_str}/"
 
 
 
@@ -35,22 +35,15 @@ def filter_rinex(
           
   return out
 
-def mgex_fname(dn):
+def rinex3_fname(dn):
     doy = dn.strftime('%j')
     year = dn.year
     doy = dn.timetuple().tm_yday
-    week, number = gs.gpsweek_from_doy_and_year(
-        year, doy)
+    week, number = gs.gpsweek_from_doy_and_year(year, doy)
     
-    url = infos['igs'] + f'{week}/'
+    url = networks['igs'] + f'{week}/'
     
     return url, f'IGS0OPSFIN_{year}{doy}0000_01D_15M_ORB.SP3.gz'
 
 
 
-
-
-
-
-
-# infos['garner']
