@@ -89,24 +89,19 @@ def uncompress_convert(path_root):
             
 
         
-def test_one_day_download():
+def test_one_day_download(year, doy ):
     
     year, doy = 2019, 1
     
-    
-    
     path = gs.paths(year, doy, root = 'D:\\')
         
-    # download_rinex(
-    #             path,
-    #             stations,
-    #             network = 'igs'
-    #             )
+    download_rinex(
+                path,
+                stations = None,
+                network = 'igs'
+                )
 
-year = 2018
-doy = 1
-
-def test_filter_stations():
+def test_filter_stations(year, doy):
 
     url = wb.rinex_url(year, doy, network = 'garner')
     
