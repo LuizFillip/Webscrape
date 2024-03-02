@@ -39,7 +39,7 @@ def unzip_orbit(files, path_to_save):
     os.remove(files)
     
     
-def unzip_ZIP(zip_path) -> None:
+def unzip_zip(zip_path) -> None:
     
     zip_ref = zipfile.ZipFile(zip_path, "r") 
     
