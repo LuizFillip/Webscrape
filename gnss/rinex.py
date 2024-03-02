@@ -9,7 +9,7 @@ PATH_CHILE = 'D:\\database\\GNSS\\rinex\\chile\\'
 
 def filter_by_stations(href, stations):
     if any([z in href for z in stations]):
-        ends = ['zip', 'd.Z', 'crx.gz']
+        ends = ['d.zip', 'd.Z', 'crx.gz']
         if any([href.endswith(e) for e in ends]):
            return True
         else:
@@ -27,18 +27,13 @@ def download_rinex(
     year, doy = int(path.year), int(path.doy)
     
     url = wb.rinex_url(year, doy, network)
-    
-    if network == 'chile':
-        path_to_save = PATH_CHILE
-        make_dir(path_to_save)
-    else:
-        path_to_save = path.rinex
-        make_dir(path_to_save)
+
+    path_to_save = path.rinex
+    make_dir(path_to_save)
     
     for href in wb.request(url):
         
         if filter_by_stations(href, stations):
-            print()
             print('[download_rinex]', year, doy, href)
             wb.download(
                 url, 
@@ -94,11 +89,11 @@ def uncompress_convert(path_root):
             
 
         
-def main():
+def test_one_day_download():
     
     year, doy = 2019, 1
     
-    stations = ['AREG', 'areg', 'ANTF', 'IQQ', 'QUI']
+    
     
     path = gs.paths(year, doy, root = 'D:\\')
         
@@ -108,5 +103,15 @@ def main():
     #             network = 'igs'
     #             )
 
+year = 2018
+doy = 1
 
+def test_filter_stations():
 
+    url = wb.rinex_url(year, doy, network = 'garner')
+    
+    stations = ['areg', 'riop',  'antf', 'iqqe', 'qui3']
+    
+    for href in wb.request(url):
+        if filter_by_stations(href, stations):
+            print(href)
