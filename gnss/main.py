@@ -1,10 +1,6 @@
 import Webscrape as wb
 import GNSS as gs
 
-ibge_stations= ['amco', 'amcr', 'amha', 'ampt', 'amte', 'amua', 'aplj', 'apma', 'aps1', 
-           'bele', 'bepa', 'impz', 'maba', 'mabb', 'mtji', 'naus', 'paar', 'pait',
-           'pasm', 'pove', 'riob', 'rogm', 'roji', 'salu', 'cruz', 'rogu', 'rovi', 
-           'ceeu', 'ceft', 'rnna', 'pbjp']
 
 
 igs_stations = ['areg', 'riop',  'antf', 'iqqe', 'qui3']
@@ -48,5 +44,5 @@ def chile(year = 2021):
                 network = 'chile' 
                 )
 
-for year in range(2013, 2022):
+for year in range(2016, 2022):
     download_gnss(year, igs_stations)

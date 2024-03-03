@@ -1,4 +1,4 @@
-from .gnss_utils import *
+from .gnss_utils import ibge_stations
 from .rinex import *
 from .orbits import *
 from .missing import *
