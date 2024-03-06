@@ -1,13 +1,15 @@
 import pandas as pd
 from base import make_dir
 import datetime as dt
-import digisonde as dg
+# import digisonde as dg
 import Webscrape as wb 
 import os 
 from tqdm import tqdm 
 
 
 PATH_IONO = 'database/iono/'
+PATH_IONO = 'D:\\drift\\'
+
 
 def download_sao(year):
     
@@ -59,7 +61,10 @@ def iono_dt(file):
         second
         )
 
-def periods(dn, end = False):
+def periods(dn, hours = 24):
+    
+    end = dn + dt.timedelta(hours = hours)
+
     
     if end:
         end = dn + dt.timedelta(hours = 10)
@@ -76,22 +81,28 @@ def periods(dn, end = False):
             periods = 12
             )
 
-
+def FOLDER_NAME(dn, site = 'saa', dirc = 0):
+    if dirc == 1:
+        FOLDER_NAME = dn.strftime(
+            '%Y%m%d' +  site[0].upper()
+            )
+    else:
+        FOLDER_NAME = dn.strftime(
+            F'{site}\\%Y\\%j' 
+            )
+    return FOLDER_NAME
 
 
 def download_from_periods(
         start, 
         site = 'sao_luis', 
         ext = ['RSF'], 
-        hours = 14
+        hours = 24
         ):
     
-    end = start + dt.timedelta(hours = hours)
     
     
-    FOLDER_NAME = start.strftime(
-        '%Y%m%d' +  site[0].upper()
-        )
+    
     
     make_dir(PATH_IONO)
     save_in = os.path.join(
@@ -102,7 +113,7 @@ def download_from_periods(
     make_dir(save_in)
         
     
-    for dn in tqdm(periods(start, end = end)):
+    for dn in tqdm(periods(start, hours)):
         
         url = wb.embrace_url(
             dn, 
@@ -112,8 +123,8 @@ def download_from_periods(
         
         for link in wb.request(url):
 
-            if (any(f in link for f in ext) and 
-               (iono_dt(link) == dn)):
+            if (any(f in link for f in ext) ): #and (iono_dt(link) == dn)
+               
                 try:
                  
                      wb.download(
@@ -132,7 +143,40 @@ def run():
     download_from_periods(
             dn, 
             site = 'sao_luis', 
-            ext = ['RSF', 'SAO']
+            ext = ['DVL', 'SAO']
             )
     
-run()
+# run()
+
+def download_whole_day():
+    
+ 
+    site = 'sao_luis'
+    ext = ['.DVL', '.SAO']
+    for day in tqdm(range(365)):
+        delta = dt.timedelta(days = 0)
+        dn = dt.datetime(2023, 1, 1, 0) + delta
+        
+        url = wb.embrace_url(
+            dn, 
+            site = site, 
+            inst = 'ionosonde'
+            ) 
+        
+        save_in = os.path.join(
+             PATH_IONO,
+             FOLDER_NAME(dn, site = 'saa', dirc = 0)
+             )
+         
+        
+        for link in wb.request(url):
+        
+            if any(f in link for f in ext): 
+                            
+                wb.download(
+                    url, 
+                    link,   
+                    save_in
+                    )
+    
+    return 
