@@ -53,9 +53,10 @@ def download_images(
                     path_to_save
                     )
 
-def main():
-    dn = dt.datetime(2022, 7, 24, 20)
+# def main():
+
     
-    download_images(dn, site = 'lapa', layer = 'O6')
-    
-# main()
+# # main()
+# dn = dt.datetime(2019, 2, 24, 21)
+
+# wb.download_images(dn, site = 'cariri', layer = 'O6')

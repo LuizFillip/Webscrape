@@ -7,36 +7,10 @@ import os
 from tqdm import tqdm 
 
 
-PATH_IONO = 'database/iono/'
-PATH_IONO = 'D:\\drift\\'
+PATH_IONO = 'database/ionogram/'
+# PATH_IONO = 'D:\\drift\\'
 
 
-def download_sao(year):
-    
-    save_in = os.path.join(
-        PATH_IONO,
-        f'{year}'
-        )
-    
-    make_dir(save_in)
-    
-    dw = wb.EMBRACE(save_in = save_in)
-
-    # miss_dates = dg.get_missing_dates(year)
-    
-    miss_dates = dg.missing_dates_2(year)
-        
-    
-    delta = dt.timedelta(hours = 19)
-    
-    for dn in miss_dates:
-        
-        dn  = pd.to_datetime(dn) + delta
-        
-        dw.download_drift(
-                dn, 
-                ext = ['.SAO', '.RSF']
-                )
 
 def iono_dt(file):        
     args = file[:-4].split("_")
@@ -93,27 +67,24 @@ def FOLDER_NAME(dn, site = 'saa', dirc = 0):
     return FOLDER_NAME
 
 
-def download_from_periods(
+def download_ionograms(
         start, 
         site = 'sao_luis', 
         ext = ['RSF'], 
-        hours = 24
+        hours = 14
         ):
-    
-    
-    
-    
     
     make_dir(PATH_IONO)
     save_in = os.path.join(
         PATH_IONO,
-        FOLDER_NAME
+        FOLDER_NAME(start, site = 'saa', dirc = 1)
         )
     
     make_dir(save_in)
-        
     
-    for dn in tqdm(periods(start, hours)):
+    dn = start.strftime('%Y-%m-%d')
+    info = f'{dn}-{site}'
+    for dn in tqdm(periods(start, hours), info):
         
         url = wb.embrace_url(
             dn, 
@@ -123,7 +94,8 @@ def download_from_periods(
         
         for link in wb.request(url):
 
-            if (any(f in link for f in ext) ): #and (iono_dt(link) == dn)
+            if (any(f in link for f in ext) and 
+                (iono_dt(link) == dn)):
                
                 try:
                  
@@ -136,25 +108,11 @@ def download_from_periods(
                     pass
           
 
-def run():
-    dn = dt.datetime(2022, 7, 24, 19)
 
+def download_whole_day(site = 'sao_luis', ext = ['.SAO']):
     
-    download_from_periods(
-            dn, 
-            site = 'sao_luis', 
-            ext = ['DVL', 'SAO']
-            )
-    
-# run()
-
-def download_whole_day():
-    
- 
-    site = 'sao_luis'
-    ext = ['.DVL', '.SAO']
-    for day in tqdm(range(365)):
-        delta = dt.timedelta(days = 0)
+    for day in tqdm(range(182, 366)):
+        delta = dt.timedelta(days = day)
         dn = dt.datetime(2023, 1, 1, 0) + delta
         
         url = wb.embrace_url(
@@ -163,20 +121,34 @@ def download_whole_day():
             inst = 'ionosonde'
             ) 
         
-        save_in = os.path.join(
-             PATH_IONO,
-             FOLDER_NAME(dn, site = 'saa', dirc = 0)
-             )
-         
-        
+        # 
+        # save_in = os.path.join(
+        #       PATH_IONO,
+        #       FOLDER_NAME(dn, site = 'saa', dirc = 0)
+        #       )
+        save_in = 'D:\\drift\\dece\\'
         for link in wb.request(url):
-        
-            if any(f in link for f in ext): 
-                            
-                wb.download(
-                    url, 
-                    link,   
-                    save_in
-                    )
+            if 'XML' in link:
+                pass
+            else:
+                if any(f in link for f in ext): 
+                    print(link)
+                    wb.download(
+                        url, 
+                        link,   
+                        save_in
+                        )
     
     return 
+
+
+# start = dt.datetime(2013, 1, 14, 20)
+# download_from_periods(
+#         start, 
+#         site = 'sao_luis', 
+#         ext = ['RSF'], 
+#         hours = 20
+#         )
+
+
+# download_whole_day(site = 'sao_luis', ext = ['SAO'])
