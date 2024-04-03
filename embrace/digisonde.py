@@ -141,8 +141,8 @@ def download_whole_day(site = 'sao_luis', ext = ['.SAO']):
     
     return 
 
-
-# start = dt.datetime(2013, 1, 14, 20)
+# delta= dt.timedelta(hours = 21)
+# start = dt.datetime(2013, 1, 14, 0) + delta
 # download_from_periods(
 #         start, 
 #         site = 'sao_luis', 
@@ -152,3 +152,6 @@ def download_whole_day(site = 'sao_luis', ext = ['.SAO']):
 
 
 # download_whole_day(site = 'sao_luis', ext = ['SAO'])
+# hours = 10
+
+# periods(start, hours)
