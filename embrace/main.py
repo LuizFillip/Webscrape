@@ -28,18 +28,31 @@ dates = [
      '2023-07-10'
  ]
 
-delta = dt.timedelta(hours = 21)
-for dn in pd.to_datetime(dates):
+dates = [
+    '2017-04-03',
+    '2016-02-11',
+    '2013-12-24',
+    '2016-10-03',
+    '2017-03-02',
+    '2017-09-17',
+    '2019-05-02',
+    '2020-08-20',
+    '2023-07-10']
 
-    # wb.download_images(
-    #     dn, 
-    #     site = 'cariri', 
-    #     layer = 'O6'
-    #     )
+
+def run():
+    delta = dt.timedelta(hours = 21)
+    for dn in pd.to_datetime(dates):
     
-    wb.download_ionograms(
-            dn + delta, 
-            site = 'sao_luis', 
-            ext = ['RSF'], 
-            hours = 16
-            ) 
+        # wb.download_images(
+        #     dn, 
+        #     site = 'cariri', 
+        #     layer = 'O6'
+        #     )
+        for site in ['sao_luis', 'fortaleza']:
+            wb.download_ionograms(
+                    dn + delta, 
+                    site = site, 
+                    ext = ['RSF'], 
+                    hours = 16
+                    ) 
