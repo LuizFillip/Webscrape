@@ -3,14 +3,17 @@ import datetime as dt
 import imager as im 
 import json 
 from tqdm import tqdm 
+import base as b 
 
-def count_occurrences(links, emission = 'O6'):
+
+def get_dates(links, emission = 'O6'):
             
     return [im.fn2datetime(f) for f in links if emission in f]
 
 def get_infos(links, emission = 'O6'):
     
-    d = count_occurrences(links, emission=emission)
+    d = get_dates(links, emission)
+    
     begin =  d[0]
     end = d[-1]
     delta = (end - begin).seconds / 3600 
@@ -40,9 +43,11 @@ def join_layers(dn, site = 'cariri'):
 
 
 
-def run_days(year):
+def run_days(year, site = 'cariri'):
     
     out = {}
+    
+    b.make_dir(site)
     
     for day in tqdm(range(365), str(year)):
         
@@ -50,19 +55,29 @@ def run_days(year):
         
         dn = dt.datetime(year, 1, 1) + delta 
         try:
-            out.update(join_layers(dn, site = 'cariri'))
+            out.update(join_layers(dn, site = site))
         except:
             continue
         
+    save_in = f'{site}/{year}'
+    
+    with open(save_in, "w") as f:
+        json.dump(out, f)
+        
     return out
 
-out = {}
 
-for year in range(2013, 2024):
-    
-    out.update(run_days(year))
-    
-save_in = 'cariri'
+def run_years(site = 'cariri'):
 
-with open(save_in, "w") as f:
-    json.dump(out, f)
+    out = {}
+    
+    for year in range(2013, 2024):
+        
+        out.update(run_days(year, site = site))
+        
+    save_in = ''
+    
+    with open(site, "w") as f:
+        json.dump(out, f)
+        
+# run_years(site = 'cariri')

@@ -56,14 +56,12 @@ def periods(dn, hours = 24):
             )
 
 def FOLDER_NAME(dn, site = 'saa', dirc = 0):
+    
+    ext = site[0].upper()
     if dirc == 1:
-        FOLDER_NAME = dn.strftime(
-            '%Y%m%d' +  site[0].upper()
-            )
+        FOLDER_NAME = dn.strftime('%Y%m%d' +  ext)
     else:
-        FOLDER_NAME = dn.strftime(
-            F'{site}\\%Y\\%j' 
-            )
+        FOLDER_NAME = dn.strftime(F'{ext}\\%Y\\%j')
     return FOLDER_NAME
 
 
@@ -77,7 +75,7 @@ def download_ionograms(
     make_dir(PATH_IONO)
     save_in = os.path.join(
         PATH_IONO,
-        FOLDER_NAME(start, site = 'saa', dirc = 1)
+        FOLDER_NAME(start, site = site, dirc = 1)
         )
     
     make_dir(save_in)
@@ -97,15 +95,15 @@ def download_ionograms(
             if (any(f in link for f in ext) and 
                 (iono_dt(link) == dn)):
                
-                try:
+                # try:
                  
-                     wb.download(
-                         url, 
-                         link,   
-                         save_in
-                         )
-                except:
-                    pass
+                wb.download(
+                    url, 
+                    link,   
+                    save_in
+                    )
+                # except:
+                #     pass
           
 
 
@@ -142,16 +140,11 @@ def download_whole_day(site = 'sao_luis', ext = ['.SAO']):
     return 
 
 # delta= dt.timedelta(hours = 21)
-# start = dt.datetime(2013, 1, 14, 0) + delta
-# download_from_periods(
+# start = dt.datetime(2014, 1, 28, 21)
+# download_ionograms(
 #         start, 
-#         site = 'sao_luis', 
+#         site = 'fortaleza', 
 #         ext = ['RSF'], 
-#         hours = 20
+#         hours = 12
 #         )
 
-
-# download_whole_day(site = 'sao_luis', ext = ['SAO'])
-# hours = 10
-
-# periods(start, hours)

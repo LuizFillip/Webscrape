@@ -39,20 +39,52 @@ dates = [
     '2020-08-20',
     '2023-07-10']
 
+dates = [
+    '2015-01-19',
+    '2015-01-22',
+    '2017-08-20', 
+    '2017-08-21', 
+    '2017-08-22', 
+    '2017-09-16',
+    '2017-09-21',
+    '2017-10-17', 
+    '2017-10-20', 
+    '2017-10-22', 
+    '2019-06-01', 
+    '2019-08-29',
+    '2019-08-30'
+    ]
 
-def run():
-    delta = dt.timedelta(hours = 21)
-    for dn in pd.to_datetime(dates):
+        
+# run(dates)
+
+def download_oneday(
+        dn, 
+        site_img = 'cariri', 
+        site_dig = 'sao_luis'
+        ):
     
-        # wb.download_images(
-        #     dn, 
-        #     site = 'cariri', 
-        #     layer = 'O6'
-        #     )
-        for site in ['sao_luis', 'fortaleza']:
-            wb.download_ionograms(
-                    dn + delta, 
-                    site = site, 
-                    ext = ['RSF'], 
-                    hours = 16
-                    ) 
+    delta = dt.timedelta(hours = 21)
+    
+    # wb.download_images(
+    #     dn, 
+    #     site = site_img, 
+    #     layer = 'O6'
+    #     )
+    
+    wb.download_ionograms(
+            dn + delta, 
+            site = site_dig, 
+            ext = ['RSF'], 
+            hours = 16
+            ) 
+
+# dn = dt.datetime(2014, 1, 28)
+# download_oneday(dn)
+
+# def run(dates):
+
+#     for dn in pd.to_datetime(dates):
+#         download_oneday(dn)
+        
+        
