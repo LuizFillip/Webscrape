@@ -89,6 +89,10 @@ def filter_by_month(name, month):
     except:
         pass
 
+def cachoeira_file(f):
+    date = f.split('.')[0]
+    fmt = '%y%m%d'
+    return dt.datetime.strptime(date[3:-1], fmt)
 
 
 def MadrigalDownload(url, save_in):
@@ -101,21 +105,29 @@ def MadrigalDownload(url, save_in):
     for link in parser:
         href = link['href']
         name = link.text.strip()
-        
-        for month in [3, 9]:
+        try:
+            dn = cachoeira_file(name)
             
-            if filter_by_month(name, month):
+            if dn.month == 7:
+                # if filter_by_month(name, month):
                 path_to_save = os.path.join(
                     save_in, 
-                    str(month), 
                     name
                     )
+                
                 print('downloding...', name)
                 download(href, path_to_save)
+        except:
+            continue
             
     
 def main():
-    save_in = "FabryPerot/data/FPI/"
+    save_in = "database/FabryPerot/cj/"
     url = build_url(kinst = 5362, year = 2022)
     
     MadrigalDownload(url, save_in)
+    
+main()
+
+f = 'bfp220728g.7100.txt'
+

@@ -19,6 +19,14 @@ HTTPConnection.default_socket_options = (
 )
 
 
+HTTPConnection.default_socket_options = ( 
+    HTTPConnection.default_socket_options + [
+    (socket.SOL_SOCKET, socket.SO_SNDBUF, 1000000), #1MB in byte
+    (socket.SOL_SOCKET, socket.SO_RCVBUF, 1000000)
+])
+
+
+
 
 def download(
         url: str, 
@@ -56,5 +64,15 @@ def request(url, verify = False) -> list:
     parser = s.find_all('a', href = True)
 
     return [link['href'] for link in parser]
+
+from requests.auth import HTTPBasicAuth
+
+url = 'https://aer-nc-web.nict.go.jp/gaia/wk3/gaia/'
+
+username = 'realion'
+password = 'DataDL01'
+
+# r = requests.get(url, auth=HTTPBasicAuth(username, password))
+# s = BeautifulSoup(r.text, "html.parser")
 
 

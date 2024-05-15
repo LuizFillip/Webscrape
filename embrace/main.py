@@ -73,14 +73,14 @@ def download_oneday(
     #     )
     
     wb.download_ionograms(
-            dn + delta, 
+            dn, 
             site = site_dig, 
-            ext = ['RSF'], 
-            hours = 16
+            ext = ['SAO'], 
+            hours = 20
             ) 
 
-# dn = dt.datetime(2014, 1, 28)
-# download_oneday(dn)
+dn = dt.datetime(2019, 5, 2, 18)
+download_oneday(dn)
 
 # def run(dates):
 
