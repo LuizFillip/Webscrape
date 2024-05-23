@@ -92,12 +92,22 @@ start = dt.datetime(2017, 8, 30, 18)
 start = dt.datetime(2013, 12, 24, 18)
 start = dt.datetime(2014, 1, 2, 18)
 start = dt.datetime(2022, 7, 24, 18)
+start = dt.datetime(2013, 5, 15, 18)
 
-download_ionograms(
-        start, 
-        site = 'cachoeira', 
-        ext = ['RSF', 'SAO'], 
-        hours = 14
-        )
+
+dates = pd.date_range(
+    '2022-07-01 21:00', 
+    '2022-08-01 21:00', 
+    freq = '1D'
+    )
+
+for dn in dates:
+    for site in ['fortaleza', 'sao_luis', 'cachoeira']:
+        download_ionograms(
+                dn, 
+                site = site, 
+                ext = ['RSF', 'SAO'], 
+                hours = 14
+                )
 
 # periods(start, hours = 14)

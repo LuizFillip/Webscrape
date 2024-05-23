@@ -53,9 +53,13 @@ def download_images(
                     path_to_save
                     )
 
-def main():
-    dn = dt.datetime(2022, 7, 24, 21)
-    for site in ['lapa', 'cachoeira']:
-        wb.download_images(dn, site, layer = 'O6')
+# def main():
+#     dn = dt.datetime(2022, 7, 24, 21)
+#     for site in ['lapa', 'cachoeira']:
+       
         
 # main()
+
+dn = dt.datetime(2022, 7, 25, 21)
+site = 'lapa'
+wb.download_images(dn, site, layer = 'O6')
