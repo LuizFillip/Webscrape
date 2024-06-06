@@ -1,14 +1,13 @@
 import pandas as pd
 from base import make_dir
 import datetime as dt
-# import digisonde as dg
+import core as c
 import Webscrape as wb 
 import os 
 from tqdm import tqdm 
 
 
 PATH_IONO = 'database/ionogram/'
-# PATH_IONO = 'D:\\drift\\'
 
 
 def iono_dt(f):        
@@ -24,11 +23,7 @@ def periods(dn, hours = 24):
     
     end = dn + dt.timedelta(hours = hours)
 
-
-    return pd.date_range(
-        dn, end, 
-        freq = '10min'
-        )
+    return pd.date_range(dn, end, freq = '10min')
     
     
 
@@ -73,17 +68,18 @@ def download_ionograms(
                 if 'XML' in link:
                     pass
                 else:
-                    if (iono_dt(link) == dn):
-                        # try:
-                         
-                        wb.download(
-                            url, 
-                            link,   
-                            save_in
-                            )
-                        # except:
-                        #     pass
-          
+                    try:
+                        if (iono_dt(link) == dn):
+                            # try:
+                             
+                            wb.download(
+                                url, 
+                                link,   
+                                save_in
+                                )
+                    except:
+                        pass
+      
 
 
 
@@ -95,19 +91,39 @@ start = dt.datetime(2022, 7, 24, 18)
 start = dt.datetime(2013, 5, 15, 18)
 
 
-dates = pd.date_range(
-    '2022-07-01 21:00', 
-    '2022-08-01 21:00', 
-    freq = '1D'
-    )
+def download_dates(date):
+    
+    # dates = pd.date_range(
+    #     '2015-12-02 21:00', 
+    #     '2015-12-01 21:00', 
+    #     freq = '1D'
+    #     )
 
-for dn in dates:
-    for site in ['fortaleza', 'sao_luis', 'cachoeira']:
-        download_ionograms(
-                dn, 
-                site = site, 
-                ext = ['RSF', 'SAO'], 
-                hours = 14
-                )
+    
+    dates = c.undisturbed_days(date, threshold = 18).index 
+    sites  = ['fortaleza', 'sao_luis',
+              'cachoeira', 'boa_vista']
+    
+    delta = dt.timedelta(hours = 20)
+    for dn in dates:
+    
+        for site in sites:
+            download_ionograms(
+                    dn + delta, 
+                    site = site, 
+                    ext = ['RSF', 'SAO'], 
+                    hours = 4
+                    )
 
-# periods(start, hours = 14)
+def main():
+    
+    dn = dt.datetime(2015, 12, 14, 19)
+    site = 'boa_vista'
+    download_ionograms(
+            dn , 
+            site = site, 
+            ext = ['RSF', 'SAO'], 
+            hours = 18
+            )
+    
+main()

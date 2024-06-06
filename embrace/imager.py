@@ -60,6 +60,6 @@ def download_images(
         
 # main()
 
-dn = dt.datetime(2022, 7, 25, 21)
-site = 'lapa'
-wb.download_images(dn, site, layer = 'O6')
+# dn = dt.datetime(2022, 7, 25, 21)
+# site = 'lapa'
+# wb.download_images(dn, site, layer = 'O6')
