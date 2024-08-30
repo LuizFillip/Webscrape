@@ -1,14 +1,14 @@
 import pandas as pd
 from base import make_dir
 import datetime as dt
-import core as c
+# import core as c
 import Webscrape as wb 
 import os 
 from tqdm import tqdm 
 
 
 PATH_IONO = 'database/ionogram/'
-
+# PATH_IONO = 'D:\\iono\\bv\\'
 
 def iono_dt(f):        
     
@@ -33,7 +33,7 @@ def FOLDER_NAME(dn, site = 'saa', dirc = 0):
     if dirc == 1:
         FOLDER_NAME = dn.strftime('%Y%m%d' +  ext)
     else:
-        FOLDER_NAME = dn.strftime(F'{ext}\\%Y\\%j')
+        FOLDER_NAME = dn.strftime('\\%Y\\%Y%m%d' + ext)
     return FOLDER_NAME
 
 
@@ -45,8 +45,12 @@ def download_ionograms(
         ):
     
     make_dir(PATH_IONO)
+    folder_year = os.path.join(PATH_IONO, start.strftime('%Y'))
+    make_dir(folder_year
+        
+        )
     save_in = os.path.join(
-        PATH_IONO,
+        folder_year,
         FOLDER_NAME(start, site = site, dirc = 1)
         )
     
@@ -79,7 +83,7 @@ def download_ionograms(
                                 )
                     except:
                         pass
-      
+          
 
 
 
@@ -93,37 +97,61 @@ start = dt.datetime(2013, 5, 15, 18)
 
 def download_dates(date):
     
-    # dates = pd.date_range(
-    #     '2015-12-02 21:00', 
-    #     '2015-12-01 21:00', 
-    #     freq = '1D'
-    #     )
-
+    import core as c 
     
-    dates = c.undisturbed_days(date, threshold = 18).index 
+    dates = c.undisturbed_days(date, threshold = 8) 
     sites  = ['fortaleza', 'sao_luis',
               'cachoeira', 'boa_vista']
     
-    delta = dt.timedelta(hours = 20)
+    # delta = dt.timedelta(hours = 20)
     for dn in dates:
     
         for site in sites:
             download_ionograms(
-                    dn + delta, 
+                    dn, 
                     site = site, 
                     ext = ['RSF', 'SAO'], 
-                    hours = 4
+                    hours = 14
                     )
 
-def main():
+
+
+def download_by_dates(site, dn):
+
+    start = dn - dt.timedelta(days = 2)
+    end = dn + dt.timedelta(days = 3)
     
-    dn = dt.datetime(2015, 12, 14, 19)
-    site = 'boa_vista'
-    download_ionograms(
-            dn , 
-            site = site, 
-            ext = ['RSF', 'SAO'], 
-            hours = 18
-            )
     
-main()
+    dates = pd.date_range(start, end)
+    
+    for dn in dates:
+        download_ionograms(
+                dn, 
+                site = site, 
+                ext = ['RSF', 'SAO'], 
+                hours = 18
+                )
+        
+# for year in range(2019, 2023):
+#     start = dt.datetime(year, 1, 1, 20)
+#     end = dt.datetime(year, 12, 31, 20)
+#     dates = pd.date_range(start, end, freq = '1D')
+    
+    
+#     for dn in dates:
+#         download_ionograms(
+#                 dn, 
+#                 site = 'boa_vista', 
+#                 ext = ['DVL', 'SAO'], 
+#                 hours = 18
+#                 )
+
+dn = dt.datetime(2015, 12, 20, 15)
+site = 'campo_grande'
+
+download_ionograms(
+                dn, 
+                site, 
+                ext = ['SAO', 'RSF'], 
+                hours =  14
+                )

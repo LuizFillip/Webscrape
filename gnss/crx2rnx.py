@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm 
 import GNSS as gs
 
-executable = "G:\\Meu Drive\\Python\\data-analysis\\database\\GNSS\\CRX2RNX.exe"
+executable = "D:\\database\\GNSS\\CRX2RNX.exe"
 
 
 year_folder = 'D:\\database\\GNSS\\rinex\\'

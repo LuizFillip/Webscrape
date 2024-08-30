@@ -74,14 +74,17 @@ def download_rinex(
     make_dir(path_to_save)
     print('[starting]', path.doy)
     for href in wb.request(url):
-        
-        if filter_by_stations(href, stations):
-            print('[download_rinex]', href)
-            wb.download(
-                url, 
-                href, 
-                path_to_save
-                )
+
+        # if filter_by_stations(href, stations):
+        ends = ['.zip', 'd.Z', 'crx.gz']
+        if any([href.endswith(e) for e in ends]):
+           print('[download_rinex]', href)
+           wb.download(
+               url, 
+               href, 
+               path_to_save
+               )
+           
         
     uncompress_convert(path.rinex)
 
@@ -146,4 +149,3 @@ def test_filter_stations(year, doy):
         if filter_by_stations(href, stations):
             print(href)
             
-# test_one_day_download(2014, 10)

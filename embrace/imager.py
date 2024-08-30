@@ -12,7 +12,8 @@ def delete():
     for f in os.listdir(path):
         if 'png' in f:
             os.remove(os.path.join(path, f))
-            
+    
+    return None
             
 def make_folder(url, root = 'database\\images\\'):
     fn = url.split('/')[-2]
@@ -60,6 +61,6 @@ def download_images(
         
 # main()
 
-# dn = dt.datetime(2022, 7, 25, 21)
-# site = 'lapa'
-# wb.download_images(dn, site, layer = 'O6')
+dn = dt.datetime(2019, 12, 6, 21)
+site = 'cariri'
+download_images(dn, site, layer = 'O6')
