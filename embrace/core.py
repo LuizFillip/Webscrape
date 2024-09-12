@@ -1,55 +1,47 @@
 import datetime as dt
 import Webscrape as wb
+import base as b 
+                
+                
+dn = dt.datetime(2015, 12, 19)
 
-PATH_IONO = 'database/iono/'
+def dn2fn(dn, code = 'slz'):
 
-def download_multiple_iono(start):
-    
-    for site in ['fortaleza', 'boa_vista', 'sao_luis']:
-        wb.download_from_periods(start, site)
-    
+    month = dn.strftime('%b').lower()
+    fmt = f'{code}%d{month}.%ym'
+    return dn.strftime(fmt)
 
+def download_magnetometer(dn, site = "sao_luis"):
 
-    
-class EMBRACE(object):
-    
-    def __init__(
-            self, 
-            site = 'sao_luis', 
-            save_in = 'D:\\drift\\SAA\\'
-            ):
-        
-        self.save_in = save_in 
-        self.site = site
-        
-    def download_drift(
-            self, 
+    url = wb.embrace_url(
             dn, 
-            ext = ['DVL']
-            ):
-
-        url = wb.embrace_url(
-            dn, 
-            site = self.site, 
-            inst = 'ionosonde'
-            )    
+            site = site, 
+            inst = "magnetometer"
+            )
+    
+    if site == 'sao_luis':
+        code = 'slz'
+    elif site == 'cachoeira':
+        code = 'cxp'
+    
+    save_in = f'magnetometers/data/{dn.year}'
+    
+    b.make_dir(save_in)
+    
+    for link in wb.request(url):    
         
-        for link in wb.request(url):
+        print(f'{dn.month}/{dn.day}', site)
+        if link ==  dn2fn(dn, code):
             
-            if any(f in link for f in ext):
-                
-                delta = dt.timedelta(hours = 4)
-                
-                if ((wb.iono_dt(link) >= dn)and 
-                    (wb.iono_dt(link) <= dn + delta)):
-                   
-                    print('[download_iono]', link)
-                    wb.download(
-                        url, 
-                        link, 
-                        self.save_in
-                        )
-                
-    
+            wb.download(
+                url, 
+                link, 
+                save_in
+                )
+            
+    return None 
 
-        
+def download_days():
+    for i in range(4):
+        delta = dt.timedelta(days = i)
+        download_magnetometer(dn + delta)

@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 PATH_IONO = 'database/ionogram/'
-# PATH_IONO = 'D:\\iono\\bv\\'
+PATH_IONO = 'E:\\ionogram\\'
 
 def iono_dt(f):        
     
@@ -83,7 +83,8 @@ def download_ionograms(
                                 )
                     except:
                         pass
-          
+                    
+    return None
 
 
 
@@ -132,26 +133,30 @@ def download_by_dates(site, dn):
                 hours = 18
                 )
         
-# for year in range(2019, 2023):
-#     start = dt.datetime(year, 1, 1, 20)
-#     end = dt.datetime(year, 12, 31, 20)
-#     dates = pd.date_range(start, end, freq = '1D')
-    
-    
-#     for dn in dates:
-#         download_ionograms(
-#                 dn, 
-#                 site = 'boa_vista', 
-#                 ext = ['DVL', 'SAO'], 
-#                 hours = 18
-#                 )
 
-dn = dt.datetime(2015, 12, 20, 15)
-site = 'campo_grande'
+def download_sites_by_date(dn):
+    
+    sites  = ['sao_luis', 'cachoeira', 'boa_vista']
+    
+    for site in sites:
+        
+        download_ionograms(
+                        dn, 
+                        site, 
+                        ext = ['SAO', 'RSF'], 
+                        hours =  11
+                        )
+        
+    return None 
 
-download_ionograms(
-                dn, 
-                site, 
-                ext = ['SAO', 'RSF'], 
-                hours =  14
-                )
+
+dates = [
+    dt.datetime(2015, 12, 2, 9), 
+    dt.datetime(2015, 12, 13, 9),
+    dt.datetime(2015, 12, 16, 9), 
+    dt.datetime(2015, 12, 18, 9),
+    dt.datetime(2015, 12, 29, 9)
+    ]
+
+for dn in dates:
+    download_sites_by_date(dn)

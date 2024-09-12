@@ -26,8 +26,9 @@ site_codes = {
                     }, 
          
          'magnetometer': {
-             'sao luis': 'SLZ'
-                         }
+             'sao_luis': 'SLZ',
+             "cachoeira": 'CXP'
+             }
          }
 
 def embrace_url(
@@ -58,10 +59,11 @@ def embrace_url(
         
     elif inst == "ionosonde":
         url += f"{str_doy}/"
-        
     
+    elif inst == 'magnetometer':
+        return url 
+        
     return url
-
 
 
 

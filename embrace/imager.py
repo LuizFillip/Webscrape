@@ -53,6 +53,7 @@ def download_images(
                     link, 
                     path_to_save
                     )
+    return None 
 
 # def main():
 #     dn = dt.datetime(2022, 7, 24, 21)
@@ -61,6 +62,6 @@ def download_images(
         
 # main()
 
-dn = dt.datetime(2019, 12, 6, 21)
-site = 'cariri'
-download_images(dn, site, layer = 'O6')
+# dn = dt.datetime(2018, 12, 12, 21)
+# site = 'cariri'
+# download_images(dn, site, layer = 'O6')
