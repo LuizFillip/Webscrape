@@ -79,19 +79,4 @@ def delete_far_of_equator(path):
                 os.remove(path.fn_rinex(sts))
             except:
                 os.remove(path.fn_rinex(sts, zip_f = True))
-                
-           
-# 
-
-# delete_far_of_equator(path)
-
-# import datetime as dt
-
-# dn = dt.datetime(2013, 11, 9)
-# doy = dn.timetuple().tm_yday
-
-# path = gs.paths(2023, doy)
-
-# s =  g.stations_near_of_equator(path.year)
-
-# print(s)
+    return None 

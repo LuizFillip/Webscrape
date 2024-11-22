@@ -48,7 +48,7 @@ def chile(year = 2021):
 #     download_gnss(year, igs_stations)
 
 
-path = gs.paths(2022, 206)
+# path = gs.paths(2022, 206)
 # wb.download_rinex(
 #         path,
 #         stations = None,

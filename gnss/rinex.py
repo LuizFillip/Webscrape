@@ -149,3 +149,29 @@ def test_filter_stations(year, doy):
         if filter_by_stations(href, stations):
             print(href)
             
+
+
+
+
+# import datetime as dt 
+# dn = dt.date(2013, 12, 25)
+# doy = gs.doy_from_date(dn)
+
+# path = gs.paths(dn.year, doy, root = 'E:\\')
+
+# download_rinex(
+#         path,
+#         stations = None,
+#         network = 'ibge'
+#         )
+
+
+# for file in os.listdir(path.rinex):
+    
+#     if file.endswith('13o'):
+#         print(file)
+#     else:
+#         os.remove(os.path.join(path.rinex, file))
+        
+    
+
