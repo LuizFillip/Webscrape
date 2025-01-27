@@ -1,7 +1,6 @@
 import pandas as pd
 from base import make_dir
 import datetime as dt
-# import core as c
 import Webscrape as wb 
 import os 
 from tqdm import tqdm 
@@ -10,7 +9,7 @@ from tqdm import tqdm
 PATH_IONO = 'database/ionogram/'
 PATH_IONO = 'E:\\ionogram\\'
 
-def iono_dt(f):        
+def fn2dt(f):        
     
     site, date = tuple(f.split('_'))
     
@@ -19,31 +18,55 @@ def iono_dt(f):
 
     return dt.datetime.strptime(date_string, fmt)
 
-def periods(dn, hours = 24):
+def periods_by_range(dn, hours = 24):
     
     end = dn + dt.timedelta(hours = hours)
 
     return pd.date_range(dn, end, freq = '10min')
-    
+
+def periods_by_freq(dn, freq = '1D'):
+    return pd.date_range(dn, freq = freq, periods = 365)
     
 
 def FOLDER_NAME(dn, site = 'saa', dirc = 0):
     
-    ext = site[0].upper()
+    ext = site[:2].upper()
     if dirc == 1:
         FOLDER_NAME = dn.strftime('%Y%m%d' +  ext)
     else:
         FOLDER_NAME = dn.strftime('\\%Y\\%Y%m%d' + ext)
     return FOLDER_NAME
 
-
-def download_ionograms(
-        start, 
+def filter_extensions(
+        dn, 
         site = 'sao_luis', 
-        ext = ['RSF'], 
-        hours = 25
+        ext =  ['SAO', 'RSF']
         ):
     
+    url = wb.embrace_url(
+        dn, 
+        site = 'sao_luis', 
+        inst = 'ionosonde'
+        ) 
+    
+    files_filtered = []
+    
+    for link in wb.request(url):
+        if any(f in link for f in ext):
+            if 'XML' in link:
+                pass
+            else:
+                files_filtered.append(link)
+            
+    return url, files_filtered
+
+def download_ionograms(
+        periods, 
+        site = 'sao_luis', 
+        ext = ['SAO', 'RSF']
+        ):
+    
+    start = periods[0]
     make_dir(PATH_IONO)
     folder_year = os.path.join(PATH_IONO, start.strftime('%Y'))
     make_dir(folder_year
@@ -58,105 +81,40 @@ def download_ionograms(
     
     dn = start.strftime('%Y-%m-%d')
     info = f'{dn}-{site}'
-    for dn in tqdm(periods(start, hours), info):
+    
+    ready_downloaded = os.listdir(save_in)
+    
+    for dn in tqdm(periods, info):
         
-        url = wb.embrace_url(
-            dn, 
-            site = site, 
-            inst = 'ionosonde'
-            ) 
-        
-        for link in wb.request(url):
-           
-            if any(f in link for f in ext) :
-                if 'XML' in link:
-                    pass
-                else:
-                    try:
-                        if (iono_dt(link) == dn):
-                            # try:
-                             
-                            wb.download(
-                                url, 
-                                link,   
-                                save_in
-                                )
-                    except:
-                        pass
-                    
-    return None
-
-
-
-start = dt.datetime(2016, 10, 3, 18)
-start = dt.datetime(2017, 8, 30, 18)
-start = dt.datetime(2013, 12, 24, 18)
-start = dt.datetime(2014, 1, 2, 18)
-start = dt.datetime(2022, 7, 24, 18)
-start = dt.datetime(2013, 5, 15, 18)
-
-
-def download_dates(date):
-    
-    import core as c 
-    
-    dates = c.undisturbed_days(date, threshold = 8) 
-    sites  = ['fortaleza', 'sao_luis',
-              'cachoeira', 'boa_vista']
-    
-    # delta = dt.timedelta(hours = 20)
-    for dn in dates:
-    
-        for site in sites:
-            download_ionograms(
-                    dn, 
-                    site = site, 
-                    ext = ['RSF', 'SAO'], 
-                    hours = 14
-                    )
-
-
-
-def download_by_dates(site, dn):
-
-    start = dn - dt.timedelta(days = 2)
-    end = dn + dt.timedelta(days = 3)
-    
-    
-    dates = pd.date_range(start, end)
-    
-    for dn in dates:
-        download_ionograms(
+        url, files = filter_extensions(
                 dn, 
                 site = site, 
-                ext = ['RSF', 'SAO'], 
-                hours = 18
+                ext =  ext
                 )
-        
-
-def download_sites_by_date(dn):
-    
-    sites  = ['sao_luis', 'cachoeira', 'boa_vista']
-    
-    for site in sites:
-        
-        download_ionograms(
-                        dn, 
-                        site, 
-                        ext = ['SAO', 'RSF'], 
-                        hours =  11
+        for file in files:
+            if file in ready_downloaded:
+                pass
+            else:
+                if fn2dt(file) == dn:
+                  
+                    wb.download(
+                        url, 
+                        file, 
+                        save_in
                         )
-        
+                
     return None 
+                    
 
 
-dates = [
-    dt.datetime(2015, 12, 2, 9), 
-    dt.datetime(2015, 12, 13, 9),
-    dt.datetime(2015, 12, 16, 9), 
-    dt.datetime(2015, 12, 18, 9),
-    dt.datetime(2015, 12, 29, 9)
-    ]
 
-for dn in dates:
-    download_sites_by_date(dn)
+dn = dt.datetime(2018, 1, 1, 22)
+
+periods = periods_by_freq(dn)
+
+download_ionograms(
+        periods, 
+        site = 'sao_luis', 
+        ext = ['SAO', 'RSF']
+        )
+
