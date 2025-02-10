@@ -6,9 +6,6 @@ import os
 from tqdm import tqdm 
 
 
-PATH_IONO = 'database/ionogram/'
-PATH_IONO = 'E:\\ionogram\\'
-
 def fn2dt(f):        
     
     site, date = tuple(f.split('_'))
@@ -25,6 +22,9 @@ def periods_by_range(dn, hours = 24):
     return pd.date_range(dn, end, freq = '10min')
 
 def periods_by_freq(dn, freq = '1D'):
+    '''
+    Range time by day
+    '''
     return pd.date_range(dn, freq = freq, periods = 365)
     
 
@@ -45,7 +45,7 @@ def filter_extensions(
     
     url = wb.embrace_url(
         dn, 
-        site = 'sao_luis', 
+        site = site, 
         inst = 'ionosonde'
         ) 
     
@@ -60,18 +60,20 @@ def filter_extensions(
             
     return url, files_filtered
 
+
+
+
 def download_ionograms(
         periods, 
         site = 'sao_luis', 
-        ext = ['SAO', 'RSF']
+        ext = ['SAO', 'RSF'], 
+        PATH_IONO = 'E:\\ionogram\\'
         ):
     
     start = periods[0]
     make_dir(PATH_IONO)
     folder_year = os.path.join(PATH_IONO, start.strftime('%Y'))
-    make_dir(folder_year
-        
-        )
+    make_dir(folder_year)
     save_in = os.path.join(
         folder_year,
         FOLDER_NAME(start, site = site, dirc = 1)
@@ -95,26 +97,34 @@ def download_ionograms(
             if file in ready_downloaded:
                 pass
             else:
-                if fn2dt(file) == dn:
-                  
-                    wb.download(
-                        url, 
-                        file, 
-                        save_in
-                        )
+                try:
+                    if fn2dt(file) == dn:
+                      
+                        wb.download(
+                            url, 
+                            file, 
+                            save_in
+                            )
+                except:
+                    continue
                 
     return None 
                     
 
+def main():
 
+    for year in range(2013, 2023):
+        
+        for hour in [21, 22]:
+            
+            dn = dt.datetime(year, 1, 1, hour)
+            
+            periods = periods_by_freq(dn)
+            
+            download_ionograms(
+                    periods, 
+                    site = 'fortaleza', 
+                    ext = ['SAO']
+                    )
 
-dn = dt.datetime(2018, 1, 1, 22)
-
-periods = periods_by_freq(dn)
-
-download_ionograms(
-        periods, 
-        site = 'sao_luis', 
-        ext = ['SAO', 'RSF']
-        )
-
+main()

@@ -5,17 +5,8 @@ import base as b
 from tqdm import tqdm 
 
 
-def delete():
-    
-    path = 'database/images/CA_2013_0610/'
-    
-    for f in os.listdir(path):
-        if 'png' in f:
-            os.remove(os.path.join(path, f))
-    
-    return None
-            
-def make_folder(url, root = 'database\\images\\'):
+
+def make_folder(url, root = 'imager/img/'): #'E:\\images\\'):
     fn = url.split('/')[-2]
     
     path_to_save = os.path.join(
@@ -55,13 +46,9 @@ def download_images(
                     )
     return None 
 
-# def main():
-#     dn = dt.datetime(2022, 7, 24, 21)
-#     for site in ['lapa', 'cachoeira']:
-       
-        
-# main()
+dn = dt.datetime(2019, 6, 24, 21)
+dn = dt.datetime(2024, 9, 24, 21)
+dn = dt.datetime(2022, 7, 25, 21)
 
-# dn = dt.datetime(2018, 12, 12, 21)
-# site = 'cariri'
-# download_images(dn, site, layer = 'O6')
+for site in [ 'lapa', 'cariri']:
+    download_images(dn, site, layer = '06')

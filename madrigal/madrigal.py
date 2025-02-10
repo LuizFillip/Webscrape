@@ -95,7 +95,7 @@ def cachoeira_file(f):
     return dt.datetime.strptime(date[3:-1], fmt)
 
 
-def MadrigalDownload(url, save_in, month = 7):
+def MadrigalDownload(url, save_in, month = 9):
     
     r = requests.get(url)
     s = BeautifulSoup(r.text, "html.parser")
@@ -108,31 +108,28 @@ def MadrigalDownload(url, save_in, month = 7):
         try:
             dn = cachoeira_file(name)
             
-            # if dn.month == month:
+            if dn.month == month:
             
-            path_to_save = os.path.join(
-                save_in, 
-                name
-                )
-            
-            print('downloding...', name)
-            download(href, path_to_save)
+                path_to_save = os.path.join(
+                    save_in, 
+                    name
+                    )
+                
+                print('downloding...', name)
+                download(href, path_to_save)
         except:
             continue
             
     
-def main():
-    save_in = "database/FabryPerot/cj/"
-    
-    for year in [2019, 2020, 2021, 2022, 2023]:
-        url = build_url(
-            kinst = 5362, 
-            year = year, 
-            kindat = 7100
-            )
+# def main():
+  
         
-        MadrigalDownload(url, save_in)
-        # 
-# main()
-# 
+year = 2024
+save_in = "database/FabryPerot/cj/"
+url = build_url(
+    kinst = 5362, 
+    year = year, 
+    kindat = 7101
+    )
 
+MadrigalDownload(url, save_in)

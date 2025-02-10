@@ -65,14 +65,4 @@ def request(url, verify = False) -> list:
 
     return [link['href'] for link in parser]
 
-from requests.auth import HTTPBasicAuth
-
-url = 'https://aer-nc-web.nict.go.jp/gaia/wk3/gaia/'
-
-username = 'realion'
-password = 'DataDL01'
-
-# r = requests.get(url, auth=HTTPBasicAuth(username, password))
-# s = BeautifulSoup(r.text, "html.parser")
-
 
