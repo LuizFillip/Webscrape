@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 
 
-def make_folder(url, root = 'imager/img/'): #'E:\\images\\'):
+def make_folder(url, root = 'E:\\images\\'): #):
     fn = url.split('/')[-2]
     
     path_to_save = os.path.join(
@@ -31,10 +31,11 @@ def download_images(
     date = dn.strftime('%Y/%m/%d')
     desc = f'{date}-{site}-{layer}'
         
-    for link in tqdm(wb.request(url), desc):
+    for link in tqdm(wb.request(url), desc): 
+        code = link[:2]
        
-        if layer in link:
-            
+        if layer == code:
+               
             if 'DARK' in link:
                 pass
             else:
@@ -48,7 +49,7 @@ def download_images(
 
 dn = dt.datetime(2019, 6, 24, 21)
 dn = dt.datetime(2024, 9, 24, 21)
-dn = dt.datetime(2022, 7, 25, 21)
+dn = dt.datetime(2024, 1, 12, 21)
 
-for site in [ 'lapa', 'cariri']:
-    download_images(dn, site, layer = '06')
+# for site in [ 'lapa', 'cariri']:
+# download_images(dn, site = 'cachoeira', layer = 'O6')
