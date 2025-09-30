@@ -49,7 +49,8 @@ def download_images(
 
 dn = dt.datetime(2019, 6, 24, 21)
 dn = dt.datetime(2024, 9, 24, 21)
-dn = dt.datetime(2024, 1, 12, 21)
+dn = dt.datetime(2024, 2, 10, 21)
 
-# for site in [ 'lapa', 'cariri']:
+# # for site in [ 'lapa', 'cariri']:
+    
 # download_images(dn, site = 'cachoeira', layer = 'O6')

@@ -1,6 +1,12 @@
 import Webscrape as wb
 import GNSS as gs
 
+ibge_stations= ['amco', 'amcr', 'amha', 'ampt', 'amte',
+                'amua', 'aplj', 'apma', 'aps1', 'bele', 
+                'bepa', 'impz', 'maba', 'mabb', 'mtji', 
+                'naus', 'paar', 'pait', 'pasm', 'pove', 
+                'riob', 'rogm', 'roji', 'salu', 'cruz', 
+                'rogu', 'rovi', 'ceeu', 'ceft', 'rnna', 'pbjp']
 
 
 igs_stations = ['areg', 'riop',  'antf', 'iqqe', 'qui3']

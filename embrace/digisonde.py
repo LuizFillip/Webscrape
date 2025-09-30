@@ -99,13 +99,12 @@ def create_folder_by_date(
     make_dir(save_in)
     return save_in
     
-    
+
     
 def download_ionograms(
         periods, 
         site = 'sao_luis', 
         ext = ['SAO', 'RSF']
-        
         ):
     
     start = periods[0]
@@ -114,6 +113,8 @@ def download_ionograms(
             start, 
             site
             )
+    
+    save_in = 'E:\\supre_days\\'
     
     dn = start.strftime('%Y-%m-%d')
     info = f'{dn}-{site}'
@@ -163,20 +164,8 @@ def main():
                     )
 
 
-def single_download(day):
-    periods = periods_by_range(day, hours = 24)
-    download_ionograms(
-            periods, 
-            site = 'belem', 
-            ext = ['SAO', 'RSF']
-            )
 
 def download_in_day():
-    
-    # dates = pd.date_range(
-    #     '2015-12-19', 
-    #     '2015-12-22',
-    #     )
     
     dates = [
         dt.datetime(2015, 12, 13),
@@ -190,9 +179,49 @@ def download_in_day():
         
         download_ionograms(
                 periods, 
-                site = 'campo_grande', 
+                site = 'sao_luis', 
                 ext = ['SAO', 'RSF']
                 )
 
 # download_in_day()
+# day = dt.datetime(2017, 9, 17)
+# single_download(day)
 
+def run_by_range_dates():
+
+    for day in range(100):
+        delta = dt.timedelta(days = day)
+        dn = dt.datetime(2013, 1, 1, 20, 50) + delta
+        periods = periods_by_range(dn, hours = 3)
+    
+        download_ionograms(
+                    periods, 
+                    site = 'sao_luis', 
+                    ext = ['SAO', 'RSF']
+                    )
+        
+def download_from_dates():
+    
+    import core as c 
+    
+    ds = c.suppression_events(
+             c.epbs(),
+             days = 2, 
+             frame = True
+             )
+    
+    delta = dt.timedelta(hours = 20)
+    
+    for dn in ds.index[1:]:
+    
+        periods = periods_by_range(
+            dn + delta, hours = 4)
+        
+        download_ionograms(
+                    periods, 
+                    site = 'sao_luis', 
+                    ext = ['SAO', 'RSF']
+                    )
+        
+        
+# download_from_dates()
