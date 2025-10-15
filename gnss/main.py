@@ -52,8 +52,8 @@ def chile(year = 2021):
                 network = 'chile' 
                 )
 # 
-for year in [2012,2024,2025]:
+# for year in [2012,2024,2025]:
     
-    download_gnss(year, ibge_stations)
+#     download_gnss(year, ibge_stations)
 
 

@@ -3,6 +3,14 @@ import GNSS as gs
 import base as b
 import shutil
 
+
+infos = {
+    "igs": 'https://igs.bkg.bund.de/root_ftp/IGS/products/', 
+    "igs2": 'https://files.igs.org/pub/', 
+    'garner': 'http://garner.ucsd.edu/pub/products/',
+    
+    }
+
 def folders_orbits(year):
     
     b.make_dir(gs.paths(year).orbit_base)
@@ -14,13 +22,7 @@ def folders_orbits(year):
         
         b.make_dir(path_to_save)
         
-        
-infos = {
-    "igs": 'https://igs.bkg.bund.de/root_ftp/IGS/products/', 
-    "igs2": 'https://files.igs.org/pub/', 
-    'garner': 'http://garner.ucsd.edu/pub/products/',
-    
-    }
+    return None 
 
 def orbit_url(
         year:int, 
@@ -109,12 +111,16 @@ def download_single(year = 2018, doy = 260):
             doy,
             stations = stations
             )
+    
+    return None 
 
         
 def copy_rewrite(src):
     
     dst = src.replace('igv', 'cod').replace('_00', '')
     shutil.copy(src, dst)
+    
+    return None 
 
 def download_orbit(
         year: int, 
@@ -143,7 +149,8 @@ def download_orbit(
             src = wb.unzip_Z(path_in)
             
             copy_rewrite(src)
-            
+    
+    return None 
     
 def download_orbits(
         year = 2022, 
@@ -158,10 +165,11 @@ def download_orbits(
                 const, 
                 network 
                 )
-year = 2023 
-doy= 1
+        
+    return None 
 
-def copy_rename_files():
+def copy_rename_files(year = 2023, doy= 1
+):
     const_in = 'igv'
     const_out = 'com'
     import os 
