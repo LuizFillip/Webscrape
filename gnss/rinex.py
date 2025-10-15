@@ -71,6 +71,7 @@ def download_rinex(
     url = rinex_url(year, doy, network)
 
     path_to_save = path.rinex
+    print(path_to_save)
     make_dir(path_to_save)
     print('[starting]', path.doy)
     for href in wb.request(url):
@@ -117,6 +118,8 @@ def uncompress_convert(path_root):
                 wb.unzip_gz(path_in)
             except:
                 continue
+        else:
+            print('[zip_rinex dont work]')
             
     for sts in os.listdir(path_root):
         path_in = os.path.join(path_root, sts)
@@ -150,28 +153,5 @@ def test_filter_stations(year, doy):
             print(href)
             
 
-
-
-
-# import datetime as dt 
-# dn = dt.date(2013, 12, 25)
-# doy = gs.doy_from_date(dn)
-
-# path = gs.paths(dn.year, doy, root = 'E:\\')
-
-# download_rinex(
-#         path,
-#         stations = None,
-#         network = 'ibge'
-#         )
-
-
-# for file in os.listdir(path.rinex):
-    
-#     if file.endswith('13o'):
-#         print(file)
-#     else:
-#         os.remove(os.path.join(path.rinex, file))
-        
     
 

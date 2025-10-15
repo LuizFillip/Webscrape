@@ -1,5 +1,6 @@
 import Webscrape as wb
 import GNSS as gs
+import base as b 
 
 ibge_stations= ['amco', 'amcr', 'amha', 'ampt', 'amte',
                 'amua', 'aplj', 'apma', 'aps1', 'bele', 
@@ -9,21 +10,22 @@ ibge_stations= ['amco', 'amcr', 'amha', 'ampt', 'amte',
                 'rogu', 'rovi', 'ceeu', 'ceft', 'rnna', 'pbjp']
 
 
-igs_stations = ['areg', 'riop',  'antf', 'iqqe', 'qui3']
+# igs_stations = ['areg', 'riop',  'antf', 'iqqe', 'qui3']
 
-def download_gnss(year, stations, network = 'garner'):
+def download_gnss(year, stations, network = 'ibge', root = 'C:\\'):
     
-    for doy in range(1, 366, 1):
+    for doy in range(2, 366, 1):
         
-        path = gs.paths(year, doy)
+        path = gs.paths(year, doy, root = root)
         
-        # if rinex:
+        b.make_dir(path.rinex_base)
+        
         wb.download_rinex(
                 path,
                 stations,
                 network
                 )
-        # else:
+        # # else:
         # wb.download_orbit(
         #     year, 
         #     doy
@@ -49,15 +51,9 @@ def chile(year = 2021):
                 stations, 
                 network = 'chile' 
                 )
+# 
+for year in [2012,2024,2025]:
+    
+    download_gnss(year, ibge_stations)
 
-# for year in range(2022, 2024):
-#     download_gnss(year, igs_stations)
-
-
-# path = gs.paths(2022, 206)
-# wb.download_rinex(
-#         path,
-#         stations = None,
-#         network = 'ibge'
-#         )
 
