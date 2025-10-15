@@ -36,11 +36,13 @@ def download_gnss(year, stations, network = 'ibge', root = 'C:\\'):
 
 def chile(year = 2021):
 
-    stations = ['utar', 'ptre', 'iacr', 
-                'pccl', 'cmrc', 'suri', 
-                'chyt', 'mnmi', 'psga', 
-                'fbaq', 'atjn', 'cgtc', 
-                'hmbs', 'picc', 'uape']
+    stations = [
+        'utar', 'ptre', 'iacr', 
+        'pccl', 'cmrc', 'suri', 
+        'chyt', 'mnmi', 'psga', 
+        'fbaq', 'atjn', 'cgtc', 
+        'hmbs', 'picc', 'uape'
+        ]
     
 
     for doy in range(1, 366, 1):

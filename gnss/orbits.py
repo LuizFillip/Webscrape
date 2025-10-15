@@ -99,11 +99,6 @@ def orbit_url(
     return filename, url
 
 
-
-        
-
-        
-
 def download_single(year = 2018, doy = 260):
     stations = wb.get_stations(gs.paths(year))
     wb.download_rinex(
@@ -178,7 +173,8 @@ def copy_rename_files(year = 2023, doy= 1
     path_out = gs.paths(year, doy).orbit(const = const_out) 
     
     for src in os.listdir(path_in):
-        dst = src.replace('igv', 'com').replace('_00', '').replace('sp3', 'EPH')
+        dst = src.replace(
+            'igv', 'com').replace('_00', '').replace('sp3', 'EPH')
         shutil.copy(os.path.join(path_in, src), 
                     os.path.join(path_out, dst)
                     )
