@@ -4,7 +4,28 @@ import datetime as dt
 import Webscrape as wb 
 import os 
 from tqdm import tqdm 
+import core as c 
 
+def png2dt(file):    
+    site = 'SAA0K'
+    fmt = f'{site}_%Y%m%d(%j)%H%M%S.PNG'
+    
+    return dt.datetime.strptime(file, fmt)
+ 
+def delete_if_not(df):
+    for file in tqdm(os.listdir(save_in)):
+        
+        if 'PNG' in file:
+            dn = png2dt(file)
+        else:
+            dn = fn2dt(file)
+       
+        day = pd.to_datetime(dn.date())
+        if day in df.index:
+            # print(dn)
+            pass
+        else:
+            os.remove(save_in + file)
 
 def fn2dt(f):        
     
@@ -14,6 +35,7 @@ def fn2dt(f):
     fmt = '%Y%j%H%M%S'
 
     return dt.datetime.strptime(date_string, fmt)
+
 
 def periods_by_range(dn, hours = 24):
     
@@ -43,8 +65,6 @@ def sites_codes(site):
     return sites[site]
 
 def FOLDER_NAME(dn, site = 'saa', dirc = 0):
-    
-    
     
     ext = sites_codes(site)[:2].upper()
     if dirc == 1:
@@ -100,7 +120,9 @@ def create_folder_by_date(
     return save_in
     
 
-    
+save_in = 'E:\\supre_days\\'
+
+   
 def download_ionograms(
         periods, 
         site = 'sao_luis', 
@@ -113,9 +135,7 @@ def download_ionograms(
             start, 
             site
             )
-    
-    save_in = 'E:\\supre_days\\'
-    
+
     dn = start.strftime('%Y-%m-%d')
     info = f'{dn}-{site}'
     
@@ -202,17 +222,14 @@ def run_by_range_dates():
         
 def download_from_dates():
     
-    import core as c 
     
-    ds = c.suppression_events(
-             c.epbs(),
-             days = 2, 
-             frame = True
-             )
+    
+    ds = c.pippine_suppresion(season = False)
+    
     
     delta = dt.timedelta(hours = 20)
     
-    for dn in ds.index[1:]:
+    for dn in ds.index:
     
         periods = periods_by_range(
             dn + delta, hours = 4)
@@ -222,6 +239,5 @@ def download_from_dates():
                     site = 'sao_luis', 
                     ext = ['SAO', 'RSF']
                     )
-        
-        
+
 # download_from_dates()
