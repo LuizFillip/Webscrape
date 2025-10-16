@@ -2,19 +2,11 @@ import Webscrape as wb
 import GNSS as gs
 import base as b 
 
-ibge_stations= ['amco', 'amcr', 'amha', 'ampt', 'amte',
-                'amua', 'aplj', 'apma', 'aps1', 'bele', 
-                'bepa', 'impz', 'maba', 'mabb', 'mtji', 
-                'naus', 'paar', 'pait', 'pasm', 'pove', 
-                'riob', 'rogm', 'roji', 'salu', 'cruz', 
-                'rogu', 'rovi', 'ceeu', 'ceft', 'rnna', 'pbjp']
 
-
-# igs_stations = ['areg', 'riop',  'antf', 'iqqe', 'qui3']
 
 def download_gnss(year, stations, network = 'ibge', root = 'C:\\'):
     
-    for doy in range(2, 366, 1):
+    for doy in range(207, 366, 1):
         
         path = gs.paths(year, doy, root = root)
         
@@ -58,4 +50,11 @@ def chile(year = 2021):
     
 #     download_gnss(year, ibge_stations)
 
+import os 
 
+year = 2023
+root = 'E:\\'
+
+stations = wb.filter_stations_by_latitude()
+
+wb.download_rinex_yearly(year, stations, root = 'E:\\')

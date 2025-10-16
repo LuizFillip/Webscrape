@@ -16,7 +16,7 @@ def unzip_Z(path_in):
     file = open(path_out, 'w')
     file.write(decoded)
     file.close()
-    os.remove(path_in)
+   
     return path_out
 
 
@@ -36,7 +36,9 @@ def unzip_orbit(files, path_to_save):
     file.extract(file, path_to_save)
     file.close()
     fh.close()
-    os.remove(files)
+   
+    
+    return None 
     
     
 def unzip_zip(zip_path) -> None:
@@ -52,7 +54,7 @@ def unzip_zip(zip_path) -> None:
             path_out = zip_path.replace("zip", name[-3:])
             
     zip_ref.close()
-    os.remove(zip_path)
+    
     
     return path_out
 
@@ -63,6 +65,6 @@ def unzip_gz(infile):
                 infile.replace('.gz', ''), 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
     
-    os.remove(infile)
+ 
     
     

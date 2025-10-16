@@ -3,8 +3,6 @@ import os
 from tqdm import tqdm 
 import GNSS as gs
 
-executable = "D:\\database\\GNSS\\CRX2RNX.exe"
-
 
 year_folder = 'D:\\database\\GNSS\\rinex\\'
 
@@ -12,7 +10,7 @@ def run_all_ways(year_folder):
     
     for year in os.listdir(year_folder):
         year_path = os.path.join(year_folder, year) 
-        print(year)
+     
         for doy in os.listdir(year_path):
             doy_path = os.path.join(year_path, doy)
             for filename in tqdm(os.listdir(doy_path), 
@@ -46,20 +44,17 @@ def run_local(
             
 def crx2rnx(
         input_file, 
-        executable = executable
+        root = 'E:\\'
         ):
-        
-        # subprocess.run([executable, input_file, '-f'])
+        executable = f"{root}database\\GNSS\\rinex\\CRX2RNX.exe"
+
+
+        subprocess.run([executable, input_file, '-f'])
         try:
             subprocess.run([executable, input_file, '-f'])
         except:
             pass
         
-        os.remove(input_file)
-            
-
-
-
-# 
+        return None 
 
 

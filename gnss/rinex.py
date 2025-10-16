@@ -70,7 +70,7 @@ def download_rinex(
         ):
 
     url = rinex_url(year, doy, network)
-    io = f'download_rinex: {doy}'
+    io = f'download_rinex'
     for href in tqdm(wb.request(url), io):
      
         if any([z in href for z in stations]):
@@ -119,20 +119,25 @@ def uncompress(path_root):
                 files.append(sts)
             except:
                 continue
-        else:
-            print('[zip_rinex dont work]')
-    
 
     return files 
             
-def convert_rinex(path_root):
-    msg = 'convert_rinex'
-    for sts in tqdm(os.listdir(path_root), msg):
-        path_in = os.path.join(path_root, sts)
-        if sts.endswith('d') or sts.endswith('crx'):
-        
-            wb.crx2rnx(path_in)
+def convert_and_remove(path_to_save, files):
+    root = path_to_save[:3]
+    last = []
+    for fn in os.listdir(path_to_save):
+        path_in = os.path.join(path_to_save, fn)
+        if fn not in files:
+            wb.crx2rnx(path_in, root)
+     
+        if not fn.endswith('o'):
+            last.append(path_in)
             
+    
+    for fn in last:
+        os.remove(fn)
+        
+    return None
          
 def filter_stations_by_latitude():
     import pandas as pd
@@ -171,12 +176,12 @@ def download_rinex_yearly(year, stations, root = 'C:\\'):
     
     b.make_dir(path.rinex_base) # criar o diretório do ano
      
-    for doy in range(1, 3, 1):
+    for doy in range(1, 4, 1):
          
         path_to_save = f"{path.rinex}{doy:03d}"
         
         b.make_dir(path_to_save) # criar o diretório do doy
-         
+        print('Starting', doy, year)
         download_rinex(
                 year, 
                 doy,
@@ -187,4 +192,8 @@ def download_rinex_yearly(year, stations, root = 'C:\\'):
         
         files = uncompress(path_to_save)
         
-        
+        convert_and_remove(path_to_save, files)
+
+
+fn = 'E:\\database\\GNSS\\rinex\\2023\\001\\ampt0011.zip'
+
