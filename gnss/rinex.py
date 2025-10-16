@@ -33,16 +33,6 @@ def rinex3_fname(dn):
 
 
 
-def filter_by_stations(href, stations):
-    if any([z in href for z in stations]):
-        ends = ['d.zip', 'd.Z', 'crx.gz']
-        if any([href.endswith(e) for e in ends]):
-           return True
-        else:
-           return False
-    else:
-        return False
-    
 
 def filter_rinex(url: str, 
         sel_stations: list[str]
@@ -70,7 +60,7 @@ def download_rinex(
         ):
 
     url = rinex_url(year, doy, network)
-    io = f'download_rinex'
+    io = 'downloading'
     for href in tqdm(wb.request(url), io):
      
         if any([z in href for z in stations]):
@@ -89,7 +79,7 @@ def download_rinex(
 
 
 def uncompress(path_root):
-    unzip_msg = 'unzip_rinex'
+    unzip_msg = 'unzipping'
     
     files = []
     for sts in tqdm(os.listdir(path_root), unzip_msg):
@@ -125,7 +115,8 @@ def uncompress(path_root):
 def convert_and_remove(path_to_save, files):
     root = path_to_save[:3]
     last = []
-    for fn in os.listdir(path_to_save):
+    msg = 'converting'
+    for fn in tqdm(os.listdir(path_to_save), msg):
         path_in = os.path.join(path_to_save, fn)
         if fn not in files:
             wb.crx2rnx(path_in, root)
@@ -161,27 +152,23 @@ def locate_last_folder(path):
     if len(to_nums) == 0:
         return 1
     else:
-        return max(to_nums) + 1
+        return max(to_nums) 
     
     
-
-
-
-
 def download_rinex_yearly(year, stations, root = 'C:\\'):
     
     path = gs.paths(year, root = root)
     
+    b.make_dir(path.rinex_base) # criar o diretório do ano
+    
     last_dw = locate_last_folder(path)
     
-    b.make_dir(path.rinex_base) # criar o diretório do ano
-     
-    for doy in range(1, 4, 1):
+    for doy in range(last_dw, 366, 1):
          
         path_to_save = f"{path.rinex}{doy:03d}"
         
         b.make_dir(path_to_save) # criar o diretório do doy
-        print('Starting', doy, year)
+        print('Starting RINEX', doy, year)
         download_rinex(
                 year, 
                 doy,
@@ -195,5 +182,4 @@ def download_rinex_yearly(year, stations, root = 'C:\\'):
         convert_and_remove(path_to_save, files)
 
 
-fn = 'E:\\database\\GNSS\\rinex\\2023\\001\\ampt0011.zip'
 

@@ -6,7 +6,7 @@ import GNSS as gs
 
 year_folder = 'D:\\database\\GNSS\\rinex\\'
 
-def run_all_ways(year_folder):
+def run_all_ways(year_folder, executable):
     
     for year in os.listdir(year_folder):
         year_path = os.path.join(year_folder, year) 
