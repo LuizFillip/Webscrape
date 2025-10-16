@@ -1,7 +1,8 @@
 import Webscrape as wb
 import GNSS as gs
-from base import make_dir
+import base as b 
 import os
+from tqdm import tqdm 
 
 PATH_CHILE = 'D:\\database\\GNSS\\rinex\\chile\\'
 
@@ -43,8 +44,7 @@ def filter_by_stations(href, stations):
         return False
     
 
-def filter_rinex(
-        url: str, 
+def filter_rinex(url: str, 
         sel_stations: list[str]
         ):
     
@@ -61,97 +61,130 @@ def filter_rinex(
 
 
 def download_rinex(
-        path,
+        year, 
+        doy,
+        path_to_save,
         stations = None,
-        network = 'ibge'
-        ):
-    
-    year, doy = int(path.year), int(path.doy)
-    
-    url = rinex_url(year, doy, network)
-
-    path_to_save = path.rinex
-    print(path_to_save)
-    make_dir(path_to_save)
-    print('[starting]', path.doy)
-    for href in wb.request(url):
-
-        # if filter_by_stations(href, stations):
-        ends = ['.zip', 'd.Z', 'crx.gz']
-        if any([href.endswith(e) for e in ends]):
-           print('[download_rinex]', href)
-           wb.download(
-               url, 
-               href, 
-               path_to_save
-               )
-           
+        network = 'ibge', 
         
-    uncompress_convert(path.rinex)
+        ):
 
+    url = rinex_url(year, doy, network)
+    io = f'download_rinex: {doy}'
+    for href in tqdm(wb.request(url), io):
+     
+        if any([z in href for z in stations]):
+            
+            ends = ['.zip', 'd.Z', 'crx.gz']
+            if any([href.endswith(e) for e in ends]):
+             
+               wb.download(
+                   url, 
+                   href, 
+                   path_to_save
+                   )
+           
     return None
 
 
 
-def uncompress_convert(path_root):
-    unzip_msg = '[unzip_rinex]'
-    for sts in os.listdir(path_root):
+def uncompress(path_root):
+    unzip_msg = 'unzip_rinex'
+    
+    files = []
+    for sts in tqdm(os.listdir(path_root), unzip_msg):
         path_in = os.path.join(path_root, sts)
         
         if sts.endswith('Z'):
-            print(unzip_msg, sts)
+           
             try:
                 wb.unzip_Z(path_in)
+                files.append(sts)
+                
             except:
                 continue
             
         elif sts.endswith('zip'):
-            print(unzip_msg, sts)
+         
             try:
                 wb.unzip_zip(path_in)
+                files.append(sts)
             except:
                 continue
         
         elif sts.endswith('gz'):
-            print(unzip_msg, sts)
+         
             try:
                 wb.unzip_gz(path_in)
+                files.append(sts)
             except:
                 continue
         else:
             print('[zip_rinex dont work]')
+    
+
+    return files 
             
-    for sts in os.listdir(path_root):
+def convert_rinex(path_root):
+    msg = 'convert_rinex'
+    for sts in tqdm(os.listdir(path_root), msg):
         path_in = os.path.join(path_root, sts)
         if sts.endswith('d') or sts.endswith('crx'):
-            print('[convert_rinex]', sts)
+        
             wb.crx2rnx(path_in)
             
-    return None
-            
+         
+def filter_stations_by_latitude():
+    import pandas as pd
+    import GEO as gg 
 
+    sites = gg.load_coords(2022)
+
+    df = pd.DataFrame(sites).T
+
+    df.columns = ['lon', 'lat', 'alt']
+    
+    return df.loc[df.lat > -15].index
+
+
+def locate_last_folder(path):
+    
+    fns = os.listdir(path.rinex)
+    
+    to_nums = [int(n) for n in fns ]
+    
+    if len(to_nums) == 0:
+        return 1
+    else:
+        return max(to_nums) + 1
+    
+    
+
+
+
+
+def download_rinex_yearly(year, stations, root = 'C:\\'):
+    
+    path = gs.paths(year, root = root)
+    
+    last_dw = locate_last_folder(path)
+    
+    b.make_dir(path.rinex_base) # criar o diretório do ano
+     
+    for doy in range(1, 3, 1):
+         
+        path_to_save = f"{path.rinex}{doy:03d}"
         
-def test_one_day_download(year, doy, network = 'garner'):
-        
-    stations = ['areg', 'riop',  'antf', 'iqqe', 'qui3']
-    path = gs.paths(year, doy, root = 'D:\\')
-        
-    download_rinex(
-                path,
-                stations = stations,
-                network = network
+        b.make_dir(path_to_save) # criar o diretório do doy
+         
+        download_rinex(
+                year, 
+                doy,
+                path_to_save,
+                stations,
+                network = 'ibge',         
                 )
-
-def test_filter_stations(year, doy):
-
-    url = wb.rinex_url(year, doy, network = 'garner')
-    
-    stations = ['areg', 'riop',  'antf', 'iqqe', 'qui3']
-    
-    for href in wb.request(url):
-        if filter_by_stations(href, stations):
-            print(href)
-            
-
-    
-
+        
+        files = uncompress(path_to_save)
+        
+        
