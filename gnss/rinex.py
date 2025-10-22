@@ -130,7 +130,7 @@ def convert_and_remove(path_to_save, files):
         
     return None
          
-def filter_stations_by_latitude():
+def filter_stations_by_latitude(latitude = -15):
     import pandas as pd
     import GEO as gg 
 
@@ -140,7 +140,7 @@ def filter_stations_by_latitude():
 
     df.columns = ['lon', 'lat', 'alt']
     
-    return df.loc[df.lat > -15].index
+    return df.loc[df.lat > latitude].index
 
 
 def locate_last_folder(path):
@@ -154,7 +154,28 @@ def locate_last_folder(path):
     else:
         return max(to_nums) 
     
+
+def download_routine(
+        year, 
+        doy,
+        path_to_save,
+        stations
+        ):
     
+    b.make_dir(path_to_save) # criar o diretório do doy
+    print('Starting RINEX', doy, year)
+    download_rinex(
+            year, 
+            doy,
+            path_to_save,
+            stations,
+            network = 'ibge',         
+            )
+    
+    files = uncompress(path_to_save)
+    
+    convert_and_remove(path_to_save, files)
+        
 def download_rinex_yearly(year, stations, root = 'C:\\'):
     
     path = gs.paths(year, root = root)
@@ -167,19 +188,28 @@ def download_rinex_yearly(year, stations, root = 'C:\\'):
          
         path_to_save = f"{path.rinex}{doy:03d}"
         
-        b.make_dir(path_to_save) # criar o diretório do doy
-        print('Starting RINEX', doy, year)
-        download_rinex(
+        download_routine(
                 year, 
                 doy,
                 path_to_save,
-                stations,
-                network = 'ibge',         
+                stations
                 )
-        
-        files = uncompress(path_to_save)
-        
-        convert_and_remove(path_to_save, files)
 
-
-
+def main():
+    
+    stations = filter_stations_by_latitude(latitude = -15)
+    year = 2020
+    doy = 366
+    
+    path = gs.paths(year)
+    
+    b.make_dir(path.rinex_base)
+    
+    path_to_save = f"{path.rinex}{doy:03d}"
+    
+    download_routine(
+            year, 
+            doy,
+            path_to_save,
+            stations
+            )

@@ -51,9 +51,9 @@ def chile(year = 2021):
 #     download_gnss(year, ibge_stations)
 
 
-year = 2024
-root = 'C:\\'
+# year = 2016
+# root = 'C:\\'
 
-stations = wb.filter_stations_by_latitude()
+# stations = wb.filter_stations_by_latitude()
 
-wb.download_rinex_yearly(year, stations, root)
+# wb.download_rinex_yearly(year, stations, root)
