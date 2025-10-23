@@ -11,12 +11,13 @@ infos = {
     
     }
 
+consts = ["igl", "igr", 'igv', 'cod', 'igs', 'mgex', 'com']
+
 def folders_orbits(year):
     
     b.make_dir(gs.paths(year).orbit_base)
     
-    for const in ["igl", "igr", 'igv', 'cod',
-                  'igs', 'mgex', 'com']:
+    for const in consts:
         
         path_to_save = gs.paths(year).orbit(const = const)
         
@@ -131,9 +132,9 @@ def download_orbit(
         )
             
     
-    path_to_save = gs.paths(
-        year, doy).orbit(const = const)
+    path_to_save = gs.paths(year, doy).orbit(const = const)
     
+    b.make_dir(path_to_save)
     
     for href in wb.request(url):
         if fname in href:        
@@ -143,11 +144,11 @@ def download_orbit(
                 )
             src = wb.unzip_Z(path_in)
             
-            copy_rewrite(src)
+            # copy_rewrite(src)
     
     return None 
     
-def download_orbits(
+def download_orbits_dialy(
         year = 2022, 
         const = 'igv', 
         network = 'garner'
@@ -178,3 +179,8 @@ def copy_rename_files(year = 2023, doy= 1
         shutil.copy(os.path.join(path_in, src), 
                     os.path.join(path_out, dst)
                     )
+
+def download_all_consts(year, doy):
+    for const in consts:
+        
+        download_orbit(year, doy, const=const, network='igs')

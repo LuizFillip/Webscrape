@@ -198,7 +198,7 @@ def download_rinex_yearly(year, stations, root = 'C:\\'):
 def main():
     
     stations = filter_stations_by_latitude(latitude = -15)
-    year = 2020
+    year = 2012
     doy = 366
     
     path = gs.paths(year)
@@ -213,3 +213,6 @@ def main():
             path_to_save,
             stations
             )
+    
+    
+# main()
