@@ -174,7 +174,17 @@ def last_download(year, const):
     else:
         return max(files) 
 
-
+def rename_igv(year):
+    
+    path_in = gs.paths(year).orbit(const = 'igv')
+    
+    for fn in os.listdir(path_in):
+        src = os.path.join(path_in, fn)
+        dst = os.path.join(path_in, fn.replace('_00', ''))
+        os.rename(src, dst)
+        
+    return None
+        
 def download_orbits_dialy(
         year = 2022, 
         root = 'E:\\'
@@ -195,6 +205,9 @@ def download_orbits_dialy(
             root = root
             )
         
+    if const == 'igv':
+        rename_igv(year)
+        
     return None 
 
 # download_orbits_dialy(
@@ -204,7 +217,11 @@ def download_orbits_dialy(
 
 #         )
 
-download_orbits_dialy(
-        year = 2010
-        )
+# download_orbits_dialy(
+#         year = 2010
+#         )
+
+# dn = dt.datetime(2012,1,1)
+#
+
 

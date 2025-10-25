@@ -13,6 +13,9 @@ def unzip_Z(path_in):
     
     path_out = path_in.replace(".Z", "")
     
+    if 'igv' in path_in:
+        path_in = path_in.replace('_00', '')
+        
     file = open(path_out, 'w')
     file.write(decoded)
     file.close()
