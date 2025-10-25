@@ -2,7 +2,9 @@ import Webscrape as wb
 import GNSS as gs
 import base as b
 import shutil
-
+import pandas as pd 
+import os 
+import datetime as dt 
 
 infos = {
     "igs": 'https://igs.bkg.bund.de/root_ftp/IGS/products/', 
@@ -11,7 +13,7 @@ infos = {
     
     }
 
-consts = ["igl", "igr", 'igv', 'cod', 'igs', 'mgex', 'com']
+consts = ["igl", "igr"]# 'igv', 'cod', 'igs', 'mgex', 'com']
 
 def folders_orbits(year):
     
@@ -26,8 +28,7 @@ def folders_orbits(year):
     return None 
 
 def orbit_url(
-        year:int, 
-        doy:int, 
+        dn, 
         network:str = "igs", 
         const:str = "igr"
         ):
@@ -37,11 +38,9 @@ def orbit_url(
     system
     """
     
-    week, number = gs.gpsweek_from_doy_and_year(
-        year, doy)
-    
-    date = gs.date_from_doy(year, doy)
-    strd = date.strftime('%j')
+    week, number = gs.dn2gpsweek(dn)
+
+    strd = dn.strftime('%j')
     url = infos[network]
 
     if network == "igs":
@@ -71,9 +70,9 @@ def orbit_url(
             url += f"orbits/{week}/"
             filename = f'igs{week}{number}.sp3.Z'
             
-        elif const == 'mgex':
-            filename = f'IGS0OPSULT_{year}{strd}1800_02D_15M_ORB.SP3.gz'
-            url += f"{week}/"
+        # elif const == 'mgex':
+        #     filename = f'IGS0OPSULT_{year}{strd}1800_02D_15M_ORB.SP3.gz'
+        #     url += f"{week}/"
     
     elif network == 'garner':
         if const == "igv":
@@ -119,68 +118,93 @@ def copy_rewrite(src):
     return None 
 
 def download_orbit(
-        year: int, 
-        doy: int, 
+        dn, 
         const = "igv", 
-        network = 'garner'
+        network = 'garner', 
+        root = 'C:\\'
         ):
 
     fname, url = orbit_url(
-        year, doy, 
+        dn, 
         network = network, 
         const = const
         )
             
+    path = gs.paths(dn, root = root)
     
-    path_to_save = gs.paths(year, doy).orbit(const = const)
+    b.make_dir(path.orbit_base)
+    
+    path_to_save = path.orbit(const = const)
     
     b.make_dir(path_to_save)
     
+    print(path_to_save)
+
     for href in wb.request(url):
         if fname in href:        
-            print('[download_orbit]', year, doy, href)
+            print('[download_orbit]', dn.date(), href)
+             
             path_in = wb.download(
                 url, href, path_to_save
                 )
-            src = wb.unzip_Z(path_in)
+            wb.unzip_Z(path_in)
             
-            # copy_rewrite(src)
+        
     
     return None 
     
+
+    
+
+
+def fn2dn(fn):
+    gpsweek, dayofweek = int(fn[3:7]), int(fn[7:8])  
+    return gs.gpsweek2dn(gpsweek, dayofweek)
+
+def last_download(year, const):
+        
+    path = gs.paths(year, doy = 0)
+    
+    pin = path.orbit(const = const) 
+    
+    files = [fn2dn(fn) for fn in os.listdir(pin)]
+    
+    if len(files) == 0:
+        return dt.datetime(year, 1, 1)
+    else:
+        return max(files) 
+
+
 def download_orbits_dialy(
         year = 2022, 
-        const = 'igv', 
-        network = 'garner'
+        root = 'E:\\'
         ):
     
-    for doy in range(1, 366, 1):
+    sts, end = f'{year}-01-01', f'{year}-12-31'
+    # for const in consts:
+        
+    const = 'igv'
+    # sts = last_download(year, const)
+    
+    for dn in pd.date_range(sts, end):
+        
         download_orbit(
-                year, 
-                doy, 
-                const, 
-                network 
-                )
+            dn, 
+            const = const, 
+            network = 'garner', 
+            root = root
+            )
         
     return None 
 
-def copy_rename_files(year = 2023, doy= 1
-):
-    const_in = 'igv'
-    const_out = 'com'
-    import os 
-    
-    path_in = gs.paths(year, doy).orbit(const = const_in) 
-    path_out = gs.paths(year, doy).orbit(const = const_out) 
-    
-    for src in os.listdir(path_in):
-        dst = src.replace(
-            'igv', 'com').replace('_00', '').replace('sp3', 'EPH')
-        shutil.copy(os.path.join(path_in, src), 
-                    os.path.join(path_out, dst)
-                    )
+# download_orbits_dialy(
+#         year = 2024, 
+#         const = 'igv', 
+#         network = 'garner'
 
-def download_all_consts(year, doy):
-    for const in consts:
-        
-        download_orbit(year, doy, const=const, network='igs')
+#         )
+
+download_orbits_dialy(
+        year = 2010
+        )
+

@@ -16,7 +16,7 @@ def unzip_Z(path_in):
     file = open(path_out, 'w')
     file.write(decoded)
     file.close()
-   
+    os.remove(path_in)
     return path_out
 
 

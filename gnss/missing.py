@@ -110,18 +110,15 @@ def dn2mgex(dn):
     return f'IGS0OPSFIN_{year}{doy}0000_01D_15M_ORB.SP3'
 
 def dn2cod(dn):
-    week, number = gs.gpsweek_from_date(
-        dn)
+    week, number = gs.gpsweek_from_date(dn)
     return  f'cod{week}{number}.eph'
 
 def dn2sp3(dn, const = 'igv'):
-    week, number = gs.gpsweek_from_date(
-        dn)
+    week, number = gs.gpsweek_from_date(dn)
     return  f'{const}{week}{number}.sp3'
 
 def dn2com(dn):
-    week, number = gs.gpsweek_from_date(
-        dn)
+    week, number = gs.gpsweek_from_date(dn)
     return f'com{week}{number}.eph'
 
 
