@@ -75,10 +75,14 @@ def orbit_url(
         #     url += f"{week}/"
     
     elif network == 'garner':
+        
         if const == "igv":
             filename = f'igv{week}{number}_00.sp3.Z'
             url += f"{week}/"
-           
+            
+        elif const == 'esa':
+            filename = f'esa{week}{number}.sp3.Z'
+            url += f"{week}/"
          
     elif network == "igs2":
         
@@ -138,8 +142,6 @@ def download_orbit(
     
     b.make_dir(path_to_save)
     
-    print(path_to_save)
-
     for href in wb.request(url):
         if fname in href:        
             print('[download_orbit]', dn.date(), href)
@@ -187,14 +189,14 @@ def rename_igv(year):
         
 def download_orbits_dialy(
         year = 2022, 
-        root = 'E:\\'
+        root = 'E:\\', 
+        const = 'esa'
         ):
     
     sts, end = f'{year}-01-01', f'{year}-12-31'
     # for const in consts:
         
-    const = 'igv'
-    # sts = last_download(year, const)
+    sts = last_download(year, const)
     
     for dn in pd.date_range(sts, end):
         
@@ -221,7 +223,14 @@ def download_orbits_dialy(
 #         year = 2010
 #         )
 
-# dn = dt.datetime(2012,1,1)
-#
 
 
+# fname, url = orbit_url(
+#     dn, 
+#     network = 'garner', 
+#     const = 'esa'
+#     )
+
+# fname, url
+
+# rename_igv(2011)

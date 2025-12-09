@@ -73,6 +73,39 @@ def FOLDER_NAME(dn, site = 'saa', dirc = 0):
         FOLDER_NAME = dn.strftime('\\%Y\\%Y%m%d' + ext)
     return FOLDER_NAME
 
+def run_by_range_dates():
+
+    for day in range(100):
+        delta = dt.timedelta(days = day)
+        dn = dt.datetime(2013, 1, 1, 20, 50) + delta
+        periods = periods_by_range(dn, hours = 3)
+    
+        download_ionograms(
+                    periods, 
+                    site = 'sao_luis', 
+                    ext = ['SAO', 'RSF']
+                    )
+        
+def download_from_dates():
+    
+    
+    
+    ds = c.pippine_suppresion(season = False)
+    
+    
+    delta = dt.timedelta(hours = 20)
+    
+    for dn in ds.index:
+    
+        periods = periods_by_range(
+            dn + delta, hours = 4)
+        
+        download_ionograms(
+                    periods, 
+                    site = 'sao_luis', 
+                    ext = ['SAO', 'RSF']
+                    )
+        
 def filter_extensions(
         dn, 
         site = 'sao_luis', 
@@ -120,7 +153,7 @@ def create_folder_by_date(
     return save_in
     
 
-save_in = 'E:\\supre_days\\'
+# save_in = 'E:\\supre_days\\'
 
    
 def download_ionograms(
@@ -185,13 +218,13 @@ def main():
 
 
 
-def download_in_day():
+def download_in_day(site):
     
     dates = [
-        dt.datetime(2015, 12, 13),
-        dt.datetime(2015, 12, 16), 
-        dt.datetime(2015, 12, 18),
-        dt.datetime(2015, 12, 29)
+        dt.datetime(2015, 12, 3),
+        dt.datetime(2015, 12, 4), 
+        dt.datetime(2015, 12, 28),
+        dt.datetime(2015, 12, 30)
         ]
 
     for dn in dates:
@@ -199,7 +232,7 @@ def download_in_day():
         
         download_ionograms(
                 periods, 
-                site = 'sao_luis', 
+                site = site, 
                 ext = ['SAO', 'RSF']
                 )
 
@@ -207,37 +240,14 @@ def download_in_day():
 # day = dt.datetime(2017, 9, 17)
 # single_download(day)
 
-def run_by_range_dates():
 
-    for day in range(100):
-        delta = dt.timedelta(days = day)
-        dn = dt.datetime(2013, 1, 1, 20, 50) + delta
-        periods = periods_by_range(dn, hours = 3)
-    
-        download_ionograms(
-                    periods, 
-                    site = 'sao_luis', 
-                    ext = ['SAO', 'RSF']
-                    )
-        
-def download_from_dates():
-    
-    
-    
-    ds = c.pippine_suppresion(season = False)
-    
-    
-    delta = dt.timedelta(hours = 20)
-    
-    for dn in ds.index:
-    
-        periods = periods_by_range(
-            dn + delta, hours = 4)
-        
-        download_ionograms(
-                    periods, 
-                    site = 'sao_luis', 
-                    ext = ['SAO', 'RSF']
-                    )
 
 # download_from_dates()
+ions = wb.site_codes['ionosonde']
+
+for site in ['fortaleza', 'cachoeira',
+             'boa_vista', 'campo_grande']:
+   
+    download_in_day(site)
+
+

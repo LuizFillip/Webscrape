@@ -28,7 +28,8 @@ site_codes = {
          'magnetometer': {
              'sao_luis': 'SLZ',
              "cachoeira": 'CXP', 
-             'vassouras': 'VSS'
+             'vassouras': 'VSS',
+             'eusebio': 'EUS'
              }
          }
 
@@ -62,21 +63,8 @@ def embrace_url(
         url += f"{str_doy}/"
     
     elif inst == 'magnetometer':
-        fn = date.strftime(f'{code}%d%b.%ym').lower()
-        url += f"{fn}"
-        
+         
+        return url 
     return url
 
 
-#13, 16, 18, and 29
-import datetime as dt 
-
-dn = dt.datetime(2015, 12, 13)
-url = embrace_url(
-        dn, 
-        site = "vassouras", 
-        inst = "magnetometer"
-        )
-
-
-url 
