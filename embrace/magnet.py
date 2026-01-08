@@ -20,7 +20,10 @@ codes = {
     'eusebio': 'eus'
     }
 
-def download_magnetometer(ref, days, site  = "sao_luis"):
+def download_magnetometer(
+        ref, 
+        save_in, 
+        site  = "sao_luis"):
 
     url = wb.embrace_url(
             ref, 
@@ -28,28 +31,25 @@ def download_magnetometer(ref, days, site  = "sao_luis"):
             inst = "magnetometer"
             )
 
-    
-    save_in = f'magnet/data/{ref.year}'
+    save_in = f'{save_in}{ref.year}'
     
     b.make_dir(save_in)
     
     code = codes[site]
     
+    out = []
     for link in wb.request(url):    
         
         if code in link:
             dn = fn2dn(link, code = code)
             
-            if dn.day in days:
-             if dn.month == ref.month:
-                 print('Downloading', link)
-                 wb.download(
-                     url, 
-                     link, 
-                     save_in
-                     )
-        # except:
-        #     continue 
+            print('Downloading', link)
+            wb.download(
+                url, 
+                link, 
+                save_in
+                )
+    
             
     return None 
 
@@ -61,6 +61,24 @@ def main():
     days = [13, 16, 18, 29, 19, 20, 21, 22]
     days = [3, 4, 30, 28]
     for site in ['sao_luis', 'eusebio']:
-        download_magnetometer(ref, days, site)
+        download_magnetometer(ref, site)
     
 # main()
+
+def dowload_all_years(site = 'eusebio'):
+
+    for year in range(2013, 2024):
+        ref = dt.datetime(year, 12, 13)
+        
+        
+        save_in = f'E:\\database\\magnet\\{site}\\'
+        
+        b.make_dir(save_in)
+        
+        download_magnetometer(
+            ref, 
+            save_in = save_in, 
+            site = site
+            )
+        
+dowload_all_years(site = 'eusebio')
