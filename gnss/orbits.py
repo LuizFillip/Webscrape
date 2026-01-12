@@ -70,9 +70,10 @@ def orbit_url(
             url += f"orbits/{week}/"
             filename = f'igs{week}{number}.sp3.Z'
             
-        # elif const == 'mgex':
-        #     filename = f'IGS0OPSULT_{year}{strd}1800_02D_15M_ORB.SP3.gz'
-        #     url += f"{week}/"
+        elif const == 'mgex':
+            year = dn.year
+            filename = f'IGS0OPSULT_{year}{strd}1800_02D_15M_ORB.SP3.gz'
+            url += f"{week}/"
     
     elif network == 'garner':
         
@@ -190,12 +191,12 @@ def rename_igv(year):
 def download_orbits_dialy(
         year = 2022, 
         root = 'E:\\', 
-        const = 'esa'
+        const = 'esa',
+        network = 'garner'
         ):
     
     sts, end = f'{year}-01-01', f'{year}-12-31'
-    # for const in consts:
-        
+      
     sts = last_download(year, const)
     
     for dn in pd.date_range(sts, end):
@@ -203,7 +204,7 @@ def download_orbits_dialy(
         download_orbit(
             dn, 
             const = const, 
-            network = 'garner', 
+            network = network, 
             root = root
             )
         
@@ -215,22 +216,4 @@ def download_orbits_dialy(
 # download_orbits_dialy(
 #         year = 2024, 
 #         const = 'igv', 
-#         network = 'garner'
-
 #         )
-
-# download_orbits_dialy(
-#         year = 2010
-#         )
-
-
-
-# fname, url = orbit_url(
-#     dn, 
-#     network = 'garner', 
-#     const = 'esa'
-#     )
-
-# fname, url
-
-# rename_igv(2011)
