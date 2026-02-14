@@ -3,6 +3,7 @@ import GNSS as gs
 import base as b 
 import os
 from tqdm import tqdm 
+import calendar
 
 PATH_CHILE = 'D:\\database\\GNSS\\rinex\\chile\\'
 
@@ -17,101 +18,24 @@ networks = {
 
 
 def rinex_url(year, doy, network = "ibge"):
-    date = gs.date_from_doy(year, doy)
+    date = gs.doy2date(year, doy)
     doy_str = date.strftime("%j")
     return f"{networks[network]}/{year}/{doy_str}/"
 
-def rinex3_fname(dn):
-    doy = dn.strftime('%j')
-    year = dn.year
-    doy = dn.timetuple().tm_yday
-    week, number = gs.gpsweek_from_doy_and_year(year, doy)
+# def rinex3_fname(dn):
+#     doy = dn.strftime('%j')
+#     year = dn.year
+#     doy = dn.timetuple().tm_yday
+#     week, number = gs.gpsweek_from_doy_and_year(year, doy)
     
-    url = networks['igs'] + f'{week}/'
+#     url = networks['igs'] + f'{week}/'
     
-    return url, f'IGS0OPSFIN_{year}{doy}0000_01D_15M_ORB.SP3.gz'
+#     return url, f'IGS0OPSFIN_{year}{doy}0000_01D_15M_ORB.SP3.gz'
+
+# # 
 
 
 
-
-def filter_rinex(url: str, 
-        sel_stations: list[str]
-        ):
-    
-  out = []
-  for href in wb.request(url):
-      
-      rules = [f in href for f in sel_stations]
-      if any(rules):
-          out.append(href)
-          
-  return out
-
-
-
-
-def download_rinex(
-        year, 
-        doy,
-        path_to_save,
-        stations = None,
-        network = 'ibge', 
-        
-        ):
-
-    url = rinex_url(year, doy, network)
-    io = 'downloading'
-    for href in tqdm(wb.request(url), io):
-     
-        if any([z in href for z in stations]):
-            
-            ends = ['.zip', 'd.Z', 'crx.gz']
-            if any([href.endswith(e) for e in ends]):
-             
-               wb.download(
-                   url, 
-                   href, 
-                   path_to_save
-                   )
-           
-    return None
-
-
-
-def uncompress(path_root):
-    unzip_msg = 'unzipping'
-    
-    files = []
-    for sts in tqdm(os.listdir(path_root), unzip_msg):
-        path_in = os.path.join(path_root, sts)
-        
-        if sts.endswith('Z'):
-           
-            try:
-                wb.unzip_Z(path_in)
-                files.append(sts)
-                
-            except:
-                continue
-            
-        elif sts.endswith('zip'):
-         
-            try:
-                wb.unzip_zip(path_in)
-                files.append(sts)
-            except:
-                continue
-        
-        elif sts.endswith('gz'):
-         
-            try:
-                wb.unzip_gz(path_in)
-                files.append(sts)
-            except:
-                continue
-
-    return files 
-            
 def convert_and_remove(path_to_save, files):
     root = path_to_save[:3]
     last = []
@@ -142,18 +66,7 @@ def filter_stations_by_latitude(latitude = -15):
     
     return df.loc[df.lat > latitude].index
 
-
-def locate_last_folder(path):
-    
-    fns = os.listdir(path.rinex)
-    
-    to_nums = [int(n) for n in fns ]
-    
-    if len(to_nums) == 0:
-        return 1
-    else:
-        return max(to_nums) 
-    
+ 
 
 def download_routine(
         year, 
@@ -172,47 +85,101 @@ def download_routine(
             network = 'ibge',         
             )
     
-    files = uncompress(path_to_save)
+    # files = uncompress(path_to_save)
     
-    convert_and_remove(path_to_save, files)
+    # convert_and_remove(path_to_save, files)
         
-def download_rinex_yearly(year, stations, root = 'C:\\'):
-    
-    path = gs.paths(year, root = root)
-    
-    b.make_dir(path.rinex_base) # criar o diretório do ano
-    
-    last_dw = locate_last_folder(path)
-    
-    for doy in range(last_dw, 366, 1):
-         
+ 
+
+
+ 
+def is_leap_year(year: int) -> bool:
+    return calendar.isleap(year)
+
+def days_in_year(year: int) -> int:
+    return 366 if is_leap_year(year) else 365
+
+def iter_doys(year: int, start_doy: int = 1, 
+              end_doy: int | None = None):
+    if end_doy is None:
+        end_doy = days_in_year(year)
+    start_doy = max(1, int(start_doy))
+    end_doy = min(int(end_doy), days_in_year(year))
+    return range(start_doy, end_doy + 1)
+
+def locate_last_folder(path):
+    # pega apenas pastas DOY numéricas (001..366)
+    fns = [n for n in os.listdir(path.rinex) if n.isdigit()]
+    to_nums = [int(n) for n in fns]
+    return (1 if len(to_nums) == 0 else 
+            (max(to_nums) + 1))  # próximo DOY
+
+def uncompress(path_root):
+    unzip_msg = 'unzipping'
+    files = []
+
+    for fn in tqdm(os.listdir(path_root), unzip_msg):
+        path_in = os.path.join(path_root, fn)
+
+        try:
+            if fn.endswith('.Z') or fn.endswith('d.Z'):
+                wb.unzip_Z(path_in)
+                files.append(fn)
+
+            elif fn.endswith('.zip'):
+                wb.unzip_zip(path_in)
+                files.append(fn)
+
+            elif fn.endswith('.gz'):
+                wb.unzip_gz(path_in)
+                files.append(fn)
+
+        except Exception:
+            continue
+
+    return files
+
+def download_rinex(
+        year, doy, path_to_save, stations=None, network='ibge'):
+    url = rinex_url(year, doy, network)
+
+    if stations is None:
+        stations = []
+
+    ends = ('.zip', 'd.Z', '.crx.gz', '.gz', '.Z')
+
+    for href in tqdm(wb.request(url), desc="downloading"):
+        # if stations and not any(st in href for st in stations):
+        #     continue
+
+        if href.endswith(ends):
+            wb.download(url, href, path_to_save)
+
+    return None
+
+def download_rinex_yearly(
+        year, 
+        stations, 
+        root='C:\\', 
+        resume=True, 
+        start_doy=1, 
+        end_doy=None
+        ):
+    path = gs.paths(year, root=root)
+
+    b.make_dir(path.rinex_base)
+
+    if resume:
+        start_doy = locate_last_folder(path)
+
+    for doy in iter_doys(
+            year, 
+            start_doy=start_doy, 
+            end_doy=end_doy
+            ):
         path_to_save = f"{path.rinex}{doy:03d}"
-        
-        download_routine(
-                year, 
-                doy,
-                path_to_save,
-                stations
-                )
+        download_routine(year, doy, path_to_save, stations)
 
 def main():
-    
-    stations = filter_stations_by_latitude(latitude = -15)
-    year = 2012
-    doy = 366
-    
-    path = gs.paths(year)
-    
-    b.make_dir(path.rinex_base)
-    
-    path_to_save = f"{path.rinex}{doy:03d}"
-    
-    download_routine(
-            year, 
-            doy,
-            path_to_save,
-            stations
-            )
-    
-    
-# main()
+    stations = filter_stations_by_latitude(latitude=-15)
+    download_rinex_yearly(2012, stations, root="E:\\", resume=True)
