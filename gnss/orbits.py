@@ -114,7 +114,11 @@ def download_single(year = 2018, doy = 260):
     
     return None 
 
-        
+
+def fn2dn(fn):
+    gpsweek, dayofweek = int(fn[3:7]), int(fn[7:8])  
+    return gs.gpsweek2dn(gpsweek, dayofweek)
+
 def copy_rewrite(src):
     
     dst = src.replace('igv', 'cod').replace('_00', '')
@@ -135,7 +139,20 @@ def download_orbit(
         const = const
         )
             
-    path = gs.paths(dn, root = root)
+   
+      
+   
+            
+        
+    
+    return None 
+    
+
+def last_download(year, const, root = 'E:\\'):
+        
+    path = gs.paths(year, doy = 0, root = root)
+    
+    pin = path.orbit(const = const) 
     
     b.make_dir(path.orbit_base)
     
@@ -143,43 +160,19 @@ def download_orbit(
     
     b.make_dir(path_to_save)
     
-    for href in wb.request(url):
-        if fname in href:        
-            print('[download_orbit]', dn.date(), href)
-             
-            path_in = wb.download(
-                url, href, path_to_save
-                )
-            wb.unzip_Z(path_in)
-            
-        
-    
-    return None 
-    
-
-    
-
-
-def fn2dn(fn):
-    gpsweek, dayofweek = int(fn[3:7]), int(fn[7:8])  
-    return gs.gpsweek2dn(gpsweek, dayofweek)
-
-def last_download(year, const):
-        
-    path = gs.paths(year, doy = 0)
-    
-    pin = path.orbit(const = const) 
-    
     files = [fn2dn(fn) for fn in os.listdir(pin)]
     
     if len(files) == 0:
         return dt.datetime(year, 1, 1)
     else:
         return max(files) 
-
-def rename_igv(year):
     
-    path_in = gs.paths(year).orbit(const = 'igv')
+def igv_sp3_name(fn):
+    return fn.replace('_00', '').replace('.Z', '')
+
+def rename_igv(year, root = 'E:\\'):
+    
+    path_in = gs.paths(year, root = root).orbit(const = 'igv')
     
     for fn in os.listdir(path_in):
         src = os.path.join(path_in, fn)
@@ -197,23 +190,68 @@ def download_orbits_dialy(
     
     sts, end = f'{year}-01-01', f'{year}-12-31'
       
-    sts = last_download(year, const)
+    # sts = last_download(year, const, root = root)
     
+    # print(sts)
+    # print('Starting downloading', year)
     for dn in pd.date_range(sts, end):
         
-        download_orbit(
+        path = gs.paths(dn, root = root)
+        
+        fn, url = orbit_url(
             dn, 
-            const = const, 
             network = network, 
-            root = root
+            const = const
             )
         
-    if const == 'igv':
-        rename_igv(year)
+        path_in = os.path.join(
+            path.orbit(const = const), 
+            igv_sp3_name(fn)
+            )
+        
+        b.make_dir(path.orbit_base)
+        
+        path_to_save = path.orbit(const = const)
+        
+        b.make_dir(path_to_save)
+        
+        if os.path.exists(path_in):
+            continue
+        else:
+            
+                 
+            for href in wb.request(url):
+                if fn in href:        
+                    print('[download_orbit]', dn.date(), href)
+                     
+                    path_in = wb.download(
+                        url, 
+                        href, 
+                        path_to_save
+                        )
+                    wb.unzip_Z(path_in)
+    #     try:
+    #         download_orbit(
+    #             dn, 
+    #             const = const, 
+    #             network = network, 
+    #             root = root
+    #             )
+    #     except:
+    #         continue 
+        
+    # if const == 'igv':
+    #     rename_igv(year, root = root)
         
     return None 
 
-# download_orbits_dialy(
-#         year = 2024, 
-#         const = 'igv', 
-#         )
+year = 2010
+download_orbits_dialy(
+        year = year, 
+        root = 'F:\\',
+        const = 'igv', 
+        )
+
+
+# rename_igv(year, root = 'F:\\')
+
