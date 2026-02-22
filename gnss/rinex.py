@@ -4,7 +4,8 @@ import base as b
 import os
 from tqdm import tqdm 
 import calendar
-
+import pandas as pd
+import GEO as gg 
 PATH_CHILE = 'D:\\database\\GNSS\\rinex\\chile\\'
 
 networks = {
@@ -72,7 +73,9 @@ def download_routine(
         year, 
         doy,
         path_to_save,
-        stations
+        stations, 
+        convert = False, 
+        unzip = False
         ):
     
     b.make_dir(path_to_save) # criar o diretório do doy
@@ -84,11 +87,11 @@ def download_routine(
             stations,
             network = 'ibge',         
             )
-    
-    # files = uncompress(path_to_save)
-    
-    # convert_and_remove(path_to_save, files)
-        
+    if unzip:
+        files = uncompress(path_to_save)
+        if convert:
+            convert_and_remove(path_to_save, files) 
+    return None 
  
 
 
@@ -149,11 +152,10 @@ def download_rinex(
     ends = ('.zip', 'd.Z', '.crx.gz', '.gz', '.Z')
 
     for href in tqdm(wb.request(url), desc="downloading"):
-        # if stations and not any(st in href for st in stations):
-        #     continue
-
-        if href.endswith(ends):
-            wb.download(url, href, path_to_save)
+    
+        if href[:4] in stations:
+            if href.endswith(ends):
+                wb.download(url, href, path_to_save)
 
     return None
 
@@ -162,15 +164,15 @@ def download_rinex_yearly(
         stations, 
         root='C:\\', 
         resume=True, 
-        start_doy=1, 
+        start_doy=345, 
         end_doy=None
         ):
     path = gs.paths(year, root=root)
 
     b.make_dir(path.rinex_base)
 
-    if resume:
-        start_doy = locate_last_folder(path)
+    # if resume:
+    #     start_doy = locate_last_folder(path)
 
     for doy in iter_doys(
             year, 
@@ -178,8 +180,18 @@ def download_rinex_yearly(
             end_doy=end_doy
             ):
         path_to_save = f"{path.rinex}{doy:03d}"
+        
         download_routine(year, doy, path_to_save, stations)
 
 def main():
     stations = filter_stations_by_latitude(latitude=-15)
-    download_rinex_yearly(2012, stations, root="E:\\", resume=True)
+    download_rinex_yearly(2009, stations, root="F:\\", resume = True)
+
+
+def main_onew():
+    doy = 287
+    year = 2009
+    path = gs.paths(year, root= 'F:\\')
+    path_to_save = f"{path.rinex}{doy:03d}"
+    stations = filter_stations_by_latitude(latitude=-15)
+    download_routine(year, doy, path_to_save, stations)
