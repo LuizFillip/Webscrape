@@ -6,6 +6,7 @@ from tqdm import tqdm
 import calendar
 import pandas as pd
 import GEO as gg 
+
 PATH_CHILE = 'D:\\database\\GNSS\\rinex\\chile\\'
 
 networks = {
@@ -23,17 +24,6 @@ def rinex_url(year, doy, network = "ibge"):
     doy_str = date.strftime("%j")
     return f"{networks[network]}/{year}/{doy_str}/"
 
-# def rinex3_fname(dn):
-#     doy = dn.strftime('%j')
-#     year = dn.year
-#     doy = dn.timetuple().tm_yday
-#     week, number = gs.gpsweek_from_doy_and_year(year, doy)
-    
-#     url = networks['igs'] + f'{week}/'
-    
-#     return url, f'IGS0OPSFIN_{year}{doy}0000_01D_15M_ORB.SP3.gz'
-
-# # 
 
 
 
@@ -56,9 +46,7 @@ def convert_and_remove(path_to_save, files):
     return None
          
 def filter_stations_by_latitude(latitude = -15):
-    import pandas as pd
-    import GEO as gg 
-
+ 
     sites = gg.load_coords(2022)
 
     df = pd.DataFrame(sites).T
@@ -95,7 +83,6 @@ def download_routine(
  
 
 
- 
 def is_leap_year(year: int) -> bool:
     return calendar.isleap(year)
 
@@ -189,9 +176,11 @@ def main():
 
 
 def main_onew():
-    doy = 287
-    year = 2009
+    doy = 366
+    year = 2024
     path = gs.paths(year, root= 'F:\\')
     path_to_save = f"{path.rinex}{doy:03d}"
     stations = filter_stations_by_latitude(latitude=-15)
     download_routine(year, doy, path_to_save, stations)
+
+main_onew()
