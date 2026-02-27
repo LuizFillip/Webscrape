@@ -54,7 +54,11 @@ def fn2dt(filename: str) -> dt.datetime:
     return dt.datetime.strptime(date_part, "%Y%j%H%M%S")
 
 
-def periods_by_range(start: dt.datetime, hours: float = 24, freq: str = "10min") -> pd.DatetimeIndex:
+def periods_by_range(
+        start: dt.datetime, 
+        hours: float = 24, 
+        freq: str = "10min"
+        ) -> pd.DatetimeIndex:
     end = start + dt.timedelta(hours=hours)
     return pd.date_range(start, end, freq=freq)
 
@@ -136,6 +140,7 @@ def download_in_day(
     for filename in files:
         out_path =  Path(save_in) / filename
         if out_path.exists():
+        
             continue
 
         if strict_timestamp_match:
@@ -175,7 +180,9 @@ def download_ionograms(
         save_in = create_folder_by_date(start, site=site, root=root_drive)
 
     if isinstance(periods, dt.datetime):
+       
         dn_py = periods
+        print('Downloading', dn_py.strftime('%Y-%m-%d %H:%M'))
         download_in_day(
                 dn_py, site, ext, 
                 save_in,
@@ -220,5 +227,18 @@ def download_fixed_time_over_year(year):
             save_in = save_in
             )
         
-for year in range(2013, 2025):
-    download_fixed_time_over_year(year)
+# for year in range(2013, 2025):
+#     download_fixed_time_over_year(year)
+start = dt.datetime(2014, 1, 1, 20)
+
+for start in periods_by_freq(start):
+    save_in = Path(f'D:\\database\\fza\\{start.year}\\')
+    
+    for dn in periods_by_range(start, hours = 12):
+        
+        download_ionograms(
+            dn, 
+            site = 'fortaleza', 
+            ext = 'SAO', 
+            save_in = save_in
+            )
