@@ -1,9 +1,7 @@
 import os
-import shutil
 import datetime as dt
 import pandas as pd
-
-import Webscrape as wb
+import scrap as wb
 import GNSS as gs
 import base as b
 
@@ -128,7 +126,8 @@ def last_download_dn(folder, year):
 
 
 def download_orbits_daily(
-        year=2022, root="E:\\", 
+        year=2022, 
+        root="E:\\", 
         const="igv", network="garner",
         resume=True, verbose=True):
     """
@@ -147,18 +146,26 @@ def download_orbits_daily(
         start = last_download_dn(out_dir, year)
         # começa no próximo dia (evita repetir)
         start = (start + dt.timedelta(days=1)).replace(
-            hour=0, minute=0, second=0)
+            hour = 0, 
+            minute = 0, 
+            second = 0
+            )
 
     for dn in pd.date_range(start, end, freq="D"):
-        fn, url, post = orbit_url(dn, network=network, const=const)
+        fn, url, post = orbit_url(
+            dn, 
+            network = network, 
+            const = const 
+            )
 
         # nome final esperado (após unzip)
-        expected = igv_sp3_name(fn) if fn.endswith(".Z") else fn.replace(".gz", "")
+        expected = (igv_sp3_name(fn) if fn.endswith(".Z") 
+                    else fn.replace(".gz", ""))
         expected_path = os.path.join(out_dir, expected)
 
         if os.path.exists(expected_path):
             continue
-
+         
         # baixa: mantém seu padrão de varrer request(url)
         found = False
         for href in wb.request(url):
@@ -189,15 +196,4 @@ def download_orbits_daily(
 
     return None
 
-# for const in ['igr', 'igl']:
-# download_orbits_daily(
-#     year=2009,
-#     root="F:\\", 
-#     const= 'esa', 
-#     network="garner",
-#     resume=False, verbose=True)
  
-# dn = dt.datetime(2009,1,1)
-# fn, url, post = orbit_url(dn, network="garner", const='igr')
-
-# wb.unzip_Z(downloaded)

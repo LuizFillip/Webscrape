@@ -13,6 +13,7 @@ def date_from_fname(fname):
 
 
 
+
 class minimum_doy(object):
     
     def __init__(self, path):

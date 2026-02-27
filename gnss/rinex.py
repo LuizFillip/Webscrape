@@ -1,4 +1,4 @@
-import Webscrape as wb
+import scrap as wb
 import GNSS as gs
 import base as b 
 import os
@@ -101,8 +101,7 @@ def locate_last_folder(path):
     # pega apenas pastas DOY numéricas (001..366)
     fns = [n for n in os.listdir(path.rinex) if n.isdigit()]
     to_nums = [int(n) for n in fns]
-    return (1 if len(to_nums) == 0 else 
-            (max(to_nums) + 1))  # próximo DOY
+    return (1 if len(to_nums) == 0 else  (max(to_nums) + 1))  
 
 def uncompress(path_root):
     unzip_msg = 'unzipping'
@@ -130,7 +129,12 @@ def uncompress(path_root):
     return files
 
 def download_rinex(
-        year, doy, path_to_save, stations=None, network='ibge'):
+        year, 
+        doy, 
+        path_to_save, 
+        stations = None, 
+        network = 'ibge'
+        ):
     url = rinex_url(year, doy, network)
 
     if stations is None:
@@ -146,7 +150,20 @@ def download_rinex(
 
     return None
 
-def download_rinex_yearly(
+def miss_receivers(year, doy):
+    path = gs.paths(year, doy, root = 'D:\\')
+    
+    df = b.load(path.roti)
+    
+   
+    stations = ['rnmo', 'pbcg', 
+                'pepe', 'recf', 
+                'rnna', 'pbjp', 'alar']
+
+    return [s for s in stations if s not in df['sts'].unique()]
+
+
+def download_rinex_daily(
         year, 
         stations, 
         root='C:\\', 
@@ -158,8 +175,8 @@ def download_rinex_yearly(
 
     b.make_dir(path.rinex_base)
 
-    # if resume:
-    #     start_doy = locate_last_folder(path)
+    if resume:
+        start_doy = locate_last_folder(path)
 
     for doy in iter_doys(
             year, 
@@ -167,14 +184,11 @@ def download_rinex_yearly(
             end_doy=end_doy
             ):
         path_to_save = f"{path.rinex}{doy:03d}"
-        
+        stations = miss_receivers(year, doy)
+
         download_routine(year, doy, path_to_save, stations)
-
-def main():
-    stations = filter_stations_by_latitude(latitude=-15)
-    download_rinex_yearly(2009, stations, root="F:\\", resume = True)
-
-
+        
+ 
 def main_onew():
     doy = 366
     year = 2024
@@ -183,4 +197,9 @@ def main_onew():
     stations = filter_stations_by_latitude(latitude=-15)
     download_routine(year, doy, path_to_save, stations)
 
-main_onew()
+
+
+
+# stations = ['pbcg', 'alar', 'pepe']
+
+# download_rinex_yearly(2013, stations, root="D:\\")
